@@ -1,0 +1,17 @@
+{
+  "name": "merger",
+  "version": "0.1.0",
+  "description": "merger",
+  "main": "merger.js",
+  "scripts": {
+    "start": "node-dev app.js"
+  },
+  "author": {
+    "name": "shivayl"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "uglify-es": "^3.3.9"
+  }
+}
