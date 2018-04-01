@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "merger", "merger\merger.njsproj", "{716EE471-EDF9-4FD6-9083-92963637154B}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "merger-js", "merger\merger-js.njsproj", "{716EE471-EDF9-4FD6-9083-92963637154B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
