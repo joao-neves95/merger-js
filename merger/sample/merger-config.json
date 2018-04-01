@@ -1,5 +1,5 @@
 ﻿{
-  "source": "C:\\Users\\Utilizador\\odrive\\Google Drive - ISTEC\\DEV\\test\\merger\\merger\\merger\\sample\\js",
+  "source": "C:\\Users\\Utilizador\\odrive\\Google Drive - ISTEC\\DEV\\merger-js\\merger\\sample\\js",
   "fileOrder": [
     "file1.js",
     "file3.js",
@@ -7,7 +7,7 @@
     "file4.js"
   ],
   "output": {
-    "path": "C:\\Users\\Utilizador\\odrive\\Google Drive - ISTEC\\DEV\\test\\merger\\merger\\merger\\sample\\js\\build",
+    "path": "C:\\Users\\Utilizador\\odrive\\Google Drive - ISTEC\\DEV\\merger-js\\merger\\sample\\js\\build",
     "name": "build.js"
   },
   "uglify": true
