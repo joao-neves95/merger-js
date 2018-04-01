@@ -29,14 +29,13 @@ fs.rename('/tmp/hello', '/tmp/world', (err) => {
   });
 });
 
-$ cat script.js
+
 function bad() {
   require('fs').readFile('/');
 }
 bad();
 
-  
-    const fs = require('fs');
+
 
     fs.open('/open/some/file.txt', 'r', (err, fd) => {
       if (err) throw err;
@@ -60,7 +59,6 @@ bad();
       });
     });
 
-    const fs = require('fs');
 const { URL } = require('url');
 const fileUrl = new URL('file:///tmp/hello');
 
