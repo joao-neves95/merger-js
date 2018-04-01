@@ -1,10 +1,10 @@
 {
-  "name": "merger",
+  "name": "merger-js",
   "version": "0.1.0",
-  "description": "merger",
+  "description": "merger-js",
   "main": "merger.js",
   "scripts": {
-    "start": "node-dev app.js"
+    "start": "node-dev merger.js"
   },
   "author": {
     "name": "shivayl"
