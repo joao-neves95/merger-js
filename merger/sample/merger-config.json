@@ -1,4 +1,5 @@
 ﻿{
+  "autoBuild":  true,
   "source": "C:\\Users\\Utilizador\\odrive\\Google Drive - ISTEC\\DEV\\merger-js\\merger\\sample\\js",
   "fileOrder": [
     "file1.js",
