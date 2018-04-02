@@ -2,6 +2,13 @@
 
 &nbsp;
 
+#### V1.0.1 - 02/04/2018
+
+ - Added documentation;
+ - Update package.json.
+
+&nbsp;
+
 #### V1.0.0 - 02/04/2018
 
 - Upgraded to version 1.0.0;
