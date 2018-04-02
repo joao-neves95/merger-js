@@ -66,8 +66,14 @@ module.exports = () => {
         userConfig.fileOrder = filesArr;
         userConfig.output.path = answers.outputPath;
         userConfig.output.name = answers.outputName;
-        userConfig.uglify = answers.uglify;
-        userConfig.autoBuild = answers.auto;
+        if (answers.uglify === 'No')
+          userConfig.uglify = false;
+        else
+          userConfig.uglify = true;
+        if (answers.auto === 'Yes')
+          userConfig.autoBuild = true;
+        else
+          userConfig.autoBuild = false;
         writeConfigFile(userConfig.source, 'merger-config', userConfig, (err, data) => {
           if (err)
             return console.error(err);
