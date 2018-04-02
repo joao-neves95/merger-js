@@ -1,10 +1,14 @@
 {
   "name": "merger-js",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "merger-js",
   "main": "merger.js",
+  "bin": {
+    "merger": "./merger.js"
+  },
+  "preferGlobal": true,
   "scripts": {
-    "start": "node-dev merger.js"
+    "start": "node merger.js"
   },
   "author": {
     "name": "shivayl"
@@ -13,6 +17,8 @@
   "dependencies": {
     "async": "^2.6.0",
     "chokidar": "^2.0.3",
-    "uglify-es": "^3.3.9"
+    "commander": "^2.15.1",
+    "inquirer": "^5.2.0",
+    "uglify-es": "^3.3.10"
   }
 }
