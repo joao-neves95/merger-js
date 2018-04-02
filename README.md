@@ -2,7 +2,7 @@
  
  Yet another light weight and simple build tool for JavaScript files, with auto build capabilities and smart CLI tooling.
  
- **merjer *does not* support circular dependencies**
+ **merger *does not* support circular dependencies**
  
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
  **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
