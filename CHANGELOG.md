@@ -2,6 +2,13 @@
 
 &nbsp;
 
+#### V1.0.5 - 03/04/2018
+
+ - Fixed a bug on minification. The data from all files was beeing minified at the same time, leading to poor and indecipherable error reporting;
+ - Some style fixes to the CLI's infos/warnings.
+
+&nbsp;
+
 #### V1.0.4 - 03/04/2018
 
  - Fixed a bug with the minifier. It wasn't beeing activated;

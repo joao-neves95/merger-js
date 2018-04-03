@@ -8,7 +8,7 @@ module.exports = (code, callback) => {
       return console.error('Error: ', minifiedCode.error);
     }
     if (global.minifyOptions.warnings && minifiedCode.warnings)
-      console.warn('Warnings: \n', minifiedCode.warnings);
+      console.warn('\n Warnings: \n ', minifiedCode.warnings);
     return callback(minifiedCode.code);
   }
   return callback(code);

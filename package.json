@@ -1,6 +1,6 @@
 {
   "name": "merger-js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Yet another light weight and simple build tool for JavaScript files, with auto build capabilities and smart CLI tooling.",
   "main": "merger.js",
   "bin": {
