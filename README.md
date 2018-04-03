@@ -4,11 +4,12 @@
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
  
- This tools is intended for **very** small projects.
+ This tool is intended for **very** small projects.
  
  **merger *does not* support circular dependencies**
  
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
+ **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)<br/>
  **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
  **Dependencies:**<br/>
  ├── [uglify-es](https://www.npmjs.com/package/uglify-es)<br/>
