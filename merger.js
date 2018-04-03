@@ -16,7 +16,7 @@ mergerCLI(() => {
       let whatcher = chokidar.watch(global.config.fileOrder, { persistent: true, cwd: global.config.source });
       whatcher
         .on('ready', () => {
-          console.info('Inicial scan complete. Ready to build on changes...');
+          console.info(' Inicial scan complete. Ready to build on changes...');
           build();
         })
         .on('error', err => console.error('Auto build error: ', err))

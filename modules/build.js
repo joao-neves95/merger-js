@@ -4,18 +4,18 @@ const path = require('path');
 const async = require('async');
 const minifyCode = require('./minifyCode');
 
-let allData = '';
+let allData = {};
 
 module.exports = () => {
-  console.time('Build Time');
-  console.info('Building...');
+  console.time(' Build Time');
+  console.info(' Building...');
 
   // Read all the data:
   async.eachSeries(global.config.fileOrder, (file, callback) => {
     fs.readFile(path.join(global.config.source, file), 'utf-8', (err, data) => {
       if (err) return callback(err);
 
-      allData += data;
+      allData[file] = data;
       callback();
     })
   }, (err) => {
@@ -40,11 +40,11 @@ module.exports = () => {
           }
         }
 
-        allData = ''
-        console.info('\n', new Date(), 'Build complete.');
-        console.timeEnd('Build Time');
+        allData = {}
+        console.info('\n', new Date(), '- Build complete.');
+        console.timeEnd(' Build Time');
         if (global.config.autoBuild)
-          console.info('\nReady to build.\nListening for file changes...\n');
+          console.info('\n Ready to build.\n Listening for file changes...\n');
       })
     })
   });
