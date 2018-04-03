@@ -2,6 +2,19 @@
 
 &nbsp;
 
+#### V1.0.3 - 03/04/2018
+
+ - Fixed a bug on the CLI's fileOrder question.
+
+&nbsp;
+
+#### V1.0.2 - 03/04/2018
+
+ - Added documentation;
+ - Updated the package.json.
+
+&nbsp;
+
 #### V1.0.1 - 02/04/2018
 
  - Added documentation;

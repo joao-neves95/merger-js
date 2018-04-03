@@ -62,7 +62,7 @@ module.exports = () => {
           questions[1].default += files[i] + ', ';
       }
       prompt([questions[1], questions[2], questions[3], questions[4], questions[5]]).then((answers) => {
-        let filesArr = answers.fileOrder.trim().split(', ');
+        let filesArr = answers.fileOrder.replace(/\s/g, '').split(',');
         userConfig.fileOrder = filesArr;
         userConfig.output.path = answers.outputPath;
         userConfig.output.name = answers.outputName;
