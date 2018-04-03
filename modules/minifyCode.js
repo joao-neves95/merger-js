@@ -2,7 +2,7 @@
 const uglify = require('uglify-es');
 
 module.exports = (code, callback) => {
-  if (global.minify) {
+  if (global.config.uglify) {
     let minifiedCode = uglify.minify(code, global.minifyOptions);
     if (minifiedCode.error) {
       return console.error('Error: ', minifiedCode.error);

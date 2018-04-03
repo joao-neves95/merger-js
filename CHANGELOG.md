@@ -2,6 +2,14 @@
 
 &nbsp;
 
+#### V1.0.4 - 03/04/2018
+
+ - Fixed a bug with the minifier. It wasn't beeing activated;
+ - Added a timestamp after every build;
+ - Added "Ready to build. Listening for file changes..." after every build (if autoBuild is on).
+
+&nbsp;
+
 #### V1.0.3 - 03/04/2018
 
  - Fixed a bug on the CLI's fileOrder question.

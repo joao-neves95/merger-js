@@ -41,8 +41,10 @@ module.exports = () => {
         }
 
         allData = ''
-        console.info('The build is complete.');
+        console.info('\n', new Date(), 'Build complete.');
         console.timeEnd('Build Time');
+        if (global.config.autoBuild)
+          console.info('\nReady to build.\nListening for file changes...\n');
       })
     })
   });
