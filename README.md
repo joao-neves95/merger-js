@@ -45,6 +45,8 @@ npm install merger-js -g
 - In the question "File Order", input in which order you wish the files to be bundled. From first to last.
 
   (eg.: ```helpers.js, requests.js, handlers.js, listeners.js, feature.js```)
+- You can set minify to 'Yes', to minify on build.
+- You can set autoBuild to 'Yes', to make merger listen for file changes and build automatically when there's one. 
 
 &nbsp;
 
