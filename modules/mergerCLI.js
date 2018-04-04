@@ -16,7 +16,7 @@ module.exports = (callback) => {
     .command('init')
     .action(() => {
       return init();
-      process.exit(0)
+      process.exit(0);
     })
 
   // merger auto
