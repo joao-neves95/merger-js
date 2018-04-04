@@ -1,6 +1,7 @@
 ﻿'use strict'
-const CLI = require('commander');
+const CLI = require('../node_modules/commander');
 const init = require('./init');
+const version = require('../package.json').version;
 
 module.exports = (callback) => {
   // merger -v / --version
@@ -40,7 +41,7 @@ module.exports = (callback) => {
 
   CLI.parse(process.argv);
   // If the user didn't use the CLI commands:
-  // node merger
+  // merger
   if (process.argv.length <= 2)
     return callback();
 }

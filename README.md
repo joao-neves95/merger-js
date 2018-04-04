@@ -53,3 +53,9 @@ npm install merger-js -g
 2) After having a merger-config.json file on the source directory (the directory where your working files are located), you have different alternatives to run merger:
 - You can run ```merger``` or ```merger build```, on the source directory, and the merger-config.json folder will be parsed and merger will build with the config you gave it on the config file.
 - You can run ```merger auto``` or ```merger build auto``` to run a one time auto build session (it watches the source directory for changes and builds when there's one), if you, for example, told the CLI that you didn't want auto builds and you don't want to change that.
+
+&nbsp;
+
+## Versioning
+
+Merger uses [SemVer](https://semver.org/) for versioning. You can read the changelog [here](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md).

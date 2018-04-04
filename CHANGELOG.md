@@ -2,7 +2,17 @@
 
 &nbsp;
 
-#### *V1.0.6 - 04/04/2018
+#### *V1.1.0 - 04/04/2018
+
+ - Added native OS notifications (node-notifier);
+ - Migrated from async to neo-async;
+ - Refactored the timestamps on the build notifications (CLI);
+ - Added the merger's GitHub repository and NPM links to the merger-config file;
+ - Minor fixes/refactorings.
+
+&nbsp;
+
+#### V1.0.6 - 04/04/2018
 
  - Fixed some dependency vulnerabilities;
  - Deleted some unneeded files;

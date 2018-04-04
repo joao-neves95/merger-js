@@ -6,7 +6,6 @@ const chokidar = require('chokidar');
 const mergerCLI = require('./modules/mergerCLI');
 const config = require('./modules/config');
 const build = require('./modules/build');
-global.version = require('./package.json').version;
 
 // PROGRAM:
 mergerCLI(() => {
@@ -31,4 +30,4 @@ mergerCLI(() => {
     }
   });
 });
-// End of PROGRAM:
+// End of PROGRAM.
