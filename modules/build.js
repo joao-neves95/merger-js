@@ -1,8 +1,11 @@
 ﻿'use strict'
 const fs = require('fs');
 const path = require('path');
-const async = require('async');
+const async = require('../node_modules/neo-async');
 const minifyCode = require('./minifyCode');
+const notify = require('./notifications').notif;
+const newTimestamp = require('./newTimestamp').small;
+const buildOnChanges = 'Ready to build. Listening for file changes...';
 
 let allData = {};
 
@@ -41,10 +44,15 @@ module.exports = () => {
         }
 
         allData = {}
-        console.info('\n', new Date(), '- Build complete.');
+        let timestamp = newTimestamp();
+        let notifMessage = timestamp;
+        if (global.config.autoBuild) {
+          notifMessage += `\n${buildOnChanges}`;
+          console.info(`\n ${buildOnChanges}\n`);
+        }
+        notify('Build Complete.', notifMessage);
+        console.info('\n', timestamp, '- Build complete.');
         console.timeEnd(' Build Time');
-        if (global.config.autoBuild)
-          console.info('\n Ready to build.\n Listening for file changes...\n');
       })
     })
   });
