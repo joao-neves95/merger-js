@@ -1,46 +1,51 @@
 ﻿'use strict'
+const dirname = require('path').dirname;
 const prompt = require('../node_modules/inquirer').createPromptModule();
 const userConfig = require('./userConfig');
 const readDir = require('./utils').readDir;
+const parseImports = require('./parseImports');
 const writeConfigFile = require('./utils').writeJSONFile;
+const notify = require('./notifications').notif;
+const newTimestamp = require('./newTimestamp').small;
+const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
 // TODO: Add validation.
 let questions = [
   {
     type: 'input',
-    name: 'sourceDir',
-    message: 'Source directory.\n Where are the source files located?\n Default: ',
+    name: 'sourceFile',
+    message: 'Source file. What is the file that has the all the imports?\n Default: ',
     default: process.cwd()
   },
   {
     type: 'input',
-    name: 'fileOrder',
-    message: 'File order.\n In what order do you want the files to merge?\n Default: ',
+    name: 'buildOrder',
+    message: '\n Build order. Press <enter> to confirm: ',
     default: ''
   },
   {
     type: 'input',
     name: 'outputPath',
-    message: 'Output Path.\n Where should the build occur?\n Default: ',
+    message: '\n Output Path. Where should the build occur?\n Default: ',
     default: ''
   },
   {
     type: 'input',
     name: 'outputName',
-    message: 'Output file name:\n Default: ',
+    message: '\n Output file name. Default: ',
     default: 'build.js'
   },
   {
     type: 'list',
     name: 'uglify',
-    message: 'Minify the JS output build file? ',
+    message: '\n Minify the JS output build file? ',
     choices: ['Yes', 'No'],
     default: 'Yes'
   },
   {
     type: 'list',
     name: 'auto',
-    message: 'Enable auto builds? ',
+    message: '\n Enable auto builds? ',
     choices: ['Yes', 'No'],
     default: 'No'
   },
@@ -48,37 +53,48 @@ let questions = [
 
 module.exports = () => {
   prompt([questions[0]]).then((answer) => {
-    let userSource = answer.sourceDir;
-    userConfig.source = userSource;
-    questions[2].default = userConfig.source + '\\build';
-    readDir(userSource, (err, files) => {
-      if (err) return console.error(err);
+    let sourceFile = answer.sourceFile;
+    // Source file.
+    userConfig.source = sourceFile;
+    // Default outputPath.
+    questions[2].default = dirname(sourceFile) + '\\build';
 
+    parseImports(sourceFile, (files) => {
+      // Default build order:
       let fileLen = files.length
       for (let i = 0; i < fileLen; i++) {
         if (i === fileLen - 1)
-          questions[1].default += files[i];
+          questions[1].default += '\n' + ' ' + files[i] + '\n';
         else
-          questions[1].default += files[i] + ', ';
+          questions[1].default += '\n' + ' ' + files[i] + ',';
       }
       prompt([questions[1], questions[2], questions[3], questions[4], questions[5]]).then((answers) => {
-        let filesArr = answers.fileOrder.replace(/\s/g, '').split(',');
-        userConfig.fileOrder = filesArr;
+        let filesArr = answers.buildOrder.replace(/\s/g, '').split(',');
+        // Build order:
+        userConfig.buildOrder = filesArr;
+        // Output file path:
         userConfig.output.path = answers.outputPath;
+        // Output file name:
         userConfig.output.name = answers.outputName;
+        // Minification:
         if (answers.uglify === 'No')
           userConfig.uglify = false;
         else
           userConfig.uglify = true;
+        // Auto builds:
         if (answers.auto === 'Yes')
           userConfig.autoBuild = true;
         else
           userConfig.autoBuild = false;
-        writeConfigFile(userConfig.source, 'merger-config', userConfig, (err, data) => {
+
+        writeConfigFile(dirname(sourceFile), 'merger-config', userConfig, (err, data) => {
           if (err)
             return console.error(err);
-          else
-            console.info('\nInit successful.\n', data, '\n');
+          else {
+            let timestamp = newTimestamp();
+            notify('Init Successful.', `${timestamp}\n${finalInitMessage}`);
+            console.info(`\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}`);
+          }
         });
       });
     });

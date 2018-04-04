@@ -12,7 +12,7 @@ mergerCLI(() => {
   config(() => {
     // Auto builds:
     if (global.config.autoBuild) {
-      let whatcher = chokidar.watch(global.config.fileOrder, { persistent: true, cwd: global.config.source });
+      let whatcher = chokidar.watch(global.config.buildOrder, { persistent: true, cwd: path.dirname(global.config.source) });
       whatcher
         .on('ready', () => {
           console.info(' Inicial scan complete. Ready to build on changes...');

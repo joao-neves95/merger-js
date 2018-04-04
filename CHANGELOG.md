@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *V1.1.0 - 04/04/2018
+#### *V2.0.0 - 04/04/2018
+
+ - **New usage:** Instead of imputing all files by hand, the build order is now imported in a source script;
+ - Added notifications for inits;
+ - Minor code fixes;
+ - Updated the DOCS (README.md) for the new usage.
+
+&nbsp;
+
+#### V1.1.0 - 04/04/2018
 
  - Added native OS notifications (node-notifier);
  - Migrated from async to neo-async;
