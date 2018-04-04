@@ -61,6 +61,8 @@ npm install merger-js -g
    - The import (```// @import```) of the source file is optional;
    - (Merger does not support importing files from different directories, **yet.**)
 
+&nbsp;
+
 2) Run ```merger init``` on your working JS directory:
 - If you run merger on your working JS directory, the CLI tool will give you default paths relative to that directory.
 - You can set minify to 'Yes', to minify on build.
