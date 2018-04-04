@@ -1,6 +1,6 @@
 ﻿# merger-js
  
- Yet another light weight and simple build tool for JavaScript files, with auto build capabilities and smart CLI tooling.
+ Yet another light weight and simple cross-platform build tool for JavaScript files, with auto build capabilities, smart CLI tooling and native OS notifications.
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
  
