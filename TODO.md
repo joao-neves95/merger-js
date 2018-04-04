@@ -5,5 +5,6 @@
 - Add GitHub repository link to merger-config;
 - Add styling to the CLI with chalk;
 - Add notifications with node-notifier;
+- Add a notification for when there's a new version of merger;
 - Add descriptions to the CLI commands;
-- Instead of inputing the file order, use requires on a source file.
+- Instead of inputing the file order, use imports on a source file. Optionaly (no breaking changes).

@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *V1.0.5 - 03/04/2018
+#### *V1.0.6 - 04/04/2018
+
+ - Fixed some dependency vulnerabilities;
+ - Deleted some unneeded files;
+ - Updated package.json;
+ - Updated TODO.md.
+
+&nbsp;
+
+#### V1.0.5 - 03/04/2018
 
  - Fixed a bug on minification. The data from all files was beeing minified at the same time, leading to poor and indecipherable error reporting;
  - Some style fixes to the CLI's infos/warnings.

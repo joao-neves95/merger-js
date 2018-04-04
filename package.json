@@ -1,19 +1,25 @@
 {
   "name": "merger-js",
-  "version": "1.0.5",
+  "displayName": "merger",
+  "version": "1.0.6",
   "description": "Yet another light weight and simple build tool for JavaScript files, with auto build capabilities and smart CLI tooling.",
+  "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
   "main": "merger.js",
   "bin": {
     "merger": "./merger.js"
   },
   "preferGlobal": true,
   "scripts": {
-    "start": "node merger.js"
+    "start": "merger init"
   },
+  "install": "npm install merger-js -g",
   "author": {
     "name": "shivayl",
     "url": "https://github.com/joao-neves95"
   },
+  "maintainers": [
+    "shivayl/joao-neves95"
+  ],
   "homepage": "https://github.com/joao-neves95/merger-js",
   "repository": {
     "type": "git",
