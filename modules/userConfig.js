@@ -6,7 +6,6 @@ module.exports = {
     'https://www.npmjs.com/package/merger-js'
   ],
   source: '',
-  buildOrder: [],
   output: {
     path: '',
     name: ''

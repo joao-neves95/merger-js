@@ -9,12 +9,12 @@ const buildOnChanges = 'Ready to build. Listening for file changes...';
 
 let allData = {};
 
-module.exports = () => {
+module.exports = (buildOrder) => {
   console.time(' Build Time');
   console.info(' Building...');
 
   // Read all the data:
-  async.eachSeries(global.config.buildOrder, (file, callback) => {
+  async.eachSeries(buildOrder, (file, callback) => {
     fs.readFile(path.join(path.dirname(global.config.source), file), 'utf-8', (err, data) => {
       if (err) return callback(err);
 
