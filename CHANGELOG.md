@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *V2.0.0 - 04/04/2018
+#### *V2.0.1 - 05/04/2018
+
+ - The imports on the source file are now parsed at build time. This enables adding/removing/reorganizing build files by simply just adding/removing/reorganizing @import comments;
+ - Improved the imports parser;
+ - Tested imports from diferent directories;
+ - Minor code fixes and refactorings.
+
+&nbsp;
+
+#### V2.0.0 - 04/04/2018
 
  - **New usage:** Instead of imputing all files by hand, the build order is now imported in a source script;
  - Added notifications for inits;

@@ -18,7 +18,7 @@ module.exports = (Path, Callback) => {
   rl.on('line', (line) => {
     let treatedLine = line.replace(/\s/g, '')
     if (treatedLine.startsWith('@import', 2)) {
-      let file = treatedLine.replace(/\'|\/\/@import/g, '');
+      let file = treatedLine.replace(/\'|;|"|,|\/\/@import/g, '');
       lineNum++;
       if (path.extname(file) === '')
         file += '.js';
@@ -31,6 +31,7 @@ module.exports = (Path, Callback) => {
   });
 
   rl.on('close', () => {
+    console.log(buildOrder)
     Callback(buildOrder);
   });
 }

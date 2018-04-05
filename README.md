@@ -59,7 +59,8 @@ npm install merger-js -g
    ```
    - The extension names ```.js``` are optional;
    - The import (```// @import```) of the source file is optional;
-   - (Merger does not support importing files from different directories, **yet.**)
+   - You can import files from different directories. Example:<br/>
+     ```// @import '../otherFolder/someFile'```.
 
 &nbsp;
 
