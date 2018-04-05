@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *V2.0.1 - 05/04/2018
+#### *V2.0.2 - 05/04/2018
+
+ - Quick fix to a bug inserted on the last patch;
+ - Solved minor package security vulnerabilities (snyk).
+
+&nbsp;
+
+#### V2.0.1 - 05/04/2018
 
  - The imports on the source file are now parsed at build time. This enables adding/removing/reorganizing build files by simply just adding/removing/reorganizing @import comments;
  - Improved the imports parser;
