@@ -26,7 +26,14 @@
   "bugs": {
     "url": "https://github.com/joao-neves95/merger-js/issues"
   },
+  "files": [
+    "./merger.js",
+    "./README.md",
+    "./CHANGELOG.md",
+    "./LICENSE"
+  ],
   "license": "MIT",
+  "deprecated": false,
   "dependencies": {
     "chokidar": "^2.0.3",
     "commander": "^2.15.1",

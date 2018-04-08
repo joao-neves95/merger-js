@@ -1,5 +1,6 @@
 ﻿# merger-js
- 
+[![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![npm](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
+
  Yet another light weight and simple cross-platform build tool for JavaScript files, with file imports, auto build capabilities, smart CLI tooling and native OS notifications.
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
