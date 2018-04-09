@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *V2.0.4 - 09/04/2018
+#### *V2.0.5/6 (Hotfixes) - 09/04/2018
+
+ - Sent the wrong folder to npm. Nothing changed.
+
+
+   Sorry, I really need to sleep.
+
+&nbsp;
+
+#### V2.0.4 - 09/04/2018
 
  - Added data from last version (2.0.3) to GitHub (not pushed to GitHub);
  - Removed ability to set OS native notifications off. It introduced a bug. Removed the feature until further development;
