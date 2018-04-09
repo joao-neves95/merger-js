@@ -24,7 +24,7 @@ mergerCLI(() => {
           .on('change', (path, stats) => {
             //if (stats)
             //  console.info(`File ${path} as changed. Ready to build.\nStats: `, stats);
-            build(buildOrder);
+            build();
           });
       // One time builds:
       } else {

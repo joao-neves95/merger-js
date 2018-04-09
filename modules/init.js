@@ -43,7 +43,7 @@ let questions = [
     message: '\n Enable auto builds? ',
     choices: ['Yes', 'No'],
     default: 'No'
-  },
+  }
 ];
 
 module.exports = () => {
@@ -54,7 +54,7 @@ module.exports = () => {
     // Default outputPath.
     questions[1].default = dirname(sourceFile) + '\\build';
 
-    prompt([ questions[1], questions[2], questions[3], questions[4] ]).then((answers) => {
+    prompt([questions[1], questions[2], questions[3], questions[4] ]).then((answers) => {
       // Output file path:
       userConfig.output.path = answers.outputPath;
       // Output file name:
@@ -75,7 +75,6 @@ module.exports = () => {
           return console.error(err);
         else {
           let timestamp = newTimestamp();
-          notify('Init Successful.', `${timestamp}\n${finalInitMessage}`);
           console.info(`\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}`);
         }
       });

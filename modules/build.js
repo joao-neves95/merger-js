@@ -2,16 +2,15 @@
 const fs = require('fs');
 const path = require('path');
 const async = require('../node_modules/neo-async');
+const parseImports = require('./parseImports');
 const minifyCode = require('./minifyCode');
 const notify = require('./notifications').notif;
 const newTimestamp = require('./newTimestamp').small;
 const buildOnChanges = 'Ready to build. Listening for file changes...';
 
-let allData = {};
-
-module.exports = (buildOrder) => {
-  console.time(' Build Time');
-  console.info(' Building...');
+const build = (buildOrder) => {
+  let allData = {};
+  console.log(buildOrder);
 
   // Read all the data:
   async.eachSeries(buildOrder, (file, callback) => {
@@ -43,7 +42,6 @@ module.exports = (buildOrder) => {
           }
         }
 
-        allData = {}
         let timestamp = newTimestamp();
         let notifMessage = timestamp;
         if (global.config.autoBuild) {
@@ -56,4 +54,17 @@ module.exports = (buildOrder) => {
       });
     });
   });
+}
+
+module.exports = (buildOrder) => {
+  console.time(' Build Time');
+  console.info(' Building...');
+
+  if (!buildOrder) {
+    parseImports(global.config.source, (redefinedBuldOrder) => {
+      build(redefinedBuldOrder);
+    });
+  } else {
+    build(buildOrder);
+  }
 }

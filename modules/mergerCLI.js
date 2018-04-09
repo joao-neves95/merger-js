@@ -1,7 +1,7 @@
 ﻿'use strict'
 const CLI = require('../node_modules/commander');
 const init = require('./init');
-const version = require('../package.json').version;
+global.version = require('../package.json').version;
 
 module.exports = (callback) => {
   // merger -v / --version
@@ -37,6 +37,16 @@ module.exports = (callback) => {
         global.config.autoBuild = true;
 
       return callback();
+    });
+
+  // merger update
+  CLI
+    .command('update')
+    .option('-l, --local')
+    .action((cmd) => {
+      update(cmd, () => {
+        process.exit(0);
+      });
     });
 
   CLI.parse(process.argv);
