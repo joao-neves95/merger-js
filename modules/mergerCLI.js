@@ -1,6 +1,7 @@
 ﻿'use strict'
 const CLI = require('../node_modules/commander');
 const init = require('./init');
+const update = require('./updateMerger');
 global.version = require('../package.json').version;
 
 module.exports = (callback) => {
