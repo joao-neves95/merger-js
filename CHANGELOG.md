@@ -2,7 +2,22 @@
 
 &nbsp;
 
-#### *V2.0.2 - 05/04/2018
+#### *V2.0.4 - 09/04/2018
+
+ - Added data from last version (2.0.3) to GitHub (not pushed to GitHub);
+ - Removed ability to set OS native notifications off. It introduced a bug. Removed the feature until further development;
+ - Made updates optional;
+ - Added the command "merger update".
+
+&nbsp;
+
+#### V2.0.3 - 07/04/2018
+
+ - **BUG:** Solved a bug where the inputs were only beeing parsed on the first build instead of on each build. If a user reorganized their imports, it wouldn't affect the build. Bug solved.
+ - Added an HTTP request to the npm-registry when the user runs merger, in order to check if there's a new version available;
+ - Made OS native notifications optional.
+
+#### V2.0.2 - 05/04/2018
 
  - Quick fix to a bug inserted on the last patch;
  - Solved minor package security vulnerabilities (snyk).
