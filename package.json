@@ -1,7 +1,7 @@
 {
   "name": "merger-js",
   "displayName": "merger",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Yet another light weight and simple build tool for JavaScript files, with auto build capabilities and smart CLI tooling.",
   "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
   "main": "merger.js",
@@ -26,12 +26,6 @@
   "bugs": {
     "url": "https://github.com/joao-neves95/merger-js/issues"
   },
-  "files": [
-    "./merger.js",
-    "./README.md",
-    "./CHANGELOG.md",
-    "./LICENSE"
-  ],
   "license": "MIT",
   "deprecated": false,
   "dependencies": {

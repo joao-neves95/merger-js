@@ -2,9 +2,12 @@
 
 &nbsp;
 
-#### *V2.0.5/6 (Hotfixes) - 09/04/2018
+#### *V2.0.5/6/7 (Hotfixes) - 09/04/2018
 
- - Sent the wrong folder to npm. Nothing changed.
+ - Sent the wrong files to npm. 
+
+
+   No change.
 
 
    Sorry, I really need to sleep.
