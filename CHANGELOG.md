@@ -2,15 +2,15 @@
 
 &nbsp;
 
-#### *V2.0.5/6/7 (Hotfixes) - 09/04/2018
+#### *V2.0.8 (Patch) - 09/04/2018
 
- - Sent the wrong files to npm. 
+ - Added .git to .npmignore. The .git folder was beeing installed along with merger-js, which caused errors during updates. The command "merger update", and normal updates by "npm i merger-js -g", are now functional.
+&nbsp;
 
+#### V2.0.5/6/7 (Hotfixes) - 09/04/2018
 
-   No change.
-
-
-   Sorry, I really need to sleep.
+ - Sent the wrong files to npm multiple times and had one error in package.json.<br/>
+   No changes.
 
 &nbsp;
 
