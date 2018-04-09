@@ -4,7 +4,11 @@
 
 #### *V2.0.8 (Patch) - 09/04/2018
 
- - Added .git to .npmignore. The .git folder was beeing installed along with merger-js, which caused errors during updates. The command "merger update", and normal updates by "npm i merger-js -g", are now functional.
+ - Added .git to .npmignore. The .git folder was beeing installed along with merger-js, which caused errors during updates. The command "merger update", and normal updates by "npm i merger-js -g", are now functional.<br/>
+ It is advised to reinstall merger-js.<br/>
+ 1) "npm rm merger-js -g"<br/>
+ 2) "npm i merger-js -g"
+ 
 &nbsp;
 
 #### V2.0.5/6/7 (Hotfixes) - 09/04/2018
