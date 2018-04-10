@@ -2,10 +2,17 @@
 
 &nbsp;
 
-#### *V2.0.8 (Patch) - 09/04/2018
+#### *V2.1.0 - 10/04/2018
+
+ - Added the "set" command, to edit the merger configuration file through the CLI (README.md for more info);
+ - Minor refactorings and bug fixes.
+
+&nbsp;
+
+#### V2.0.8 (Patch) - 09/04/2018
 
  - Added .git to .npmignore. The .git folder was beeing installed along with merger-js, which caused errors during updates. The command "merger update", and normal updates by "npm i merger-js -g", are now functional.<br/>
- It is advised to reinstall merger-js.<br/>
+ It is advised to reinstall merger-js:<br/>
  1) "npm rm merger-js -g"<br/>
  2) "npm i merger-js -g"
  

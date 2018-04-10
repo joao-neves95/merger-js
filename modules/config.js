@@ -18,7 +18,7 @@ module.exports = (Callback) => {
       Callback();
     } catch (err) {
       if (err.code === 'MODULE_NOT_FOUND')
-        return console.error('merger-config file not found. Please run "merger init" or "merger --help".');
+        return console.error(' ERROR: merger-config file not found. Please run "merger init".');
     }
   })
   // End of CONFIGURATIONS:
