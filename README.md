@@ -78,6 +78,16 @@ npm install merger-js -g
 
 &nbsp;
 
+## Commands
+The merger commands are to be made on the directory with the merger-config.json file.
+
+- ```merger init```: Configure merger. It creates a merger-config.json file on your working directory.
+- ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.
+  - ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto build turned of and you don't want to change that.
+- ```merger update```: Update MergerJS.
+
+&nbsp;
+
 ## Versioning
 
 Merger uses [SemVer](https://semver.org/) for versioning. You can read the changelog [here](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md).
