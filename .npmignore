@@ -260,9 +260,10 @@ paket-files/
 __pycache__/
 *.pyc
 
+.git/
+*.git
 *.sln
 *.njsproj
 node_modules/
 *.snyk
 advisories.json
-*.git
