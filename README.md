@@ -1,5 +1,5 @@
 ﻿# merger-js
-[![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![npm](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
+[![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
 
  Yet another light weight and simple cross-platform build tool for JavaScript files, with file imports, auto build capabilities, smart CLI tooling and native OS notifications.
  
@@ -83,7 +83,7 @@ The merger commands are to be made on the directory with the merger-config.json 
 
 - ```merger init```: Configure merger. It creates a merger-config.json file on your working directory.
 - ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.
-  - ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto build turned of and you don't want to change that.
+  - ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto builds turned of and you don't want to change that.
 - ```merger update```: Update MergerJS.
 
 &nbsp;
