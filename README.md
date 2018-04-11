@@ -91,7 +91,7 @@ The merger commands are to be made on the directory with the merger-config.json 
   - \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
   - \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
   
-  Examples: ```merger minify -f```, ```merger autobuild --true```.
+  Examples: ```merger set minify -f```, ```merger set autobuild --true```.
 
 &nbsp;
 
