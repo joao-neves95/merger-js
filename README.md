@@ -23,6 +23,16 @@
  <br/>
  
  ---
+ ## IMPORTANT NOTICE FOR PEOPLE WHO USE MERGER JS v2+
+ 
+ I will start working on the (final) v3 of MergerJS and **there will be significant breaking changes**.
+ 
+ I feel the need to have multiple source files in order to be able to make different build files. <br/>
+ (to use in different HTML pages, for example)
+ 
+ To do that I will need to change the merger-config model as well as the CLI tool.
+ 
+ ---
  
 ## Features
  - [x] **CLI tooling**
