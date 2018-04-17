@@ -1,4 +1,4 @@
-﻿# merger-js
+﻿# MergerJS
 [![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
 
  Yet another light weight and simple cross-platform build tool for JavaScript files, with file imports, auto build capabilities, CLI tooling and native OS notifications.
@@ -7,7 +7,7 @@
  
  This tool is intended for small projects.
  
- **merger *does not* support circular dependencies**
+ **MergerJS *does not* support circular dependencies**
  
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
  **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)<br/>
