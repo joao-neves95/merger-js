@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V2.2.1 - 17/04/2018
+#### *V2.2.2 - 18/04/2018
+
+ - Added the notifications configuration to the merger init CLI.
+
+&nbsp;
+
+#### V2.2.1 - 17/04/2018
 
  - Removed debug log.
 

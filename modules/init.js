@@ -40,6 +40,13 @@ let questions = [
     message: '\n Enable auto builds? ',
     choices: ['Yes', 'No'],
     default: 'No'
+  },
+  {
+    type: 'list',
+    name: 'notifs',
+    message: '\n Enable native OS notifications? ',
+    choices: ['Yes', 'No'],
+    default: 'Yes'
   }
 ];
 
@@ -51,7 +58,7 @@ module.exports = () => {
     // Default outputPath.
     questions[1].default = dirname(sourceFile) + '\\build';
 
-    prompt([ questions[1], questions[2], questions[3], questions[4] ]).then((answers) => {
+    prompt([ questions[1], questions[2], questions[3], questions[4], questions[5] ]).then((answers) => {
       // Output file path:
       userConfig.output.path = answers.outputPath;
       // Output file name:
@@ -66,6 +73,11 @@ module.exports = () => {
         userConfig.autoBuild = true;
       else
         userConfig.autoBuild = false;
+      // Notifications:
+      if (answers.notifs === 'Yes')
+        userConfig.notifications = true;
+      else
+        userConfig.notifications = false;
 
       writeConfigFile(dirname(sourceFile), 'merger-config', userConfig, (err, data) => {
         if (err)
