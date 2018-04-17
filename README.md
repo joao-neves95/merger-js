@@ -1,7 +1,7 @@
 ﻿# MergerJS
 [![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
 
- Yet another light weight and simple cross-platform build tool for JavaScript files, with file imports, auto build capabilities, CLI tooling and native OS notifications.
+ Yet another lightweight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
  
@@ -19,28 +19,36 @@
  ├── [commander](https://github.com/tj/commander.js)<br/>
  ├── [inquirer](https://github.com/SBoudrias/Inquirer.js)<br/>
  ├── [node-notifier](https://github.com/mikaelbr/node-notifier)<br/>
- 
- <br/>
- 
+
+<br/>
+
  ---
+<br/>
+
  ## IMPORTANT NOTICE FOR PEOPLE WHO USE MERGER JS v2+
  
  I will start working on the (final) v3 of MergerJS and **there will be significant breaking changes**.
  
  I feel the need to have multiple source files in order to be able to make different build files. <br/>
- (to use in different HTML pages, for example)
+ (To use different JS build files on different HTML pages, for example)
  
- To do that I will need to change the merger-config model as well as the CLI tool.
- 
+ To do that I will need to change the merger-config model, as well as the MergerJS CLI tool.
+
+ V3 will be the last major version of MergerJS. After v3 there will be only bug fixes, improvements, refactorings and other **minor** features, always keeping this project simple and lightweight. 
+
+<br/>
+
  ---
- 
+
+<br/>
+
 ## Features
  - [x] **CLI tooling**
- - [x] **Merge multiple files into one**
+ - [x] **Merge multiple JS files into one**
  - [x] **Use @import comments on a source file to specify the build order**
  - [x] **Minification, supporting ES6+** (optional)
  - [x] **Auto builds on files changes** (optional)
- - [x] **Native OS build notifications**
+ - [x] **Native OS build notifications** (optional)
  - [ ] **Support multiple source files** (TODO)
 
 &nbsp;
@@ -80,10 +88,11 @@ npm install merger-js -g
    // @import 'listeners'
    // @import 'feature'
    ```
+   - Instead of ```// @import 'fileName'```, you can just ```// @'fileName'```;
    - The extension names ```.js``` are optional;
-   - The import (```// @import```) of the source file is optional;
-   - You can import files from different directories. Example:<br/>
-     ```// @import '../otherFolder/someFile'```.
+   - The import of the source file is optional;
+   - You can import files from different directories.<br/>
+     Example: ```// @import '../otherFolder/someFile'```
 
 &nbsp;
 
@@ -111,8 +120,9 @@ The merger commands are to be made on the directory with the merger-config.json 
 - ```merger update```: Update MergerJS.
 - ```merger set <configuration> <value>```: Edit a configuration key on the merger-config file.<br/>
   At the moment you can pass:
-  - \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
-  - \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
+  - The \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
+  - The \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
+  - The \<configuration\> ```ntfs```, ```notifs```, or ```notifications``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the native OS notifications to true or false (on/off);
   
   Examples: ```merger set minify -f```, ```merger set autobuild --true```.
 
@@ -121,6 +131,14 @@ The merger commands are to be made on the directory with the merger-config.json 
 ## Versioning
 
 Merger uses [SemVer](https://semver.org/) for versioning. You can read the changelog [here](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md).
+
+&nbsp;
+
+## Code Style
+
+**JavaScript Standard Style, *with semicolons*.**
+
+I only do not use semicolons on browser JS.
 
 &nbsp;
 

@@ -1,8 +1,8 @@
 {
   "name": "merger-js",
   "displayName": "MergerJS",
-  "version": "2.1.0",
-  "description": "Yet another light weight and simple build tool for JavaScript files, with auto build capabilities and smart CLI tooling.",
+  "version": "2.2.0",
+  "description": "Yet another light weight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.",
   "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
   "main": "merger.js",
   "bin": {
@@ -32,7 +32,7 @@
     "chokidar": "^2.0.3",
     "commander": "^2.15.1",
     "inquirer": "^5.2.0",
-    "neo-async": "^2.5.0",
+    "neo-async": "^2.5.1",
     "node-notifier": "^5.2.1",
     "uglify-es": "^3.3.10"
   },

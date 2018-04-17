@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 'use strict'
-const fs = require('fs');
 const path = require('path');
 const chokidar = require('chokidar');
 const mergerCLI = require('./modules/mergerCLI');
@@ -22,7 +21,7 @@ mergerCLI(() => {
           })
           .on('error', err => console.error('Auto build error: ', err))
           .on('change', (path, stats) => {
-            //if (stats)
+            // if (stats)
             //  console.info(`File ${path} as changed. Ready to build.\nStats: `, stats);
             build();
           });

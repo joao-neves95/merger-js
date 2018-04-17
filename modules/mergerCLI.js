@@ -59,11 +59,11 @@ module.exports = (callback) => {
       let Key = key.toUpperCase();
       let value
 
-      if (cmd.true)
+      if (cmd.true) {
         value = true
-      else if (cmd.false)
+      } else if (cmd.false) {
         value = false
-      else {
+      } else {
         console.error(` ERROR: Unknown option - ${cmd}.`)
         process.exit(1);
       }
@@ -72,6 +72,10 @@ module.exports = (callback) => {
         Key = 'uglify';
       } else if (Key === "AUTOBUILD" || Key === 'AUTO') {
         Key = 'autoBuild';
+      } else if (Key === "NOTIFICATIONS" || Key === "NOTIFS" || Key === "NTFS") {
+        Key = 'notifications';
+      } else {
+        console.error(` ERROR: Unknown configuration key - ${key}.`);
       }
 
       editConfig(Key, value, () => {

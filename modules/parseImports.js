@@ -17,20 +17,20 @@ module.exports = (Path, Callback) => {
   // Store in array.
   rl.on('line', (line) => {
     let treatedLine = line.replace(/\s/g, '')
-    if (treatedLine.startsWith('@import', 2)) {
-      let file = treatedLine.replace(/\'|;|"|,|\/\/@import/g, '');
+    if (treatedLine.startsWith('@import', 2) || treatedLine.startsWith('@', 2)) {
+      let file = treatedLine.replace(/\'|;|"|,|\/\/@import|\/\/@/g, '');
       lineNum++;
       if (path.extname(file) === '')
         file += '.js';
-      if (buildOrder.includes(file))
-        return
-      buildOrder.push(file);
+      if (!buildOrder.includes(file))
+        buildOrder.push(file);
     } else if (lineNum >= 20 && !treatedLine.startsWith('//')) {
       rl.close();
     }
   });
 
   rl.on('close', () => {
+    console.log(buildOrder)
     Callback(buildOrder);
   });
 }

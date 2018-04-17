@@ -2,7 +2,15 @@
 
 &nbsp;
 
-#### *V2.1.0 - 10/04/2018
+#### *V2.2.0 - 17/04/2018
+
+ - Made native OS notifications optional and configurable through the CLI;
+ - Improvement and minor fixes/refactorings on the import parser;
+ - Other minor improvements/refactorings/bug fixes.
+
+&nbsp;
+
+#### V2.1.0 - 10/04/2018
 
  - Added the "set" command, to edit the merger configuration file through the CLI (README.md for more info);
  - Minor refactorings and bug fixes.

@@ -10,7 +10,6 @@ const buildOnChanges = 'Ready to build. Listening for file changes...';
 
 const build = (buildOrder) => {
   let allData = {};
-  console.log(buildOrder);
 
   // Read all the data:
   async.eachSeries(buildOrder, (file, callback) => {

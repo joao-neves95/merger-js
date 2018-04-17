@@ -2,6 +2,8 @@
 const notify = require('./notifications').notif;
 
 module.exports = (Callback) => {
+  console.info('\n IMPORTANT NOTICE: There will be a new (final) v3 of MergerJS with breaking changes in the future.\n For more info, please read the README.md at https://github.com/joao-neves95/merger-js/blob/master/README.md.');
+
   http.get('http://registry.npmjs.org/merger-js', (res) => {
     res.setEncoding('utf8');
     let rawData = '';

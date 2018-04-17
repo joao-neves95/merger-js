@@ -3,10 +3,7 @@ const path = require('path');
 const dirname = require('path').dirname;
 const prompt = require('../node_modules/inquirer').createPromptModule();
 const userConfig = require('./userConfigModel');
-const readDir = require('./utils').readDir;
-const parseImports = require('./parseImports');
 const writeConfigFile = require('./utils').writeJSONFile;
-const notify = require('./notifications').notif;
 const newTimestamp = require('./newTimestamp').small;
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
@@ -54,7 +51,7 @@ module.exports = () => {
     // Default outputPath.
     questions[1].default = dirname(sourceFile) + '\\build';
 
-    prompt([questions[1], questions[2], questions[3], questions[4] ]).then((answers) => {
+    prompt([ questions[1], questions[2], questions[3], questions[4] ]).then((answers) => {
       // Output file path:
       userConfig.output.path = answers.outputPath;
       // Output file name:
