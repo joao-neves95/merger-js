@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V2.2.0 - 17/04/2018
+#### *V2.2.1 - 17/04/2018
+
+ - Removed debug log.
+
+&nbsp;
+
+#### V2.2.0 - 17/04/2018
 
  - Made native OS notifications optional and configurable through the CLI;
  - Improvement and minor fixes/refactorings on the import parser;

@@ -30,7 +30,6 @@ module.exports = (Path, Callback) => {
   });
 
   rl.on('close', () => {
-    console.log(buildOrder)
     Callback(buildOrder);
   });
 }
