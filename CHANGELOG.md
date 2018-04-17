@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V2.2.2 - 18/04/2018
+#### *V2.2.3 - 18/04/2018
+
+ - Small bug fix on the merger update command.
+
+&nbsp;
+
+#### V2.2.2 - 18/04/2018
 
  - Added the notifications configuration to the merger init CLI.
 

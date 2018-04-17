@@ -7,7 +7,6 @@ module.exports = (Callback) => {
     Callback();
 
   // CONFIGURATIONS:
-  global.config = {};
   checkForUpdates(() => {
     // Get the merger-config JSON file and store its content on a global:
     try {

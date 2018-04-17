@@ -6,6 +6,8 @@ const editConfig = require('./editConfigFile');
 global.version = require('../package.json').version;
 
 module.exports = (callback) => {
+  global.config = {}
+
   // merger -v / --version
   CLI
     .version(global.version, '-v, --version')
