@@ -1,11 +1,11 @@
 ﻿# merger-js
 [![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
 
- Yet another light weight and simple cross-platform build tool for JavaScript files, with file imports, auto build capabilities, smart CLI tooling and native OS notifications.
+ Yet another light weight and simple cross-platform build tool for JavaScript files, with file imports, auto build capabilities, CLI tooling and native OS notifications.
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
  
- This tool is intended for **very** small projects.
+ This tool is intended for small projects.
  
  **merger *does not* support circular dependencies**
  
@@ -19,9 +19,21 @@
  ├── [commander](https://github.com/tj/commander.js)<br/>
  ├── [inquirer](https://github.com/SBoudrias/Inquirer.js)<br/>
  ├── [node-notifier](https://github.com/mikaelbr/node-notifier)<br/>
+ 
+ <br/>
+ 
+ ---
+ 
+## Features
+ - [x] **CLI tooling**
+ - [x] **Merge multiple files into one**
+ - [x] **Use @import comments on a source file to specify the build order**
+ - [x] **Minification, supporting ES6+** (optional)
+ - [x] **Auto builds on files changes** (optional)
+ - [x] **Native OS build notifications**
+ - [ ] **Support multiple source files** (TODO)
 
----
-<br/>
+&nbsp;
 
 ## Getting Started
 
@@ -79,6 +91,7 @@ npm install merger-js -g
 &nbsp;
 
 ## Commands
+
 The merger commands are to be made on the directory with the merger-config.json file.
 
 - ```merger init```: Configure merger. It creates a merger-config.json file on your working directory.
@@ -98,3 +111,10 @@ The merger commands are to be made on the directory with the merger-config.json 
 ## Versioning
 
 Merger uses [SemVer](https://semver.org/) for versioning. You can read the changelog [here](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md).
+
+&nbsp;
+
+## Motivation
+
+When I started doing academic web projects, I felt the need for a build tool to merge all my JS files into one, cleaning the HTML pages and optimizing my workflow.<br/>
+I wanted something simple and fast, so I built MergerJS to use in my small web-app projects.
