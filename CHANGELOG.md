@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V2.2.3 - 18/04/2018
+#### *V2.2.4 - 24/04/2018
+
+ - Small fix on the timestamps. They are now localized.
+
+&nbsp;
+
+#### V2.2.3 - 18/04/2018
 
  - Small bug fix on the merger update command.
 
