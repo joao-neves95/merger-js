@@ -5,6 +5,7 @@ const async = require('../node_modules/neo-async');
 const parseImports = require('./parseImports');
 const minifyCode = require('./minifyCode');
 const notify = require('./notifications').notif;
+const style = require('./consoleStyling');
 const newTimestamp = require('./newTimestamp').small;
 const buildOnChanges = 'Ready to build. Listening for file changes...';
 
@@ -31,13 +32,13 @@ const build = (buildOrder) => {
           // If the dir does not exist make a new dir.
           if (err.code === 'ENOENT') {
             fs.mkdir(buildPath, (err) => {
-              if (err) return console.erro(err);
+              if (err) return console.erro(style.styledError, err);
               fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
-                if (err) return console.error(err);
+                if (err) return console.error(style.styledError, err);
               });
             });
           } else {
-            return console.error(err);
+            return console.error(style.ERROR, err);
           }
         }
 
@@ -48,7 +49,7 @@ const build = (buildOrder) => {
           console.info(`\n ${buildOnChanges}\n`);
         }
         notify('Build Complete.', notifMessage);
-        console.info('\n', timestamp, '- Build complete.');
+        console.info('\n', timestamp, '-', style.successText('Build complete.'));
         console.timeEnd(' Build Time');
       });
     });

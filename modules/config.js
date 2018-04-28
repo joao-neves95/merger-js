@@ -1,6 +1,7 @@
 ﻿'use strict'
 const path = require('path');
 const checkForUpdates = require('./checkForUpdates');
+const style = require('./consoleStyling');
 
 module.exports = (Callback) => {
   if (global.isConfig)
@@ -20,7 +21,7 @@ module.exports = (Callback) => {
       Callback();
     } catch (e) {
       if (e.code === 'MODULE_NOT_FOUND')
-        return console.error(' ERROR: merger-config file not found. Please run "merger init".');
+        return console.error(` ${style.styledError} merger-config file not found. Please run "merger init".`);
     }
   })
   // End of CONFIGURATIONS:

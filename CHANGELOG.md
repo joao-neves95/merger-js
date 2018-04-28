@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *V2.2.4 - 24/04/2018
+#### *V2.2.5 - 28/04/2018
+
+ - Refactored and fixed the timestamps module;
+ - Added some styling to the console.
+
+&nbsp;
+
+#### V2.2.4 - 24/04/2018
 
  - Small fix on the timestamps. They are now localized.
 

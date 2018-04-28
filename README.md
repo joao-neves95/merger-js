@@ -19,6 +19,7 @@
  ├── [commander](https://github.com/tj/commander.js)<br/>
  ├── [inquirer](https://github.com/SBoudrias/Inquirer.js)<br/>
  ├── [node-notifier](https://github.com/mikaelbr/node-notifier)<br/>
+ ├── [chalk](https://github.com/chalk/chalk)<br/>
 
 <br/>
 
