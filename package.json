@@ -12,7 +12,7 @@
   "install": "npm install merger-js -g",
   "scripts": {
     "start": "merger init",
-    "test": "snyk test"
+    "test": "snyk test && nsp check"
   },
   "author": {
     "name": "shivayl",
