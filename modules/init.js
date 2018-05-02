@@ -2,7 +2,7 @@
 const path = require('path');
 const dirname = require('path').dirname;
 const prompt = require('../node_modules/inquirer').createPromptModule();
-const userConfig = require('./userConfigModel');
+const userConfig = require('../models/userConfigModel');
 const writeConfigFile = require('./utils').writeJSONFile;
 const newTimestamp = require('./newTimestamp').small;
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';

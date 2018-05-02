@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *V2.2.5 - 28/04/2018
+#### *V3.0.0 - /05/2018
+
+ - Refactored the merger config model;
+ - Added more styling.
+
+&nbsp;
+
+#### V2.2.5 - 28/04/2018
 
  - Refactored and fixed the timestamps module;
  - Added some styling to the console.

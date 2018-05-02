@@ -53,6 +53,7 @@ module.exports = (callback) => {
       return callback();
     });
 
+  // merger set
   CLI
     .command('set <key>')
     .option('-t, --true')
@@ -84,6 +85,10 @@ module.exports = (callback) => {
         process.exit(0);
       });
     });
+
+  // merger add
+
+  // merger remove
 
   CLI.parse(process.argv);
   // If the user didn't use the CLI commands:
