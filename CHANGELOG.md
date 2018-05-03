@@ -4,6 +4,9 @@
 
 #### *V3.0.0 - /05/2018
 
+ - Added the ability for to find the merger-config file from within the working directory;
+ - Added an add source files command to the CLI;
+ - Refactored the merger init CLI process;
  - Refactored the merger config model;
  - Added more styling.
 

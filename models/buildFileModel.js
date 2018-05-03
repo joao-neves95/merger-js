@@ -1,8 +1,8 @@
 ﻿'use strict'
 
 class buildFile {
-  constructor(source, path, name) {
-    this.source = Source;
+  constructor (source, path, name) {
+    this.source = source;
     this.output = {
       path: path,
       name: name
@@ -11,10 +11,3 @@ class buildFile {
 }
 
 module.exports = buildFile;
-//{
-//  source: '',
-//  output: {
-//    path: '',
-//    name: ''
-//  }
-//}

@@ -2,7 +2,10 @@
 const CLI = require('../node_modules/commander');
 const init = require('./init');
 const update = require('./updateMerger');
-const editConfig = require('./editConfigFile');
+const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
+const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
+const addFilesPrompt = require('./CLIModules/addFilesPrompt');
+const findConfigFile = require('./findConfigFile');
 global.version = require('../package.json').version;
 
 module.exports = (callback) => {
@@ -81,14 +84,32 @@ module.exports = (callback) => {
         console.error(` ERROR: Unknown configuration key - ${key}.`);
       }
 
-      editConfig(Key, value, () => {
+      editConfigKey(Key, value, () => {
         process.exit(0);
       });
     });
 
   // merger add
+  CLI
+    .command('add')
+    .action(() => {
+      addFilesPrompt((newBuildFile) => {
+        addToConfig(
+          process.exit(0)
+        );
+      })
+    })
 
   // merger remove
+  // TESTING
+  CLI
+    .command('test')
+    .action(() => {
+      findConfigFile((path) => {
+        console.log(path);
+        process.exit(0);
+      });
+    });
 
   CLI.parse(process.argv);
   // If the user didn't use the CLI commands:

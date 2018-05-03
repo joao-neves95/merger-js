@@ -1,8 +1,7 @@
 ﻿'use strict'
 
-
 class UserConfig {
-  constructor(uglify, autoBuild, notifications) {
+  constructor (uglify, autoBuild, notifications) {
     this.mergerJsLinks = {
       npm: 'https://www.npmjs.com/package/merger-js',
       github: 'https://github.com/joao-neves95/merger-js',
@@ -17,30 +16,3 @@ class UserConfig {
 }
 
 module.exports = UserConfig;
-//{
-//  mergerJsLinks: {
-//    npm: 'https://www.npmjs.com/package/merger-js',
-//    github: 'https://github.com/joao-neves95/merger-js',
-//    readme: 'https://github.com/joao-neves95/merger-js/blob/master/README.md',
-//    changelog: 'https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md'
-//  },
-//  buildFiles: [
-//    {
-//      source: '',
-//      output: {
-//        path: '',
-//        name: ''
-//      }
-//    },
-//    {
-//      source: '',
-//      output: {
-//        path: '',
-//        name: ''
-//      }
-//    }
-//  ],
-//  uglify: -1,
-//  autoBuild: -1,
-//  notifications: -1
-//}
