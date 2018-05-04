@@ -8,7 +8,7 @@ const newTimestamp = require('./newTimestamp').small;
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
 // TODO: Add validation.
-let questions = [
+const questions = [
   {
     type: 'list',
     name: 'uglify',

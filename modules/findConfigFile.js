@@ -10,15 +10,16 @@ module.exports = (Callback) => {
   let foundFile = false;
   let lastDir;
 
-  whilst(
-    () => {
-      let isToContinue;
-      !currentDir ? isToContinue = false :
+  whilst(() => {
+    let isToContinue;
+
+    !currentDir ? isToContinue = false :
       (lastDir === currentDir) ? isToContinue = false :
-      foundFile ? isToContinue = false :
-        isToContinue = true;
-      return isToContinue;
-    },
+        foundFile ? isToContinue = false :
+          isToContinue = true;
+
+    return isToContinue;
+  },
     (whilstAgain) => {
       readDir(currentDir, (err, files) => {
         if (err)
@@ -35,16 +36,18 @@ module.exports = (Callback) => {
           if (err)
             return console.error(style.styledError, err);
 
-            lastDir = currentDir;
-            currentDir = path.join(currentDir, '../');
-            whilstAgain(null, null);
-          }
+          lastDir = currentDir;
+          currentDir = path.join(currentDir, '../');
+          whilstAgain(null, null);
+        }
         );
       });
     },
     (err, n) => {
       if (err)
         return console.error(style.styledError, err);
+
+      return console.error(style.styledError, 'merger-config file not found. Please run "merger init".')
     }
-  )
+  );
 }

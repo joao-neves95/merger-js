@@ -11,7 +11,7 @@ class UserConfig {
     this.uglify = uglify;
     this.autoBuild = autoBuild;
     this.notifications = notifications;
-    this.buildFiles = [];
+    this.sourceFiles = [];
   }
 }
 

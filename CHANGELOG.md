@@ -2,12 +2,13 @@
 
 &nbsp;
 
-#### *V3.0.0 - /05/2018
+#### *V3.0.0 - 04/05/2018
 
- - Added the ability for to find the merger-config file from within the working directory;
- - Added an add source files command to the CLI;
+ - Added an add source file command to the CLI (Add support for multiple source files);
+ - Added the ability for MergerJS to find the merger-config file from within the working directory;
  - Refactored the merger init CLI process;
- - Refactored the merger config model;
+ - Refactored the merger configuration file model;
+ - Refactored the codebase and further modularized it;
  - Added more styling.
 
 &nbsp;
