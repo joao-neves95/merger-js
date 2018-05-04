@@ -24,22 +24,6 @@
 <br/>
 
  ---
-<br/>
-
- ## IMPORTANT NOTICE FOR PEOPLE WHO USE MERGER JS v2+
- 
- I will start working on the (final) v3 of MergerJS and **there will be significant breaking changes**.
- 
- I feel the need to have multiple source files in order to be able to make different build files. <br/>
- (To use different JS build files on different HTML pages, for example)
- 
- To do that I will need to change the merger-config model, as well as the MergerJS CLI tool.
-
- V3 will be the last major version of MergerJS. After v3 there will be only bug fixes, improvements, refactorings and other **minor** features, always keeping this project simple and lightweight. 
-
-<br/>
-
- ---
 
 <br/>
 
@@ -50,7 +34,7 @@
  - [x] **Minification, supporting ES6+** (optional)
  - [x] **Auto builds on files changes** (optional)
  - [x] **Native OS build notifications** (optional)
- - [ ] **Support multiple source files** (TODO)
+ - [x] **Support for multiple source/build files**
 
 &nbsp;
 
@@ -97,35 +81,38 @@ npm install merger-js -g
 
 &nbsp;
 
-2) Run ```merger init``` on your working JS directory:
-- If you run merger on your working JS directory, the CLI tool will give you default paths relative to that directory.
-- You can set minify to 'Yes', to minify on build.
-- You can set autoBuild to 'Yes', to make merger listen for file changes and build automatically when there's one. 
+2) Run ```merger init``` on the root of your project:<br/>
+  This will set up the configuration model as well as some global configurations (minification, auto builds on file changes, native OS notifications).<br/>
+  You can alter them later through the CLI with the "merger set" command (learn more in "Commands").
 
 &nbsp;
 
-3) After having a merger-config.json file on the source directory (the directory where your working files are located), you have different alternatives to run merger:
-- You can run ```merger``` or ```merger build```, on the source directory, and the merger-config.json folder will be parsed and merger will build with the config you gave it on the config file.
-- You can run ```merger auto``` or ```merger build auto``` to run a one time auto build session (it watches the source directory for changes and builds when there's one), if you, for example, told the CLI that you didn't want auto builds and you don't want to change that.
+3) Run ```merger add``` to add a new source file to your merger configuration file (learn more in "Commands").
+
+4) Run ```merger``` or ```merger build``` to start building (learn more in "Commands").
 
 &nbsp;
 
 ## Commands
 
-The merger commands are to be made on the directory with the merger-config.json file.
-
 - ```merger init```: Configure merger. It creates a merger-config.json file on your working directory.
 
-- ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.
-  - ```merger auto```, ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto builds turned of and you don't want to change that.
-- ```merger update```: Update MergerJS.
+- ```merger add```: Add a new source file (the one whitch contains all the imports) to the merger config file.<br/>
+  You should run this command on the directory where the source file you want to add is located.<br/>
+  MergerJS will give you the directory path, you input the source file name, the output name and path of the build file (relative to the directory where you are) and MergerJS will locate the configuration file and update it. 
+
+- ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.<br>
+  You can run it anywhere within your project's folder.
+  - ```merger auto```, ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto builds turned off and you don't want to change that.
+
 - ```merger set <configuration> <value>```: Edit a configuration key on the merger-config file.<br/>
+  You can run it anywhere within your project's folder.<br>
   At the moment you can pass:
   - The \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
   - The \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
   - The \<configuration\> ```ntfs```, ```notifs```, or ```notifications``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the native OS notifications to true or false (on/off);
   
-  Examples: ```merger set minify -f```, ```merger set autobuild --true```.
+  Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
 
 &nbsp;
 
