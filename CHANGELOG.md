@@ -1,8 +1,15 @@
 ﻿# CHANGELOG
+ 
+ 
+&nbsp;
+
+#### *V3.0.1 (Hotfix) - 04/05/2018
+
+ - Fixed some modules and packages requires on a merger module.
 
 &nbsp;
 
-#### *V3.0.0 - 04/05/2018
+#### V3.0.0 - 04/05/2018
 
  - Added an add source file command to the CLI (Add support for multiple source files);
  - Added the ability for MergerJS to find the merger-config file from within the working directory;
