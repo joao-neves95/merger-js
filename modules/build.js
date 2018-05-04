@@ -9,24 +9,24 @@ const style = require('./consoleStyling');
 const newTimestamp = require('./newTimestamp').small;
 const buildOnChanges = 'Ready to build. Listening for file changes...';
 
-const build = (buildOrder) => {
+const build = (sourceFile, buildOrder) => {
   let allData = {};
 
   // Read all the data:
   async.eachSeries(buildOrder, (file, callback) => {
-    fs.readFile(path.join(path.dirname(global.config.source), file), 'utf-8', (err, data) => {
+    fs.readFile(path.join(path.dirname(sourceFile.source), file), 'utf-8', (err, data) => {
       if (err) return callback(err);
 
       allData[file] = data;
       callback();
-    })
+    });
   }, (err) => {
     if (err) throw err;
 
     // Minify if necessary:
     minifyCode(allData, (data) => {
-      let buildPath = global.config.output.path;
-      let buildName = global.config.output.name;
+      const buildPath = sourceFile.output.path;
+      const buildName = sourceFile.output.name;
       fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
         if (err) {
           // If the dir does not exist make a new dir.
@@ -56,15 +56,15 @@ const build = (buildOrder) => {
   });
 }
 
-module.exports = (buildOrder) => {
+module.exports = (sourceFile, buildOrder) => {
   console.time(' Build Time');
   console.info(' Building...');
 
   if (!buildOrder) {
-    parseImports(global.config.source, (redefinedBuldOrder) => {
-      build(redefinedBuldOrder);
+    parseImports(sourceFile.source, (redefinedBuldOrder) => {
+      build(sourceFile, redefinedBuldOrder);
     });
   } else {
-    build(buildOrder);
+    build(sourceFile, buildOrder);
   }
 }
