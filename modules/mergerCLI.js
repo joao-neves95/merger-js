@@ -1,6 +1,6 @@
 ﻿'use strict'
 const CLI = require('../node_modules/commander');
-const init = require('./init');
+const init = require('./CLIModules/init');
 const update = require('./updateMerger');
 const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
 const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
