@@ -2,31 +2,13 @@
 const path = require('path');
 const dirname = require('path').dirname;
 const prompt = require('../node_modules/inquirer').createPromptModule();
-const userConfig = require('./userConfigModel');
+const UserConfig = require('../models/userConfigModel');
 const writeConfigFile = require('./utils').writeJSONFile;
 const newTimestamp = require('./newTimestamp').small;
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
 // TODO: Add validation.
-let questions = [
-  {
-    type: 'input',
-    name: 'sourceFile',
-    message: 'Source file. What is the file that has the all the imports?\n Default: ',
-    default: process.cwd()
-  },
-  {
-    type: 'input',
-    name: 'outputPath',
-    message: '\n Output Path. Where should the build occur?\n Default: ',
-    default: ''
-  },
-  {
-    type: 'input',
-    name: 'outputName',
-    message: '\n Output file name. Default: ',
-    default: 'build.js'
-  },
+const questions = [
   {
     type: 'list',
     name: 'uglify',
@@ -51,42 +33,33 @@ let questions = [
 ];
 
 module.exports = () => {
-  prompt([ questions[0] ]).then((answer) => {
-    let sourceFile = path.normalize(answer.sourceFile);
-    // Source file.
-    userConfig.source = sourceFile;
-    // Default outputPath.
-    questions[1].default = dirname(sourceFile) + '\\build';
+  prompt([questions[0], questions[1], questions[2]]).then((answers) => {
+    let config = {};
+    // Minification:
+    if (answers.uglify === 'No')
+      config.uglify = false;
+    else
+      config.uglify = true;
+    // Auto builds:
+    if (answers.auto === 'Yes')
+      config.autoBuild = true;
+    else
+      config.autoBuild = false;
+    // Notifications:
+    if (answers.notifs === 'Yes')
+      config.notifications = true;
+    else
+      config.notifications = false;
 
-    prompt([ questions[1], questions[2], questions[3], questions[4], questions[5] ]).then((answers) => {
-      // Output file path:
-      userConfig.output.path = answers.outputPath;
-      // Output file name:
-      userConfig.output.name = answers.outputName;
-      // Minification:
-      if (answers.uglify === 'No')
-        userConfig.uglify = false;
-      else
-        userConfig.uglify = true;
-      // Auto builds:
-      if (answers.auto === 'Yes')
-        userConfig.autoBuild = true;
-      else
-        userConfig.autoBuild = false;
-      // Notifications:
-      if (answers.notifs === 'Yes')
-        userConfig.notifications = true;
-      else
-        userConfig.notifications = false;
+    const userConfig = new UserConfig(config.uglify, config.autoBuild, config.notifications);
 
-      writeConfigFile(dirname(sourceFile), 'merger-config', userConfig, (err, data) => {
-        if (err)
-          return console.error(err);
-        else {
-          let timestamp = newTimestamp();
-          console.info(`\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}`);
-        }
-      });
+    writeConfigFile(process.cwd(), 'merger-config', userConfig, (err, data) => {
+      if (err)
+        return console.error(err);
+      else {
+        let timestamp = newTimestamp();
+        console.info(`\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}`);
+      }
     });
   });
 }

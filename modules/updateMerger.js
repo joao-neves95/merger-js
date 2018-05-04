@@ -1,5 +1,6 @@
 ﻿const exec = require('child_process').exec;
 const notify = require('./notifications').notif;
+const style = require('./consoleStyling');
 const newTimestamp = require('./newTimestamp').small;
 
 module.exports = (cmd, Callback) => {
@@ -16,7 +17,7 @@ module.exports = (cmd, Callback) => {
     console.log(`\n ${stderr}`);
 
     let timestamp = newTimestamp();
-    console.info(` ${timestamp} - Update successful.\n You can read the CHANGELOG file at https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md. \n You can read the README file at https://github.com/joao-neves95/merger-js/blob/master/README.md. `);
+    console.info(` ${timestamp} - ${style.successText('Update successful.')}\n You can read the CHANGELOG file at https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md. \n You can read the README file at https://github.com/joao-neves95/merger-js/blob/master/README.md. `);
     notify('Update successful.', 'You can read the CHANGELOG file at https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md. \nYou can read the README file at https://github.com/joao-neves95/merger-js/blob/master/README.md.');
     Callback();
   });

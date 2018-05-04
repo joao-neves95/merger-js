@@ -92,7 +92,7 @@ npm install merger-js -g
    - Instead of ```// @import 'fileName'```, you can just ```// @'fileName'```;
    - The extension names ```.js``` are optional;
    - The import of the source file is optional;
-   - You can import files from different directories.<br/>
+   - You can import files from different directories relative to the same source file.<br/>
      Example: ```// @import '../otherFolder/someFile'```
 
 &nbsp;

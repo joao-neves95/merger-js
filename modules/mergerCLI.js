@@ -2,7 +2,11 @@
 const CLI = require('../node_modules/commander');
 const init = require('./init');
 const update = require('./updateMerger');
-const editConfig = require('./editConfigFile');
+const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
+const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
+const addFilesPrompt = require('./CLIModules/addFilesPrompt');
+const findConfigFile = require('./findConfigFile');
+const style = require('./consoleStyling');
 global.version = require('../package.json').version;
 
 module.exports = (callback) => {
@@ -53,6 +57,7 @@ module.exports = (callback) => {
       return callback();
     });
 
+  // merger set
   CLI
     .command('set <key>')
     .option('-t, --true')
@@ -66,7 +71,7 @@ module.exports = (callback) => {
       } else if (cmd.false) {
         value = false
       } else {
-        console.error(` ERROR: Unknown option - ${cmd}.`)
+        console.error(` ${style.styledError}${style.errorText(`Unknown option - ${cmd}.`)}`);
         process.exit(1);
       }
 
@@ -77,13 +82,30 @@ module.exports = (callback) => {
       } else if (Key === "NOTIFICATIONS" || Key === "NOTIFS" || Key === "NTFS") {
         Key = 'notifications';
       } else {
-        console.error(` ERROR: Unknown configuration key - ${key}.`);
+        console.error(` ${style.styledError}${style.errorText(`Unknown configuration key - ${key}.`)}`);
       }
 
-      editConfig(Key, value, () => {
-        process.exit(0);
+      findConfigFile((configPath) => {
+        editConfigKey(configPath, Key, value, () => {
+          process.exit(0);
+        });
       });
     });
+
+  // merger add
+  CLI
+    .command('add')
+    .action(() => {
+      findConfigFile((configPath) => {
+        addFilesPrompt((newBuildFile) => {
+          addFileToConfig(configPath, newBuildFile, () => {
+            process.exit(0);
+          });
+        });
+      });
+    });
+
+  // merger remove
 
   CLI.parse(process.argv);
   // If the user didn't use the CLI commands:

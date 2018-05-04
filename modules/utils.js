@@ -21,5 +21,5 @@ module.exports = {
       else
         callback(null, jsonData);
     });
-  }
+  },
 }
