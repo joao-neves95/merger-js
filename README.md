@@ -103,7 +103,7 @@ npm install merger-js -g
 
 - ```merger add```: Add a new source file (the one whitch contains all the imports) to the merger config file.<br/>
   You should run this command on the directory where the source file you want to add is located.<br/>
-  MergerJS will give you the directory path, you input the source file name (or a path relative to that directory), the output name and path of the build file (relative to the directory where you are) and MergerJS will locate the configuration file and update it. 
+  MergerJS will give you the directory path, you input the source file name (at the moment you'll have to include the ".js" extension name), the output name and path of the build file (relative to the directory where you are) and MergerJS will locate the configuration file and update it. 
 
 - ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.<br>
   You can run it anywhere within your project's folder.
