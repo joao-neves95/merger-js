@@ -40,6 +40,10 @@
 
 ## Getting Started
 
+For the latest version of the README, always refer to the MergerJS GitHub repository's master branch:<br/>
+https://github.com/joao-neves95/merger-js/blob/master/README.md 
+
+
 ### 1) Node.js
 
 You will need [Node.js](https://nodejs.org/en/) installed to run merger.

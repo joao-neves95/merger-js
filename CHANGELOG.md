@@ -1,9 +1,17 @@
 ﻿# CHANGELOG
- 
- 
+
 &nbsp;
 
-#### *V3.0.1 (Hotfix) - 04/05/2018
+#### *V3.0.2 (No Changes) - 05/05/2018
+
+ - Updated the npm's MergerJS README, explaining the new version 3 usage.
+
+   For the latest version of the README, always refer to the GitHub repository's master branch:<br/>
+   https://github.com/joao-neves95/merger-js/blob/master/README.md
+
+&nbsp;
+
+#### V3.0.1 (Hotfix) - 04/05/2018
 
  - Fixed some modules and packages requires on a merger module.
 
