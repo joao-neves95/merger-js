@@ -118,6 +118,8 @@ npm install merger-js -g
   
   Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
 
+- ```merger update```: Update MergerJS. Same as ```npm install merger-js -g```
+
 &nbsp;
 
 ## Versioning
