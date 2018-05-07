@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *V3.0.2 (No Changes) - 05/05/2018
+#### *V3.0.3 - 07/05/2018
+
+ - Made extension names, on the CLI's add files to the merger-config prompt, optional. If the user is on the file's directory he only needs to input the file name;
+ - If there's only one source file on the merger-config, MergerJS will choose that one on build by default, removing the need to choose a file;
+ - Added error handling to the CLI's source file selection;
+ - Removed some unnecessary logic from v2.
+
+&nbsp;
+
+#### V3.0.2 (No Changes) - 05/05/2018
 
  - Updated the npm's MergerJS README, explaining the new version 3 usage.
 

@@ -7,7 +7,7 @@ let questions = [
   {
     type: 'input',
     name: 'sourceFile',
-    message: 'Source file. What is the file that has the all the imports?\n Input the file name, the directory is already provided: ',
+    message: 'Source file. What is the file that has the all the imports?\n Input the file name, or a relative path.\n The directory is already provided: ',
     default: process.cwd()
   },
   {
@@ -26,9 +26,15 @@ let questions = [
 
 module.exports = (Callback) => {
   prompt([questions[0], questions[1], questions[2]]).then((answers) => {
-    sourceFile.source = path.join(process.cwd(), answers.sourceFile);
+    let source = answers.sourceFile;
+    if (path.extname(source) === '')
+      source += '.js';
+    sourceFile.source = path.join(process.cwd(), source);
     sourceFile.output.path = path.join(process.cwd(), answers.outputPath);
-    sourceFile.output.name = answers.outputName;
+    let outputName = answers.outputName;
+    if (path.extname(outputName) === '')
+      outputName += '.js';
+    sourceFile.output.name = outputName;
 
     Callback(sourceFile);
   });
