@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V3.0.4 - 22/05/2018
+#### *V3.0.5 (HotFix) - 22/05/2018
+
+ - Removed lost debug log.
+
+&nbsp;
+
+#### V3.0.4 - 22/05/2018
 
  - Solved a bug where, if the minification build configuration were turned off, it wouldn't merge the file correctly;
  - Some minor dependency security fixes.

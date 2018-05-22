@@ -27,7 +27,7 @@ const build = (sourceFile, buildOrder) => {
     minifyCode(allData, (data) => {
       const buildPath = sourceFile.output.path;
       const buildName = sourceFile.output.name;
-      console.debug(data);
+
       fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
         if (err) {
           // If the dir does not exist make a new dir.
