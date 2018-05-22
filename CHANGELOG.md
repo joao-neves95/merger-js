@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *V3.0.3 - 07/05/2018
+#### *V3.0.4 - 22/05/2018
+
+ - Solved a bug where, if the minification build configuration were turned off, it wouldn't merge the file correctly;
+ - Some minor dependency security fixes.
+
+&nbsp;
+
+#### V3.0.3 - 07/05/2018
 
  - Made extension names, on the CLI's add files to the merger-config prompt, optional. If the user is on the file's directory he only needs to input the file name;
  - If there's only one source file on the merger-config, MergerJS will choose that one on build by default, removing the need to choose a file;

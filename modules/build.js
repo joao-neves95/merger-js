@@ -12,7 +12,7 @@ const buildOnChanges = 'Ready to build. Listening for file changes...';
 const build = (sourceFile, buildOrder) => {
   let allData = {};
 
-  // Read all the data:
+  // Read all the data from each file (with file names):
   async.eachSeries(buildOrder, (file, callback) => {
     fs.readFile(path.join(path.dirname(sourceFile.source), file), 'utf-8', (err, data) => {
       if (err) return callback(err);
@@ -27,6 +27,7 @@ const build = (sourceFile, buildOrder) => {
     minifyCode(allData, (data) => {
       const buildPath = sourceFile.output.path;
       const buildName = sourceFile.output.name;
+      console.debug(data);
       fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
         if (err) {
           // If the dir does not exist make a new dir.
