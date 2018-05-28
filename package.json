@@ -1,78 +1,78 @@
 {
-  "_from": "merger-js",
-  "_id": "merger-js@3.0.6",
-  "_inBundle": false,
-  "_integrity": "sha512-1ak3t2g9kRwBYBv9nYJeEqrgLt+s+yArGK94qhskfgp3wY7CFifLh6DLvI2E3X7lEc4VYCSRS6lkLI4mUlMEJw==",
-  "_location": "/merger-js",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "merger-js",
+    "_from": "merger-js",
+    "_id": "merger-js@3.0.6",
+    "_inBundle": false,
+    "_integrity": "sha512-1ak3t2g9kRwBYBv9nYJeEqrgLt+s+yArGK94qhskfgp3wY7CFifLh6DLvI2E3X7lEc4VYCSRS6lkLI4mUlMEJw==",
+    "_location": "/merger-js",
+    "_phantomChildren": {},
+    "_requested": {
+        "type": "tag",
+        "registry": true,
+        "raw": "merger-js",
+        "name": "merger-js",
+        "escapedName": "merger-js",
+        "rawSpec": "",
+        "saveSpec": null,
+        "fetchSpec": "latest"
+    },
+    "_requiredBy": [
+        "#USER"
+    ],
+    "_resolved": "https://registry.npmjs.org/merger-js/-/merger-js-3.0.5.tgz",
+    "_shasum": "be27ac4e1b950bda2b3b86675c5c077a398c1a2e",
+    "_spec": "merger-js",
+    "_where": "C:\\Users\\Utilizador1",
+    "author": {
+        "name": "shivayl",
+        "url": "https://github.com/joao-neves95"
+    },
+    "bin": {
+        "merger": "./merger.js"
+    },
+    "bugs": {
+        "url": "https://github.com/joao-neves95/merger-js/issues"
+    },
+    "bundleDependencies": false,
+    "dependencies": {
+        "chalk": "^2.4.1",
+        "chokidar": "^2.0.3",
+        "commander": "^2.15.1",
+        "inquirer": "^5.2.0",
+        "neo-async": "^2.5.1",
+        "node-notifier": "^5.2.1",
+        "uglify-es": "^3.3.10"
+    },
+    "deprecated": false,
+    "description": "Yet another light weight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.",
+    "devDependencies": {
+        "snyk": "^1.80.1"
+    },
+    "displayName": "MergerJS",
+    "homepage": "https://github.com/joao-neves95/merger-js",
+    "install": "npm install merger-js -g",
+    "keywords": [
+        "build",
+        "build tool",
+        "merge",
+        "auto builds",
+        "automatic",
+        "packer",
+        "javascript",
+        "files",
+        "front-end",
+        "cli"
+    ],
+    "license": "MIT",
+    "main": "merger.js",
     "name": "merger-js",
-    "escapedName": "merger-js",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#USER"
-  ],
-  "_resolved": "https://registry.npmjs.org/merger-js/-/merger-js-3.0.5.tgz",
-  "_shasum": "be27ac4e1b950bda2b3b86675c5c077a398c1a2e",
-  "_spec": "merger-js",
-  "_where": "C:\\Users\\Utilizador1",
-  "author": {
-    "name": "shivayl",
-    "url": "https://github.com/joao-neves95"
-  },
-  "bin": {
-    "merger": "./merger.js"
-  },
-  "bugs": {
-    "url": "https://github.com/joao-neves95/merger-js/issues"
-  },
-  "bundleDependencies": false,
-  "dependencies": {
-    "chalk": "^2.4.1",
-    "chokidar": "^2.0.3",
-    "commander": "^2.15.1",
-    "inquirer": "^5.2.0",
-    "neo-async": "^2.5.1",
-    "node-notifier": "^5.2.1",
-    "uglify-es": "^3.3.10"
-  },
-  "deprecated": false,
-  "description": "Yet another light weight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.",
-  "devDependencies": {
-    "snyk": "^1.80.1"
-  },
-  "displayName": "MergerJS",
-  "homepage": "https://github.com/joao-neves95/merger-js",
-  "install": "npm install merger-js -g",
-  "keywords": [
-    "build",
-    "build tool",
-    "merge",
-    "auto builds",
-    "automatic",
-    "packer",
-    "javascript",
-    "files",
-    "front-end",
-    "cli"
-  ],
-  "license": "MIT",
-  "main": "merger.js",
-  "name": "merger-js",
-  "preferGlobal": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/joao-neves95/merger-js.git"
-  },
-  "scripts": {
-    "start": "merger init",
-    "test": "snyk test && nsp check"
-  },
-  "version": "3.0.5"
+    "preferGlobal": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/joao-neves95/merger-js.git"
+    },
+    "scripts": {
+        "start": "merger init",
+        "test": "snyk test && nsp check"
+    },
+    "version": "3.0.5"
 }
