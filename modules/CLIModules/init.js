@@ -31,7 +31,7 @@ const questions = [
 ];
 
 module.exports = () => {
-  prompt([questions[0], questions[1], questions[2]]).then((answers) => {
+  prompt([ questions[0], questions[1], questions[2] ]).then((answers) => {
     let config = {};
     // Minification:
     if (answers.uglify === 'No')

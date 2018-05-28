@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V3.0.5 (HotFix) - 22/05/2018
+#### *V3.0.6 (HotFix) - 28/05/2018
+
+ - Fixed a bug, where if the call to the npm registry to check updates, it would stop execution.
+
+&nbsp;
+
+#### V3.0.5 (HotFix) - 22/05/2018
 
  - Removed lost debug log.
 

@@ -23,11 +23,11 @@ module.exports = (Callback) => {
           return Callback();
         }
       } catch (e) {
-        return;
+        return Callback();
       }
     })
-  }).on('error', (err) => {
-    return;
+  }).on('error', () => {
+    return Callback();
   });
 }
 

@@ -9,7 +9,7 @@ const findConfigFile = require('./findConfigFile');
 const style = require('./consoleStyling');
 global.version = require('../package.json').version;
 
-module.exports = (callback) => {
+module.exports = (Callback) => {
   global.config = {}
 
   // merger -v / --version
@@ -24,7 +24,6 @@ module.exports = (callback) => {
     .command('init')
     .action(() => {
       return init();
-      process.exit(0);
     })
 
   // merger auto
@@ -32,7 +31,7 @@ module.exports = (callback) => {
     .command('auto')
     .action(() => {
       global.config.autoBuild = true;
-      return callback();
+      return Callback();
     });
 
   // merger update
@@ -54,7 +53,7 @@ module.exports = (callback) => {
       if (cmd.auto)
         global.config.autoBuild = true;
 
-      return callback();
+      return Callback();
     });
 
   // merger set
@@ -111,5 +110,5 @@ module.exports = (callback) => {
   // If the user didn't use the CLI commands:
   // merger
   if (process.argv.length <= 2)
-    return callback();
+    return Callback();
 }
