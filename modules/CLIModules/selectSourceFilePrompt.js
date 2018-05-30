@@ -36,7 +36,7 @@ module.exports = (Callback) => {
       let sourceFile = null;
 
       for (let i = 0; i < sourceFiles.length; i++) {
-        if (path.basename(sourceFiles[i].source) === answer.sourceFile) {
+        if (path.relative(configFilePath, sourceFiles[i].source) === path.relative(configFilePath, answer.sourceFile)) {
           sourceFile = sourceFiles[i];
           break;
         }

@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V3.0.7 - 30/05/2018
+#### *V3.0.8 (HotFix) - 30/05/2018
+
+ - Quick fix to the source file selection prompt. Now operational.
+
+&nbsp;
+
+#### V3.0.7 - 30/05/2018
 
  - Added the source file paths, not only the file names, to the source file build selection prompt;
  - Solved a bug where, if the user passed an unknown configuration key to the "merger set" command, the error got thrown but the key was still added to the configuration file;
