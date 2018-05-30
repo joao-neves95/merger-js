@@ -74,14 +74,26 @@ module.exports = (Callback) => {
         process.exit(1);
       }
 
-      if (Key === 'MINIFY' || Key === 'UGLIFY' || Key === 'MNFY') {
-        Key = 'uglify';
-      } else if (Key === "AUTOBUILD" || Key === 'AUTO') {
-        Key = 'autoBuild';
-      } else if (Key === "NOTIFICATIONS" || Key === "NOTIFS" || Key === "NTFS") {
-        Key = 'notifications';
-      } else {
-        console.error(` ${style.styledError}${style.errorText(`Unknown configuration key - ${key}.`)}`);
+      switch (Key) {
+        case 'MINIFY':
+        case 'UGLIFY':
+        case 'MNFY':
+          Key = 'uglify';
+          break;
+        case 'AUTOBUILD':
+        case 'AUTO':
+          Key = 'autoBuild';
+          break;
+        case 'NOTIFICATIONS':
+        case 'NOTIFS':
+        case 'NOTIFY':
+        case 'NTFS':
+          Key = 'notifications';
+          break;
+        default:
+          console.error(` ${style.styledError}${style.errorText(`Unknown configuration key - ${key}.`)}`);
+          process.exit(1);
+          break;
       }
 
       findConfigFile((configPath) => {

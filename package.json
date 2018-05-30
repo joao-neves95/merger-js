@@ -1,55 +1,55 @@
 {
-    "name": "merger-js",
-    "displayName": "MergerJS",
-    "version": "3.0.6",
-    "description": "Yet another light weight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.",
-    "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
-    "main": "merger.js",
-    "bin": {
-      "merger": "./merger.js"
-    },
-    "preferGlobal": true,
-    "install": "npm install merger-js -g",
-    "scripts": {
-      "start": "merger init",
-      "test": "snyk test && nsp check"
-    },
-    "author": {
-      "name": "shivayl",
-      "url": "https://github.com/joao-neves95"
-    },
-    "homepage": "https://github.com/joao-neves95/merger-js",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/joao-neves95/merger-js"
-    },
-    "bugs": {
-      "url": "https://github.com/joao-neves95/merger-js/issues"
-    },
-    "license": "MIT",
-    "deprecated": false,
-    "dependencies": {
-      "chalk": "^2.4.1",
-      "chokidar": "^2.0.3",
-      "commander": "^2.15.1",
-      "inquirer": "^5.2.0",
-      "neo-async": "^2.5.1",
-      "node-notifier": "^5.2.1",
-      "uglify-es": "^3.3.10"
-    },
-    "keywords": [
-      "build",
-      "build tool",
-      "merge",
-      "auto builds",
-      "automatic",
-      "packer",
-      "javascript",
-      "files",
-      "front-end",
-      "cli"
-    ],
-    "devDependencies": {
-      "snyk": "^1.80.1"
-    }
+  "name": "merger-js",
+  "displayName": "MergerJS",
+  "version": "3.0.7",
+  "description": "Yet another light weight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.",
+  "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
+  "main": "merger.js",
+  "bin": {
+    "merger": "./merger.js"
+  },
+  "preferGlobal": true,
+  "install": "npm install merger-js -g",
+  "scripts": {
+    "start": "merger init",
+    "test": "snyk test && nsp check"
+  },
+  "author": {
+    "name": "shivayl",
+    "url": "https://github.com/joao-neves95"
+  },
+  "homepage": "https://github.com/joao-neves95/merger-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joao-neves95/merger-js"
+  },
+  "bugs": {
+    "url": "https://github.com/joao-neves95/merger-js/issues"
+  },
+  "license": "MIT",
+  "deprecated": false,
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "chokidar": "^2.0.3",
+    "commander": "^2.15.1",
+    "inquirer": "^5.2.0",
+    "neo-async": "^2.5.1",
+    "node-notifier": "^5.2.1",
+    "uglify-es": "^3.3.10"
+  },
+  "keywords": [
+    "build",
+    "build tool",
+    "merge",
+    "auto builds",
+    "automatic",
+    "packer",
+    "javascript",
+    "files",
+    "front-end",
+    "cli"
+  ],
+  "devDependencies": {
+    "snyk": "^1.80.1"
   }
+}

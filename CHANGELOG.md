@@ -2,9 +2,18 @@
 
 &nbsp;
 
-#### *V3.0.6 (HotFix) - 28/05/2018
+#### *V3.0.7 - 30/05/2018
 
- - Fixed a bug, where if the call to the npm registry to check updates, it would stop execution.
+ - Added the source file paths, not only the file names, to the source file build selection prompt;
+ - Solved a bug where, if the user passed an unknown configuration key to the "merger set" command, the error got thrown but the key was still added to the configuration file;
+ - Fixed the checkForUpdates module. Changed the protocol from HTTP to HTTPS. Using the public mirror of npm registry now;
+ - Minor fixes and refactorings.
+
+&nbsp;
+
+#### V3.0.6 (HotFix) - 28/05/2018
+
+ - Fixed a bug, where if the call to the npm registry to check updates were not sucessful, it would stop execution.
 
 &nbsp;
 

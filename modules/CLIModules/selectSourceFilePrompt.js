@@ -2,6 +2,7 @@
 const path = require('path');
 const prompt = require('../../node_modules/inquirer').createPromptModule();
 const readDir = require('../utils').readDir;
+const findConfigFile = require('../findConfigFile');
 const style = require('../consoleStyling');
 
 const question = [
@@ -25,23 +26,23 @@ module.exports = (Callback) => {
   else if (sourceFiles.length === 1)
     return Callback(sourceFiles[0]);
 
-  for (let i = 0; i < sourceFiles.length; i++) {
-    question[0].choices.push(path.basename(sourceFiles[i].source));
-  }
-
-  prompt([question[0]]).then((answer) => {
-    // The chosen source file.
-    let sourceFile = null;
-
+  findConfigFile((configFilePath) => {
     for (let i = 0; i < sourceFiles.length; i++) {
-      if (path.basename(sourceFiles[i].source) === answer.sourceFile) {
-        sourceFile = sourceFiles[i];
-        break;
-      }
+      question[0].choices.push(path.relative(configFilePath, sourceFiles[i].source));
     }
 
-    if (!sourceFile)
-      return console.error(style.styledError, style.errorText('Source file not found.'));
-    Callback(sourceFile);
+    prompt([question[0]]).then((answer) => {
+      // The chosen source file.
+      let sourceFile = null;
+
+      for (let i = 0; i < sourceFiles.length; i++) {
+        if (path.basename(sourceFiles[i].source) === answer.sourceFile) {
+          sourceFile = sourceFiles[i];
+          break;
+        }
+      }
+
+      Callback(sourceFile);
+    });
   });
 }
