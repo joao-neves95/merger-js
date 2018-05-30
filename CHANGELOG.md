@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V3.0.8 (HotFix) - 30/05/2018
+#### *V3.0.9 (HotFix) - 31/05/2018
+
+ - Solved a bug when selecting the source file, to build, on the same directory as the merger configuration file.
+
+&nbsp;
+
+#### V3.0.8 (HotFix) - 30/05/2018
 
  - Quick fix to the source file selection prompt. Now operational.
 
