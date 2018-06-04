@@ -1,10 +1,12 @@
 'use strict'
+const fs = require('fs');
 const path = require('path');
 const readDir = require('./utils').readDir;
 const whilst = require('../node_modules/neo-async').whilst;
 const each = require('../node_modules/neo-async').each;
 const style = require('./consoleStyling');
 
+// It returns the merger-config.json complete file path (String).
 module.exports = (Callback) => {
   let currentDir = process.cwd();
   let foundFile = false;
@@ -21,7 +23,7 @@ module.exports = (Callback) => {
     return isToContinue;
   },
     (whilstAgain) => {
-      readDir(currentDir, (err, files) => {
+      fs.readdir(currentDir, 'utf-8', (err, files) => {
         if (err)
           return console.error(style.styledError, err);
 

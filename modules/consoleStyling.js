@@ -1,4 +1,5 @@
-﻿const chalk = require('chalk');
+﻿'use strict'
+const chalk = require('chalk');
 
 module.exports = {
   styledError: chalk.bold.black.bgRed('ERROR: '),

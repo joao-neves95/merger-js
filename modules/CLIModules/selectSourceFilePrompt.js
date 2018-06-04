@@ -14,19 +14,21 @@ const question = [
   }
 ]
 
-// It returns the chosen source file object from the merger-config.
+// It returns the chosen source file object (models/sourceFileModel.js) from the user's merger-config.json file.
 module.exports = (Callback) => {
-  // All the source file objects from the user's merger-config.json file.
-  const sourceFiles = global.config.sourceFiles
-
-  if (!sourceFiles)
-    return console.error(style.styledError, style.errorText('There is no "sourceFiles" property on the merger-config file.'), '\nPlease run "merger init".');
-  else if (sourceFiles.length <= 0)
-    return console.error(style.styledError, style.errorText('There are no source files on the merger-config file.'), '\nPlease run "merger add" to add a file.');
-  else if (sourceFiles.length === 1)
-    return Callback(sourceFiles[0]);
 
   findConfigFile((configFilePath) => {
+    // All the source file objects from the user's merger-config.json file.
+    const CONFIG = require(configFilePath);
+    const sourceFiles = CONFIG.sourceFiles;
+
+    if (!sourceFiles)
+      return console.error(style.styledError, style.errorText('There is no "sourceFiles" property on the merger-config file.'), '\nPlease run "merger init".');
+    else if (sourceFiles.length <= 0)
+      return console.error(style.styledError, style.errorText('There are no source files on the merger-config file.'), '\nPlease run "merger add" to add a file.');
+    else if (sourceFiles.length === 1)
+        return Callback(sourceFiles[0]);
+
     for (let i = 0; i < sourceFiles.length; i++) {
       question[0].choices.push(path.relative(configFilePath, sourceFiles[i].source));
     }

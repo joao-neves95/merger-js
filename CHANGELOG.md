@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *V3.0.9 (HotFix) - 31/05/2018
+#### *V3.1.0 - 04/06/2018
+
+ - Added the "merger rm" command to remove source files from the configurtion file;
+ - Added the "merger log" command to print the configuration file;
+ - Refactoring of the editConfigFile module to have less code repetition;
+ - Fixed some typos.
+
+&nbsp;
+
+#### V3.0.9 (HotFix) - 31/05/2018
 
  - Solved a bug when selecting the source file, to build, on the same directory as the merger configuration file.
 

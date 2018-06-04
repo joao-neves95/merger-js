@@ -1,6 +1,7 @@
 ﻿'use strict'
 const fs = require('fs');
 const path = require('path');
+const findConfigFile = require('./findConfigFile');
 
 module.exports = {
   readDir: (path, callback) => {
@@ -22,4 +23,14 @@ module.exports = {
         callback(null, jsonData);
     });
   },
+
+  readConfigFile: (Callback) => {
+    findConfigFile(configFilePath => {
+      fs.readFile(configFilePath, 'utf-8', (err, data) => {
+        if (err) return Callback(err, null, null);
+
+        Callback(null, configFilePath, data);
+      });
+    });
+  }
 }

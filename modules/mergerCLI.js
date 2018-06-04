@@ -4,8 +4,11 @@ const init = require('./CLIModules/init');
 const update = require('./updateMerger');
 const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
 const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
+const removeFileFromConfig = require('./CLIModules/editConfigFile').removeSourceFile;
 const addFilesPrompt = require('./CLIModules/addFilesPrompt');
 const findConfigFile = require('./findConfigFile');
+const selectSourceFile = require('./CLIModules/selectSourceFilePrompt');
+const readConfigFile = require('./utils').readConfigFile;
 const style = require('./consoleStyling');
 global.version = require('../package.json').version;
 
@@ -96,10 +99,8 @@ module.exports = (Callback) => {
           break;
       }
 
-      findConfigFile((configPath) => {
-        editConfigKey(configPath, Key, value, () => {
-          process.exit(0);
-        });
+      editConfigKey(Key, value, () => {
+        process.exit(0);
       });
     });
 
@@ -107,16 +108,32 @@ module.exports = (Callback) => {
   CLI
     .command('add')
     .action(() => {
-      findConfigFile((configPath) => {
-        addFilesPrompt((newBuildFile) => {
-          addFileToConfig(configPath, newBuildFile, () => {
-            process.exit(0);
-          });
+      addFilesPrompt((newBuildFile) => {
+        addFileToConfig(newBuildFile, () => {
+          process.exit(0);
         });
       });
     });
 
-  // merger remove
+  // merger rm
+  CLI
+    .command('rm')
+    .action(() => {
+      selectSourceFile(sourceFileObject => {
+        removeFileFromConfig(sourceFileObject, () => {
+          process.exit(0);
+        });
+      });
+    });
+
+  CLI
+    .command('log')
+    .action(() => {
+      readConfigFile((err, configFilePath, data) => {
+        console.log(`\n ${style.successText('Merger config file path:')}`, configFilePath);
+        console.log(`\n ${style.successText('Configuration File:\n')}`, data);
+      });
+    });
 
   CLI.parse(process.argv);
   // If the user didn't use the CLI commands:
