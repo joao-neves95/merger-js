@@ -13,7 +13,8 @@ const style = require('./consoleStyling');
 global.version = require('../package.json').version;
 
 module.exports = (Callback) => {
-  global.config = {}
+  global.config = {};
+  let newConfig = {};
 
   // merger -v / --version
   CLI
@@ -33,8 +34,8 @@ module.exports = (Callback) => {
   CLI
     .command('auto')
     .action(() => {
-      global.config.autoBuild = true;
-      return Callback();
+      newConfig.autoBuild = true;
+      return Callback(newConfig);
     });
 
   // merger update
@@ -55,11 +56,11 @@ module.exports = (Callback) => {
     .option('-o, --once')
     .action((cmd) => {
       if (cmd.auto)
-        global.config.autoBuild = true;
+        newConfig.autoBuild = true
       else if (cmd.once)
-        global.config.autoBuild = false;
+        newConfig.autoBuild = false;
 
-      return Callback();
+      return Callback(newConfig);
     });
 
   // merger set
@@ -142,5 +143,5 @@ module.exports = (Callback) => {
   // If the user didn't use the CLI commands:
   // merger
   if (process.argv.length <= 2)
-    return Callback();
+    return Callback(null);
 }

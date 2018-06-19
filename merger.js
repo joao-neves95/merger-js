@@ -9,8 +9,8 @@ const parseImports = require('./modules/parseImports');
 const build = require('./modules/build');
 
 // PROGRAM:
-mergerCLI(() => {
-  config(() => {
+mergerCLI((newConfig) => {
+  config(newConfig, () => {
     selectSourceFile((sourceFile) => {
       parseImports(sourceFile.source, (buildOrder) => {
         // Auto builds:

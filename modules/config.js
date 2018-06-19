@@ -4,13 +4,16 @@ const checkForUpdates = require('./checkForUpdates');
 const findConfigFile = require('./findConfigFile');
 const style = require('./consoleStyling');
 
-module.exports = (Callback) => {
+module.exports = (newConfig, Callback) => {
   // CONFIGURATIONS:
   checkForUpdates(() => {
     findConfigFile((configPath) => {
       try {
         // Get the contents from the correct config file and store its content on a global:
         global.config = require(configPath);
+
+        if (newConfig.autoBuild !== 'undefined')
+          global.config.autoBuild = newConfig.autoBuild;
 
         global.minifyOptions = {
           warnings: true
