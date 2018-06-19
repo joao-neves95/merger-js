@@ -52,9 +52,12 @@ module.exports = (Callback) => {
   CLI
     .command('build')
     .option('-a, --auto')
+    .option('-o, --once')
     .action((cmd) => {
       if (cmd.auto)
         global.config.autoBuild = true;
+      else if (cmd.once)
+        global.config.autoBuild = false;
 
       return Callback();
     });

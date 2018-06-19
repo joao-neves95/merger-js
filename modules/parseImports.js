@@ -20,7 +20,7 @@ module.exports = (Path, Callback) => {
     if (treatedLine.startsWith('@import', 2) || treatedLine.startsWith('@', 2)) {
       let file = treatedLine.replace(/\'|;|"|,|\/\/@import|\/\/@/g, '');
       lineNum++;
-      if (path.extname(file) === '')
+      if (path.extname(file) !== '.js' )
         file += '.js';
       if (!buildOrder.includes(file))
         buildOrder.push(file);
