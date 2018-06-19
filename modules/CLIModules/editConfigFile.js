@@ -69,7 +69,7 @@ module.exports = {
         userConfig = JSON.parse(data);
         // const fileIndex = userConfig.sourceFiles.indexOf(sourceFileObject);
         const searchFileIndex = (userConfig) => {
-          for (let i = 0; i < userConfig.sourceFiles.length; i++) {
+          for (let i = 0; i < userConfig.sourceFiles.length; ++i) {
             if (JSON.stringify(userConfig.sourceFiles[i]) === JSON.stringify(sourceFileObject)) {
               return i;
             }

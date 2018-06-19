@@ -29,7 +29,7 @@ module.exports = (Callback) => {
     else if (sourceFiles.length === 1)
         return Callback(sourceFiles[0]);
 
-    for (let i = 0; i < sourceFiles.length; i++) {
+    for (let i = 0; i < sourceFiles.length; ++i) {
       question[0].choices.push(path.relative(configFilePath, sourceFiles[i].source));
     }
 
@@ -37,7 +37,7 @@ module.exports = (Callback) => {
       // The chosen source file.
       let sourceFile = null;
 
-      for (let i = 0; i < sourceFiles.length; i++) {
+      for (let i = 0; i < sourceFiles.length; ++i) {
         if (path.relative(configFilePath, sourceFiles[i].source) === answer.sourceFile) {
           sourceFile = sourceFiles[i];
           break;

@@ -29,11 +29,14 @@ module.exports = (Callback) => {
     let source = answers.sourceFile;
     if (path.extname(source) === '')
       source += '.js';
+
     sourceFile.source = path.join(process.cwd(), source);
     sourceFile.output.path = path.join(process.cwd(), answers.outputPath);
+
     let outputName = answers.outputName;
     if (path.extname(outputName) === '')
       outputName += '.js';
+
     sourceFile.output.name = outputName;
 
     Callback(sourceFile);

@@ -5,7 +5,8 @@
 #### *V3.2.0 - /06/2018
 
  - Fixed a bug on the imports parser module where, if parsing a path like "someFile.otherExtentionName", it wouldn't add the extention name ".js", giving an ENOENT error;
- - Added the option ```-o``` or ```--once``` to the ```merger build``` command, to perform a one time build session regardless of the project's merger configuration file.
+ - Added the option ```-o``` or ```--once``` to the ```merger build``` command, to perform a one time build session regardless of the project's merger configuration file;
+ - Minor performance optimisations (on the for loops). Could be a myth though.
 
 &nbsp;
 
