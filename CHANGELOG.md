@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *V3.2.0 - 19/06/2018
+#### *V3.2.1 - 19/06/2018
+
+ - Removed the ability to build once.
+
+&nbsp;
+
+#### V3.2.0 - 19/06/2018
 
  - Fixed a bug on the imports parser module where, if parsing a path like "someFile.otherExtentionName", it wouldn't add the extention name ".js", giving an ENOENT error;
  - Added the option ```-o``` or ```--once``` to the ```merger build``` command, to perform a one time build session regardless of the project's merger configuration file;

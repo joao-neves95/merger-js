@@ -114,7 +114,7 @@ npm install merger-js -g
 - ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.<br>
   You can run it anywhere within your project's folder.
   - ```merger auto```, ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto builds turned off and you don't want to change that.
-  - ```merger build -o``` or ```merger build --once```: Perform a one time build session, regardless of the project's configuration file.
+  <!-- - [NOT FUNCTIONAL] ```merger build -o``` or ```merger build --once```: Perform a one time build session, regardless of the project's configuration file.) -->
 
 - ```merger set <configuration> <value>```: Edit a configuration key on the merger-config file.<br/>
   You can run it anywhere within your project's folder.<br>

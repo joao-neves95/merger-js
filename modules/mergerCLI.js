@@ -53,12 +53,9 @@ module.exports = (Callback) => {
   CLI
     .command('build')
     .option('-a, --auto')
-    .option('-o, --once')
     .action((cmd) => {
       if (cmd.auto)
-        newConfig.autoBuild = true
-      else if (cmd.once)
-        newConfig.autoBuild = false;
+        newConfig.autoBuild = true;
 
       return Callback(newConfig);
     });
@@ -143,5 +140,5 @@ module.exports = (Callback) => {
   // If the user didn't use the CLI commands:
   // merger
   if (process.argv.length <= 2)
-    return Callback(null);
+    return Callback(newConfig);
 }
