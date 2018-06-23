@@ -4,7 +4,7 @@
 
 #### *V3.2.1 - 19/06/2018
 
- - Removed the ability to build once.
+ - Removed the "merger build" command option to build once.
 
 &nbsp;
 
