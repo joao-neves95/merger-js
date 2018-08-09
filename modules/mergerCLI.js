@@ -10,6 +10,7 @@ const findConfigFile = require('./findConfigFile');
 const selectSourceFile = require('./CLIModules/selectSourceFilePrompt');
 const readConfigFile = require('./utils').readConfigFile;
 const style = require('./consoleStyling');
+const configKeys = require('../models/configKeysEnum');
 global.version = require('../package.json').version;
 
 module.exports = (Callback) => {
@@ -67,14 +68,14 @@ module.exports = (Callback) => {
     .option('-f, --false')
     .action((key, cmd) => {
       let Key = key.toUpperCase();
-      let value
+      let value;
 
       if (cmd.true) {
-        value = true
+        value = true;
       } else if (cmd.false) {
-        value = false
+        value = false;
       } else {
-        console.error(` ${style.styledError}${style.errorText(`Unknown option - ${cmd}.`)}`);
+        console.error(` ${ style.styledError }${ style.errorText(`Unknown option - ${cmd}.`) }`);
         process.exit(1);
       }
 
@@ -82,20 +83,20 @@ module.exports = (Callback) => {
         case 'MINIFY':
         case 'UGLIFY':
         case 'MNFY':
-          Key = 'uglify';
+          Key = configKeys.minify;
           break;
         case 'AUTOBUILD':
         case 'AUTO':
-          Key = 'autoBuild';
+          Key = configKeys.autoBuild;
           break;
         case 'NOTIFICATIONS':
         case 'NOTIFS':
         case 'NOTIFY':
         case 'NTFS':
-          Key = 'notifications';
+          Key = configKeys.notifs;
           break;
         default:
-          console.error(` ${style.styledError}${style.errorText(`Unknown configuration key - ${key}.`)}`);
+          console.error(` ${ style.styledError }${ style.errorText(`Unknown configuration key - ${key}.`) }`);
           process.exit(1);
           break;
       }
@@ -131,8 +132,8 @@ module.exports = (Callback) => {
     .command('log')
     .action(() => {
       readConfigFile((err, configFilePath, data) => {
-        console.log(`\n ${style.successText('Merger config file path:')}`, configFilePath);
-        console.log(`\n ${style.successText('Configuration File:\n')}`, data);
+        console.log(`\n ${ style.successText('Merger config file path:') }`, configFilePath);
+        console.log(`\n ${ style.successText('Configuration File:\n') }`, data);
       });
     });
 

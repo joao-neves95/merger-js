@@ -1,11 +1,10 @@
 ﻿# MergerJS
+
 [![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
 
  Yet another lightweight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
- 
- This tool is intended for small projects.
  
  **MergerJS *does not* support circular dependencies**
  
@@ -66,20 +65,24 @@ npm install merger-js -g
 
 ## Use:
 
-1) Choose a source file (the first file to be merged) and, on the top of that file, add comments importing the files in the order you want them to be built, from the first to the last.<br/>
+1) Make an header file (the source file; the first file to be merged) containing, on the top, comments importing the files in the order you want them to be built, from the first to the last.<br/>
    Just like in a browser.
    
    Example:
    ```
-   // @import 'helpers'
-   // @import 'requests'
-   // @import 'handlers'
-   // @import 'listeners'
-   // @import 'feature'
+   // @import 'externalLibs'
+   // @import 'utilities'
+   // @import 'someView'
+   // @import 'someModel'
+   // @import 'someController'
+   // @import 'someOtherView'
+   // @import 'someOtherModel'
+   // @import 'someOtherController'
+   // @import 'someOtherFeature'
    ```
    - Instead of ```// @import 'fileName'```, you can just ```// @'fileName'```;
    - The extension names ```.js``` are optional;
-   - The import of the source file is optional;
+   - The import of the source file (header file) is optional;
    - You can import files from different directories relative to the same source file.<br/>
      Example: ```// @import '../otherFolder/someFile'```
 
@@ -91,7 +94,7 @@ npm install merger-js -g
 
 &nbsp;
 
-3) Run ```merger add``` to add a new source file to your merger configuration file (learn more in "Commands").
+3) Run ```merger add``` to add a new source file (header file) to your merger configuration file (learn more in "Commands").
 
 4) Run ```merger``` or ```merger build``` to start building (learn more in "Commands").
 

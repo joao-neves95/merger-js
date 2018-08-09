@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *V3.2.1 - 19/06/2018
+#### *V3.3.0 - 09/08/2018
+
+ - Added the "All" option to the select source file prompt (when there is multiple files) to build all source files (header files) present on the merger configuration;
+ - Minor refactorings.
+
+&nbsp;
+
+#### V3.2.1 - 19/06/2018
 
  - Removed the "merger build" command option to build once.
 

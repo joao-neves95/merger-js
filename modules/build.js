@@ -30,7 +30,7 @@ const build = (sourceFile, buildOrder) => {
 
       fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
         if (err) {
-          // If the dir does not exist make a new dir.
+          // If the dir does not exist, make a new dir.
           if (err.code === 'ENOENT') {
             fs.mkdir(buildPath, (err) => {
               if (err) return console.erro(style.styledError, err);
@@ -45,12 +45,15 @@ const build = (sourceFile, buildOrder) => {
 
         let timestamp = newTimestamp();
         let notifMessage = timestamp;
+
         if (global.config.autoBuild) {
-          notifMessage += `\n${buildOnChanges}`;
-          console.info(`\n ${buildOnChanges}\n`);
+          notifMessage += `\n${ buildOnChanges }`;
+          console.info(`\n ${ buildOnChanges }\n`);
         }
+
         notify('Build Complete.', notifMessage);
         console.info('\n', timestamp, '-', style.successText('Build complete.'));
+        console.info(' File Path:', buildPath + buildName);
         console.timeEnd(' Build Time');
       });
     });

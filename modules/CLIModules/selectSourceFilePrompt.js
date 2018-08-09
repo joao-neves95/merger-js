@@ -18,7 +18,7 @@ const question = [
 module.exports = (Callback) => {
 
   findConfigFile((configFilePath) => {
-    // All the source file objects from the user's merger-config.json file.
+    // All the source file objects from the user's merger-config.json file. No need for a try-catch because it was already done in config.js.
     const CONFIG = require(configFilePath);
     const sourceFiles = CONFIG.sourceFiles;
 
@@ -32,15 +32,20 @@ module.exports = (Callback) => {
     for (let i = 0; i < sourceFiles.length; ++i) {
       question[0].choices.push(path.relative(configFilePath, sourceFiles[i].source));
     }
+    question[0].choices.push('All');
 
     prompt([question[0]]).then((answer) => {
       // The chosen source file.
       let sourceFile = null;
 
-      for (let i = 0; i < sourceFiles.length; ++i) {
-        if (path.relative(configFilePath, sourceFiles[i].source) === answer.sourceFile) {
-          sourceFile = sourceFiles[i];
-          break;
+      if (answer.sourceFile === 'All')
+        sourceFile = sourceFiles;
+      else {
+        for (let i = 0; i < sourceFiles.length; ++i) {
+          if (path.relative(configFilePath, sourceFiles[i].source) === answer.sourceFile) {
+            sourceFile = sourceFiles[i];
+            break;
+          }
         }
       }
 
