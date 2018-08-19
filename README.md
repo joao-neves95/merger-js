@@ -100,6 +100,33 @@ npm install merger-js -g
 
 &nbsp;
 
+## Example of a File Structure
+
+|-- root/</br>
+
+>|-- **merger-config.json**</br>
+>|-- package.json</br>
+>|-- .env</br>
+>|-- (...)</br>
+
+>|-- server/</br>
+>>|-- (...)</br>
+
+>|-- client/</br>
+
+>>|-- css</br>
+>>>|-- (...)</br>
+
+>>|-- js</br>
+>>>|-- mergerBuildFile.js</br>
+>>>|-- src</br>
+>>>>|-- sourceFile.header.js (the header file containing all the imports; the first file to be build)</br>
+>>>>|-- utilities.js</br>
+>>>>|-- someController.js</br>
+>>>>|-- someOtherView.js</br>
+>>>>|-- someOtherModel.js</br>
+
+
 ## Commands
 
 - ```merger init```: Configure merger. It creates a merger-config.json file on your working directory.
