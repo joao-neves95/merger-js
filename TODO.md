@@ -1,4 +1,6 @@
 ﻿# TODO:
+ 
+- Add support for only typing the directory name to merge all its files (without any specific order);
 
 - Add a mini package manager (a small extension to npm) and facilitate the addition of external libaries. 
 
