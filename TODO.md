@@ -6,9 +6,11 @@
 
   Example: 
   
-  // import $'async'
+  // $import 'async'
   
-  // import $'jquery'
+  // $import 'jquery'
+  
+  // @import 'myFile'
   
   (the "$" token imports from node-module (npm default folder))
 
