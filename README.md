@@ -74,11 +74,11 @@ npm install merger-js -g
    // $import 'sweetalert2/dist/sweetalert2.all.min.js'
    // @import 'externalLibs'
    // @import 'utilities'
-   // @import 'someView'
    // @import 'someModel'
+   // @import 'someView'
    // @import 'someController'
-   // @import 'someOtherView'
    // @import 'someOtherModel'
+   // @import 'someOtherView'
    // @import 'someOtherController'
    // @import 'someOtherFeature'
    ```
@@ -126,9 +126,9 @@ npm install merger-js -g
 >>>|-- src</br>
 >>>>|-- sourceFile.header.js (the header file containing all the imports; the first file to be build)</br>
 >>>>|-- utilities.js</br>
->>>>|-- someController.js</br>
 >>>>|-- someOtherView.js</br>
 >>>>|-- someOtherModel.js</br>
+>>>>|-- someController.js</br>
 
 
 ## Commands
