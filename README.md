@@ -34,6 +34,7 @@
  - [x] **Minification, supporting ES6+** (optional)
  - [x] **Auto builds on files changes** (optional)
  - [x] **Native OS build notifications** (optional)
+ - [x] **Import a file from the node_modules folder** (use ```$import 'file-name'```)
 
 &nbsp;
 
@@ -70,6 +71,7 @@ npm install merger-js -g
    
    Example:
    ```
+   // $import 'sweetalert2/dist/sweetalert2.all.min.js'
    // @import 'externalLibs'
    // @import 'utilities'
    // @import 'someView'
@@ -80,9 +82,10 @@ npm install merger-js -g
    // @import 'someOtherController'
    // @import 'someOtherFeature'
    ```
-   - Instead of ```// @import 'fileName'```, you can just ```// @'fileName'```;
+   - Using ```$``` instead of ```@```, imports relative to the node_modules folder instead of relative to the header file.
+   - Instead of ```// @import 'fileName'```, you can just ```// @'fileName'``` or ```$'file-name'```;
    - The extension names ```.js``` are optional;
-   - The import of the source file (header file) is optional;
+   - The import of the header file (source file) is optional;
    - You can import files from different directories relative to the same source file.<br/>
      Example: ```// @import '../otherFolder/someFile'```
 
@@ -107,6 +110,7 @@ npm install merger-js -g
 >|-- **merger-config.json**</br>
 >|-- package.json</br>
 >|-- .env</br>
+>|-- node_modules/</br>
 >|-- (...)</br>
 
 >|-- server/</br>

@@ -1,10 +1,11 @@
-﻿'use strict'
+﻿'use strict';
 
-module.exports =
-{
-  source: '',
-  output: {
-    path: '',
-    name: ''
-  }
-}
+const sourceFileModel = Object.seal( {
+    source: '',
+    output: {
+      path: '',
+      name: ''
+    }
+} );
+
+module.exports = sourceFileModel;

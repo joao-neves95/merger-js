@@ -11,29 +11,29 @@ const build = require('./modules/build');
 
 // PROGRAM:
 mergerCLI((newConfig) => {
-  config(newConfig, () => {
+  config( newConfig, () => {
+
     selectSourceFile((sourceFile) => {
       let files = [sourceFile];
-      let fileCount = 1;
 
       // If "sourceFile" is Array it means that the user chose the "All" (files) option in selectSourceFile().
       if (Array.isArray(sourceFile)) {
         files = sourceFile;
-        fileCount = sourceFile.length;
-        // One time builds.
+        // Execute a one time build only.
         global.config.autoBuild = false;
       }
-
-      async.eachSeries(files, (file, callback) => {
+      
+      async.eachSeries( files, ( file, callback ) => {
 
         parseImports(file.source, (buildOrder) => {
-          // Auto builds:
+          // Execute an auto build (with file watcher):
           if (global.config.autoBuild) {
-            let whatcher = chokidar.watch(buildOrder, { persistent: true, cwd: path.dirname(file.source) });
+            const whatcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( file.source ) } );
+
             whatcher
-              .on('ready', () => {
+              .on( 'ready', () => {
                 console.info(' Inicial scan complete. Ready to build on changes...');
-                build(file, buildOrder);
+                build( file, buildOrder );
               })
               .on('error', err => console.error('Auto build error: ', err))
               .on('change', (path, stats) => {
@@ -41,7 +41,7 @@ mergerCLI((newConfig) => {
                 //  console.info(`File ${path} as changed. Ready to build.\nStats: `, stats);
                 build(file, null);
               });
-            // One time build:
+          // Execute a one time build:
           } else {
             build(file, buildOrder);
           }

@@ -9,66 +9,73 @@ const style = require('./consoleStyling');
 const newTimestamp = require('./newTimestamp').small;
 const buildOnChanges = 'Ready to build. Listening for file changes...';
 
-const build = (sourceFile, buildOrder) => {
+const build = ( sourceFile, buildOrder ) => {
   let allData = {};
 
   // Read all the data from each file (with file names):
-  async.eachSeries(buildOrder, (file, callback) => {
-    fs.readFile(path.join(path.dirname(sourceFile.source), file), 'utf-8', (err, data) => {
-      if (err) return callback(err);
+  async.eachSeries( buildOrder, ( file, callback ) => {
+    let thisFilePath;
+
+    if ( file.includes( 'node_modules' ) )
+      thisFilePath = file;
+    else
+      thisFilePath = path.join( path.dirname( sourceFile.source ), file );
+
+    fs.readFile( thisFilePath, 'utf-8', ( err, data ) => {
+      if ( err ) return callback( err );
 
       allData[file] = data;
       callback();
-    });
-  }, (err) => {
-    if (err) throw err;
+    } );
+  }, ( err ) => {
+    if ( err ) throw err;
 
     // Minify if necessary:
-    minifyCode(allData, (data) => {
+    minifyCode( allData, ( data ) => {
       const buildPath = sourceFile.output.path;
       const buildName = sourceFile.output.name;
 
-      fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
-        if (err) {
+      fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
+        if ( err ) {
           // If the dir does not exist, make a new dir.
-          if (err.code === 'ENOENT') {
-            fs.mkdir(buildPath, (err) => {
-              if (err) return console.erro(style.styledError, err);
-              fs.writeFile(path.join(buildPath, buildName), data, 'utf-8', (err) => {
-                if (err) return console.error(style.styledError, err);
-              });
-            });
+          if ( err.code === 'ENOENT' ) {
+            fs.mkdir( buildPath, ( err ) => {
+              if ( err ) return console.erro( style.styledError, err );
+              fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
+                if ( err ) return console.error( style.styledError, err );
+              } );
+            } );
           } else {
-            return console.error(style.ERROR, err);
+            return console.error( style.ERROR, err );
           }
         }
 
         let timestamp = newTimestamp();
         let notifMessage = timestamp;
 
-        if (global.config.autoBuild) {
-          notifMessage += `\n${ buildOnChanges }`;
-          console.info(`\n ${ buildOnChanges }\n`);
+        if ( global.config.autoBuild ) {
+          notifMessage += `\n${buildOnChanges}`;
+          console.info( `\n ${buildOnChanges}\n` );
         }
 
-        notify('Build Complete.', notifMessage);
-        console.info('\n', timestamp, '-', style.successText('Build complete.'));
-        console.info(' File Path:', buildPath + buildName);
-        console.timeEnd(' Build Time');
-      });
-    });
-  });
-}
+        notify( 'Build Complete.', notifMessage );
+        console.info( '\n', timestamp, '-', style.successText( 'Build complete.' ) );
+        console.info( ' File Path:', buildPath + buildName );
+        console.timeEnd( ' Build Time' );
+      } );
+    } );
+  } );
+};
 
-module.exports = (sourceFile, buildOrder) => {
-  console.time(' Build Time');
-  console.info(' Building...');
+module.exports = ( sourceFile, buildOrder ) => {
+  console.time( ' Build Time' );
+  console.info( ' Building...' );
 
-  if (!buildOrder) {
-    parseImports(sourceFile.source, (redefinedBuldOrder) => {
-      build(sourceFile, redefinedBuldOrder);
-    });
+  if ( !buildOrder ) {
+    parseImports( sourceFile.source, ( redefinedBuldOrder ) => {
+      build( sourceFile, redefinedBuldOrder );
+    } );
   } else {
-    build(sourceFile, buildOrder);
+    build( sourceFile, buildOrder );
   }
-}
+};

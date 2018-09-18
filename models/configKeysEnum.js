@@ -1,8 +1,7 @@
-﻿const configKeys = {
+﻿const configKeys = Object.freeze( {
   minify: 'uglify',
   autoBuild: 'autoBuild',
   notifs: 'notifications'
-}
-Object.freeze(configKeys);
+} );
 
 module.exports = configKeys;
