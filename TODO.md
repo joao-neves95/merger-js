@@ -1,20 +1,10 @@
-﻿# TODO:
+﻿# TODO
 
 - Solve bug where if the user chooses to build "All" files (on the source file selection prompt), the timer gets compromised and gives an error (asynchrony bug/feature);
 
+- Debug and solve the reason for the addition of "﻿" (whitespace?) symbols (char encoding issue?). No interpreter errors though;
+
 - Add support for only typing the directory name to merge all its files (without any specific order);
-
-- Add a mini package manager (a small extension to npm) and facilitate the addition of external libaries.
-
-  Example: 
-  
-  // $import 'async'
-  
-  // $import 'jquery'
-  
-  // @import 'myFile'
-  
-  (the "$" token imports from node-modules)
 
 - TESTS;
 - Add an edit source file command to the CLI;

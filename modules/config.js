@@ -1,13 +1,12 @@
 ﻿'use strict'
-const path = require('path');
 const checkForUpdates = require('./checkForUpdates');
-const findConfigFile = require('./findConfigFile');
+const findFileOrDir = require('./findFileOrDir');
 const style = require('./consoleStyling');
 
 module.exports = (newConfig, Callback) => {
   // CONFIGURATIONS:
   checkForUpdates(() => {
-    findConfigFile((configPath) => {
+    findFileOrDir( 'merger-config.json', ( configPath ) => {
       try {
         // Get the contents from the correct config file and store its content on a global:
         global.config = require(configPath);
@@ -17,9 +16,18 @@ module.exports = (newConfig, Callback) => {
 
         global.minifyOptions = {
           warnings: true
+        };
+
+        try {
+          findFileOrDir( 'node_modules', ( nodeModulesPath ) => {
+            global.config.nodeModulesPath = nodeModulesPath;
+          } );
+        } catch ( e ) {
+          console.log( '' );
         }
 
         Callback();
+
       } catch (e) {
         if (e.code === 'MODULE_NOT_FOUND')
           return console.error(` ${style.styledError} merger-config file not found. Please run "merger init".`);
