@@ -1,10 +1,12 @@
 ﻿# TODO
 
+- Add support for importing a file from an URL (a cdn for example);
+
+- Add support for importing entire directories (without any specific order);
+
 - Solve bug where if the user chooses to build "All" files (on the source file selection prompt), the timer gets compromised and gives an error (asynchrony bug/feature);
 
-- Debug and solve the reason for the addition of "\ufeff" unicode characters (char encoding issue(?) change from "utf-8" to "utf-8-sig"). No interpreter errors though;
-
-- Add support for only typing the directory name to merge all its files (without any specific order);
+- Solve bug where its added "\ufeff" unicode characters somewhere on the build process. No interpreter errors though (char encoding issue(?) change from "utf-8" to "utf-8-sig");
 
 - TESTS;
 - Add an edit source file command to the CLI;
