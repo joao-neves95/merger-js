@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *v3.4.0 - 18/09/2018
+#### *v3.4.1 - 25/09/2018
+
+ - Minor optimization to the program initialization user config parser: "node_modules" folder path is now saved on the merger-config.json when necessary, instead of searched in each build;
+ - Refactorings (various structural changes/reorganization).
+
+&nbsp;
+
+#### v3.4.0 - 18/09/2018
 
  - Added the ability to merge files from packages located in "node_modules".
  - Fixes and refactorings.

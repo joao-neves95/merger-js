@@ -1,8 +1,8 @@
-﻿'use strict'
+﻿'use strict';
 const path = require('path');
 const prompt = require('../../node_modules/inquirer').createPromptModule();
 const readDir = require('../utils').readDir;
-const findFile = require('../findFileOrDir');
+const findFile = require( '../utils' ).findFileOrDir;
 const style = require('../consoleStyling');
 
 const question = [

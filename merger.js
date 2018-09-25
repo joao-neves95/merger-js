@@ -23,11 +23,15 @@ mergerCLI((newConfig) => {
         global.config.autoBuild = false;
       }
       
-      async.eachSeries( files, ( file, callback ) => {
+      async.eachSeries( files, ( file, Callback ) => {
 
         parseImports(file.source, (buildOrder) => {
-          // Execute an auto build (with file watcher):
-          if (global.config.autoBuild) {
+          // Execute one time builds:
+          if ( !global.config.autoBuild )
+            build( file, buildOrder );
+
+          // Execute an auto builds (with file watcher):
+          else {
             const whatcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( file.source ) } );
 
             whatcher
@@ -36,18 +40,13 @@ mergerCLI((newConfig) => {
                 build( file, buildOrder );
               })
               .on('error', err => console.error('Auto build error: ', err))
-              .on('change', (path, stats) => {
-                // if (stats)
-                //  console.info(`File ${path} as changed. Ready to build.\nStats: `, stats);
+              .on( 'change', ( path, stats ) => {
                 build(file, null);
-              });
-          // Execute a one time build:
-          } else {
-            build(file, buildOrder);
+            });
           }
         });
 
-        callback();
+        Callback();
       }, (err) => {
           if (err) throw err;
       });

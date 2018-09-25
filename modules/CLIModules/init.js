@@ -31,33 +31,33 @@ const questions = [
 ];
 
 module.exports = () => {
-  prompt([ questions[0], questions[1], questions[2] ]).then((answers) => {
+  prompt( [questions[0], questions[1], questions[2]] ).then( ( answers ) => {
     let config = {};
     // Minification:
-    if (answers.uglify === 'No')
+    if ( answers.uglify === 'No' )
       config.uglify = false;
     else
       config.uglify = true;
     // Auto builds:
-    if (answers.auto === 'Yes')
+    if ( answers.auto === 'Yes' )
       config.autoBuild = true;
     else
       config.autoBuild = false;
     // Notifications:
-    if (answers.notifs === 'Yes')
+    if ( answers.notifs === 'Yes' )
       config.notifications = true;
     else
       config.notifications = false;
 
-    const userConfig = new UserConfig(config.uglify, config.autoBuild, config.notifications);
+    const userConfig = new UserConfig( config.uglify, config.autoBuild, config.notifications );
 
-    writeConfigFile(process.cwd(), 'merger-config', userConfig, (err, data) => {
-      if (err)
-        return console.error(err);
+    writeConfigFile( process.cwd(), 'merger-config', userConfig, ( err, data ) => {
+      if ( err )
+        return console.error( err );
       else {
         let timestamp = newTimestamp();
-        console.info(`\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}`);
+        console.info( `\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}` );
       }
-    });
-  });
-}
+    } );
+  } );
+};

@@ -16,7 +16,7 @@ const build = ( sourceFile, buildOrder ) => {
   async.eachSeries( buildOrder, ( file, callback ) => {
     let thisFilePath;
 
-    if ( file.includes( 'node_modules' ) )
+    if ( file.includes( '\\node_modules\\' ) || file.includes( '/node_modules/' ) )
       thisFilePath = file;
     else
       thisFilePath = path.join( path.dirname( sourceFile.source ), file );
