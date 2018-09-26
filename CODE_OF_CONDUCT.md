@@ -1,26 +1,30 @@
-# Contributor Covenant Code of Conduct
+# Code of Conduct
 
-## Our Pledge
+The below section of this CoC ("Code of Conduct") is based on the [Django Code of Conduct](https://www.djangoproject.com/conduct/) as well as the [Microsoft Open Source Code of Conduct](https://microsoft.github.io/codeofconduct/), chosen and adapted to this project for the clear nature of them.
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers of MergerJS pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+## This open source community strive to:
 
-## Our Standards
+- **Be friendly and patient:** Remember you might not be communicating in someone else’s primary spoken or programming language, and others may not have your level of understanding.
 
-Examples of behavior that contributes to creating a positive environment include:
+- **Be welcoming:** We strive to be a community that welcomes and supports people of all backgrounds and identities. This includes, but is not limited to members of any race, ethnicity, culture, national origin, color, immigration status, social and economic class, educational level, sex, sexual orientation, gender identity and expression, age, size, family status, political belief, religion, and mental and physical ability.
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+- **Be respectful:** Not all of us will agree all the time, but disagreement is no excuse for poor behavior and poor manners. We might all experience some frustration now and then, but we cannot allow that frustration to turn into a personal attack. It’s important to remember that a community where people feel uncomfortable or threatened is not a productive one. Members of this community should be respectful when dealing with other members as well as with people outside the community. Do not insult or put down other participants. Harassment and other exclusionary behavior aren't acceptable. This includes, but is not limited to:
 
-Examples of unacceptable behavior by participants include:
+  - Violent threats or language directed against another person.
+  - Discriminatory jokes and language.
+  - Posting sexually explicit or violent material.
+  - Posting (or threatening to post) other people's personally identifying information ("doxing").
+  - Insults, especially those using discriminatory terms or slurs.
+  - Unwelcome sexual attention.
+  - Advocating for, or encouraging, any of the above behavior.
+  - Repeated harassment of others. In general, if someone asks you to stop, then stop.
 
-* The use of sexualized language or imagery and unwelcome sexual attention or advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a professional setting
+- **Understand disagreements:** Disagreements, both social and technical, are useful learning opportunities. Seek to understand the other viewpoints and resolve disagreements and differing views constructively. Being unable to understand why someone holds a viewpoint doesn’t mean that they’re wrong. Don’t forget that it is human to err and blaming each other doesn’t get us anywhere. Instead, focus on helping to resolve issues and learning from mistakes.
+
+- This code is not exhaustive or complete. It serves to capture our common understanding of a productive, collaborative environment. We expect the code to be followed in spirit as much as in the letter.
+
+
+The below sections are based on the [Contributor Covenant version 1.4](https://www.contributor-covenant.org/version/1/4/code-of-conduct).
 
 ## Our Responsibilities
 
@@ -37,10 +41,3 @@ This Code of Conduct applies both within project spaces and in public spaces whe
 <!-- Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at <no public email yet>. --> The project team will review and investigate all complaints, and will respond in a way that it deems appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project's leadership.
-
-## Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4, available at [http://contributor-covenant.org/version/1/4][version]
-
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
