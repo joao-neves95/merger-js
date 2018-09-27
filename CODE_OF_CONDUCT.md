@@ -1,6 +1,6 @@
 # Code of Conduct
 
-The below section of this CoC ("Code of Conduct") is based on the [Django Code of Conduct](https://www.djangoproject.com/conduct/) as well as the [Microsoft Open Source Code of Conduct](https://microsoft.github.io/codeofconduct/), chosen and adapted to this project for the clear nature of them.
+The below section of this CoC ("Code of Conduct") is based on the [Django Code of Conduct](https://www.djangoproject.com/conduct/), the [Microsoft Open Source Code of Conduct](https://microsoft.github.io/codeofconduct/), as well as the [Apache Software Foundation CoC](https://www.apache.org/foundation/policies/conduct), chosen and adapted to this project for the clear nature of them.
 
 ## This open source community strive to:
 
@@ -21,11 +21,11 @@ The below section of this CoC ("Code of Conduct") is based on the [Django Code o
 
 - **Understand disagreements:** Disagreements, both social and technical, are useful learning opportunities. Seek to understand the other viewpoints and resolve disagreements and differing views constructively. Being unable to understand why someone holds a viewpoint doesn’t mean that they’re wrong. Don’t forget that it is human to err and blaming each other doesn’t get us anywhere. Instead, focus on helping to resolve issues and learning from mistakes.
 
-- **Be concise:** Writing a short and objective issue/PR means people can understand the conversation as efficiently as possible. Short issues/PR should always strive to be empathetic, welcoming, friendly and patient. When a long explanation is necessary, consider adding a summary. Try to bring new ideas to a conversation so that each issue/PR adds something unique to the thread, keeping in mind that the rest of the thread still contains the other messages with arguments that have already been made. Try to stay on topic, especially in discussions that are already fairly large. *This point was adapted from the [Apache Software Foundation CoC](https://www.apache.org/foundation/policies/conduct)*.
+- **Be concise:** Writing a short and objective issue/PR means people can understand the conversation as efficiently as possible. Short issues/PR should always strive to be empathetic, welcoming, friendly and patient. When a long explanation is necessary, consider adding a summary. Try to bring new ideas to a conversation so that each issue/PR adds something unique to the thread, keeping in mind that the rest of the thread still contains the other messages with arguments that have already been made. Try to stay on topic, especially in discussions that are already fairly large.
 
-- **Step down considerately:** Members of every project come and go. When somebody leaves or disengages from the project they should tell people they are leaving and take the proper steps to ensure that others can pick up where they left off. In doing so, they should remain respectful of those who continue to participate in the project and should not misrepresent the project's goals or achievements. Likewise, community members should respect any individual's choice to leave the project. *This point was adapted from the [Apache Software Foundation CoC](https://www.apache.org/foundation/policies/conduct)*.
+- **Step down considerately:** Members of every project come and go. When somebody leaves or disengages from the project they should tell people they are leaving and take the proper steps to ensure that others can pick up where they left off. In doing so, they should remain respectful of those who continue to participate in the project and should not misrepresent the project's goals or achievements. Likewise, community members should respect any individual's choice to leave the project.
 
-- This code is not exhaustive or complete. It serves to capture our common understanding of a productive, collaborative environment. We expect the code to be followed in spirit as much as in the letter.
+- This CoC is not exhaustive or complete. It serves to capture our common understanding of a productive, collaborative environment. We expect the code to be followed in spirit as much as in the letter.
 
 
 The below sections are based on the [Contributor Covenant version 1.4](https://www.contributor-covenant.org/version/1/4/code-of-conduct).
