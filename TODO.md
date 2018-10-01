@@ -1,7 +1,7 @@
 # TODO
 
 ----------------------------------------------------------------------------------------------
-## Proposals:
+### Proposals:
 
 - Add support for importing a file from an URL (the file is store in node_modules):
   * "%import": Imports from a specific URL, provided by the user;
