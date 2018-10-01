@@ -1,6 +1,13 @@
-﻿# TODO
+# TODO
 
-- Add support for importing a file from an URL (a cdn for example);
+----------------------------------------------------------------------------------------------
+## Proposals:
+
+- Add support for importing a file from an URL (the file is store in node_modules):
+  * "%import": Imports from a specific URL, provided by the user;
+  * "gh%import" or "GH%import": Import a file from GitHub. E.g.: " gh%import '<user>/<repository-name>/<path-to-file>' ";
+  * "bb%import" or "BB%import": Import a file from BitBucket.
+----------------------------------------------------------------------------------------------
 
 - Add support for importing entire directories (without any specific order);
 
