@@ -16,38 +16,36 @@ module.exports = ( Path, Callback ) => {
 
   rl.on( 'line', ( line ) => {
     let treatedLine = line.replace( /\s/g, '' );
+    let file;
 
     if ( treatedLine.startsWith( '@import', 2 ) || treatedLine.startsWith( '@', 2 ) ) {
-      let file = cleanImportFileInput( treatedLine );
+      file = cleanImportFileInput( treatedLine );
       ++lineNum;
 
-      if ( path.extname( file ) !== '.js' )
-        file += '.js';
-      if ( !buildOrder.includes( file ) )
-        buildOrder.push( file );
-
     } else if ( treatedLine.startsWith( '$import', 2 || treatedLine.startsWith( '$', 2 ) ) ) {
-      const npmPackage = cleanImportFileInput( treatedLine );
+      file = cleanImportFileInput( treatedLine );
 
       if ( global.config.nodeModulesPath === undefined ) {
         return console.error(
           style.styledError,
-          style.errorText( `Could not merge "${npmPackage}" package, "node_modules" directory not found.` ),
+          style.errorText( `Could not merge "${file}" file, "node_modules" directory not found.` ),
           '\n Please run "npm init", if you didn\'t, and install a package with "npm install <package name>".\n'
         );
       }
 
-      let file = path.join( global.config.nodeModulesPath, npmPackage );
+      file = path.join( global.config.nodeModulesPath, file );
       ++lineNum;
-
-      if ( path.extname( file ) !== '.js' )
-        file += '.js';
-      if ( !buildOrder.includes( file ) )
-        buildOrder.push( file );
 
     } else if ( lineNum >= 20 && !treatedLine.startsWith( '//' ) ) {
       rl.close();
     }
+
+    if ( path.extname( file ) !== '.js' )
+      file += '.js';
+
+    if ( !buildOrder.includes( file ) )
+      buildOrder.push( file );
+
   } );
 
   rl.on( 'close', () => {

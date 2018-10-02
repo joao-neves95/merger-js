@@ -47,6 +47,7 @@ mergerCLI((newConfig) => {
         });
 
         Callback();
+
       }, (err) => {
           if (err) throw err;
       });
