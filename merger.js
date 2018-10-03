@@ -5,9 +5,9 @@ const chokidar = require('chokidar');
 const mergerCLI = require('./modules/mergerCLI');
 const config = require('./modules/config');
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
-const async = require('./node_modules/neo-async');
-const parseImports = require('./modules/parseImports');
-const build = require('./modules/build');
+const async = require( './node_modules/neo-async' );
+const parseImports = require( './modules/buildModules/parseImports' );
+const build = require('./modules/buildModules/build');
 
 // PROGRAM:
 mergerCLI((newConfig) => {
@@ -25,28 +25,32 @@ mergerCLI((newConfig) => {
       
       async.eachSeries( files, ( file, Callback ) => {
 
-        parseImports(file.source, (buildOrder) => {
+        parseImports( file.source, async ( buildOrder ) => {
           // Execute one time builds:
-          if ( !global.config.autoBuild )
-            build( file, buildOrder );
+          if ( !global.config.autoBuild ) {
+            await build( file, buildOrder );
+            Callback();
+          }
 
           // Execute an auto builds (with file watcher):
           else {
             const whatcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( file.source ) } );
 
             whatcher
-              .on( 'ready', () => {
+              .on( 'ready', async () => {
                 console.info(' Inicial scan complete. Ready to build on changes...');
-                build( file, buildOrder );
+                await build( file, buildOrder );
+                Callback();
               })
               .on('error', err => console.error('Auto build error: ', err))
-              .on( 'change', ( path, stats ) => {
-                build(file, null);
+              .on( 'change', async ( path, stats ) => {
+                await build(file, null);
+                Callback();
             });
           }
         });
 
-        Callback();
+
       }, (err) => {
           if (err) throw err;
       });

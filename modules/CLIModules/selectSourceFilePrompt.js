@@ -23,7 +23,7 @@ const question = [
  */
 module.exports = ( Callback ) => {
 
-  findFile( 'merger-config.json', ( configFilePath ) => {
+  findFile( 'merger-config.json', ( err, configFilePath ) => {
     // All the source file objects (sourceFileModel[]) from the user's merger-config.json file. No need for a try-catch because it was already done in config.js.
     const CONFIG = require( configFilePath );
     const sourceFiles = CONFIG.sourceFiles;

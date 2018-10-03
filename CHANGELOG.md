@@ -2,7 +2,19 @@
 
 &nbsp;
 
-#### *v3.4.1 - 25/09/2018
+#### *v3.5.0 - 03/10/2018
+
+ - Major update to the parseImports.js module:
+   * **Added support for making file imports from an URL and GitHub repositories (read more in README.md)**;
+   * Migration from the terrible standard readline module, that doesn't support asynchrony, to the "line-by-line" package (link in READEME.md);
+   * Major code refactoring for less repetition.
+ - Solved a bug where if the user choosed to build "All" files (on the source file selection prompt), the timer got compromised and gave an error (asynchrony bug);
+ - General code refatorings and reorganization, as well as multiple fixes;
+ - Code of Conduct update.
+
+&nbsp;
+
+#### v3.4.1 - 25/09/2018
 
  - Minor optimization to the program initialization user config parser: "node_modules" folder path is now saved on the merger-config.json when necessary, instead of searched in each build;
  - Refactorings (various structural changes/reorganization).

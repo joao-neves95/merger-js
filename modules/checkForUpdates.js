@@ -16,13 +16,14 @@ module.exports = ( Callback ) => {
     } );
 
     res.on( 'end', () => {
+
       try {
         const parsedData = JSON.parse( rawData );
         const latestVersion = parsedData['dist-tags'].latest;
 
         if ( global.version !== latestVersion ) {
           // Different version.
-          console.warn( `\n ${style.warningTitle( 'There is a newer version of MergerJS' )} \n Please, run "npm i merger-js -g" or "merger update" to update.\n ${global.version} -> ${latestVersion}\n\n CHANGELOG: https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md \n` );
+          console.warn( `\n ${style.warningText( 'There is a newer version of MergerJS' )} \n Please, run "npm i merger-js -g" or "merger update" to update.\n ${global.version} -> ${latestVersion}\n\n CHANGELOG: https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md \n` );
           notify( 'New version of MergerJS available.', `Please, run "merger update" to update.\n${global.version} -> ${latestVersion}` );
 
           return Callback();
@@ -36,7 +37,8 @@ module.exports = ( Callback ) => {
 
         return Callback();
       }
-    } )
+
+    } );
   } ).on( 'error', () => {
     console.warn( UPDATE_ERROR );
 
