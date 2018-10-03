@@ -36,7 +36,8 @@
  - [x] **Auto builds on files changes** (optional)
  - [x] **Native OS build notifications** (optional)
  - [x] **Import a file from the node_modules folder** (use ```$import 'file-name'```)
-
+ - [x] **Import a file from an URL** (use ```%import 'url'```)
+ 
 &nbsp;
 
 ## Getting Started
