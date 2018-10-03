@@ -10,6 +10,10 @@
   },
   "preferGlobal": true,
   "install": "npm install merger-js -g",
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.4.0"
+  },
   "scripts": {
     "start": "merger init",
     "test": "snyk test && nsp check"
@@ -33,6 +37,7 @@
     "chokidar": "^2.0.3",
     "commander": "^2.15.1",
     "inquirer": "^5.2.0",
+    "line-by-line": "^0.1.6",
     "neo-async": "^2.5.1",
     "node-notifier": "^5.2.1",
     "uglify-es": "^3.3.10"

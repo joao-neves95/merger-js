@@ -1,6 +1,6 @@
-﻿'use strict'
+﻿'use strict';
 const uglify = require('uglify-es');
-const notify = require('./notifications').notif;
+const notify = require('../notifications').notif;
 
 module.exports = (allCode, callback) => {
   if (global.config.uglify) {

@@ -1,12 +1,12 @@
-﻿'use strict'
+﻿'use strict';
 const CLI = require('../node_modules/commander');
-const init = require('./CLIModules/init');
+const init = require('./cliModules/init');
 const update = require('./updateMerger');
-const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
-const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
-const removeFileFromConfig = require('./CLIModules/editConfigFile').removeSourceFile;
-const addFilesPrompt = require('./CLIModules/addFilesPrompt');
-const selectSourceFile = require('./CLIModules/selectSourceFilePrompt');
+const editConfigKey = require('./cliModules/editConfigFile').editConfigKey;
+const addFileToConfig = require('./cliModules/editConfigFile').addFileToConfig;
+const removeFileFromConfig = require('./cliModules/editConfigFile').removeSourceFile;
+const addFilesPrompt = require('./cliModules/addFilesPrompt');
+const selectSourceFile = require('./cliModules/selectSourceFilePrompt');
 const readConfigFile = require('./utils').readConfigFile;
 const style = require('./consoleStyling');
 const configKeys = require('../models/configKeysEnum');

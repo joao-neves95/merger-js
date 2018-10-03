@@ -9,10 +9,11 @@ module.exports = ( newConfig, Callback ) => {
 
   // #region CONFIGURATIONS
 
-    findFile( 'merger-config.json', ( configPath ) => {
+    findFile( 'merger-config.json', ( err, configPath ) => {
       try {
         // Get the contents from the correct config file and store its content on a global:
         global.config = require( configPath );
+        global.config.mergerConfigPath = configPath;
 
         if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined )
           global.config.autoBuild = newConfig.autoBuild;
@@ -24,11 +25,15 @@ module.exports = ( newConfig, Callback ) => {
         try {
           // Find the node_modules folder path and save it in merger-config.json if necessary.
           if ( global.config.nodeModulesPath === null || global.config.nodeModulesPath === undefined ) {
-            findFile( 'node_modules', ( npmModulesPath ) => {
-              global.config.nodeModulesPath = npmModulesPath;
 
-              addPropertyToConfigFile( 'nodeModulesPath', npmModulesPath );
+            findFile( 'node_modules', ( err, npmModulesPath ) => {
+              if ( npmModulesPath !== false ) {
+                global.config.nodeModulesPath = npmModulesPath;
+                addPropertyToConfigFile( 'nodeModulesPath', npmModulesPath );
+              }
+
             } );
+
           }
         } catch ( e ) {
           console.log( '' );

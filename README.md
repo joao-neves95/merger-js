@@ -19,7 +19,7 @@
  ├── [inquirer](https://github.com/SBoudrias/Inquirer.js)<br/>
  ├── [node-notifier](https://github.com/mikaelbr/node-notifier)<br/>
  ├── [chalk](https://github.com/chalk/chalk)<br/>
- ├── [node-fetch](https://github.com/bitinn/node-fetch)<br/>
+ ├── [line-by-line](https://github.com/Osterjour/line-by-line)<br/>
 
 <br/>
 
@@ -47,7 +47,7 @@ https://github.com/joao-neves95/merger-js/blob/master/README.md
 
 ### 1) Node.js
 
-You will need [Node.js](https://nodejs.org/en/) installed to run merger.
+You will need [Node.js](https://nodejs.org/en/) version 10+ installed to run merger.
 
 ### 2) Install merger with NPM
 
@@ -73,8 +73,10 @@ npm install merger-js -g
    Example:
    ```
    // $import 'sweetalert2/dist/sweetalert2.all.min.js'
-   // @import 'externalLibs'
-   // @import 'utilities'
+   // %import 'https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/cjs/react.development.js'
+   // %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'
+   // @'externalLibs'
+   // @import'utilities'
    // @import 'someModel'
    // @import 'someView'
    // @import 'someController'
@@ -83,7 +85,7 @@ npm install merger-js -g
    // @import 'someOtherController'
    // @import 'someOtherFeature'
    ```
-   - Using ```$``` instead of ```@```, imports relative to the node_modules folder instead of relative to the header file.
+   - Learn more about the import syntax below in the "Import Syntax" section.
    - Instead of ```// @import 'fileName'```, you can just ```// @'fileName'``` or ```$'file-name'```;
    - The extension names ```.js``` are optional;
    - The import of the header file (source file) is optional;
@@ -94,13 +96,13 @@ npm install merger-js -g
 
 2) Run ```merger init``` on the root of your project:<br/>
   This will set up the configuration model as well as some global configurations (minification, auto builds on file changes, native OS notifications).<br/>
-  You can alter them later through the CLI with the "merger set" command (learn more in "Commands").
+  You can alter them later through the CLI with the "merger set" command (learn more below in the "Commands" section).
 
 &nbsp;
 
-3) Run ```merger add``` to add a new source file (header file) to your merger configuration file (learn more in "Commands").
+3) Run ```merger add``` to add a new source file (header file) to your merger configuration file (learn more below in the "Commands" section).
 
-4) Run ```merger``` or ```merger build``` to start building (learn more in "Commands").
+4) Run ```merger``` or ```merger build``` to start building (learn more below in the "Commands" section).
 
 &nbsp;
 
@@ -130,6 +132,23 @@ npm install merger-js -g
 >>>>|-- someOtherView.js</br>
 >>>>|-- someOtherModel.js</br>
 >>>>|-- someController.js</br>
+
+
+## Import Syntax:
+
+- ```// @import 'relativePathToTheFile'``` or ```// @'relativePathToTheFile'```:<br/>
+   Using an ```@``` token on an import statement imports a file relative to the header file.
+
+- ```// $import 'pathRelativeToNodeModules'``` or ```// $'node_modules_file'```:<br/>
+   Using a ```$``` token imports relative to the "node_modules" directory.
+
+- ```// %import 'https://specificUrl.com/file.min.js'``` or ```// $'https://specificUrl.com/file.min.js'```:<br/>
+  Using a ```$``` token imports a file from a specific URL. The file is downloaded and stored in node_modules in the first time and later fetch from there in order to not download the file in each build.<br/>
+  If the branch name is not provided, it defaults to the "master" branch.
+
+  * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
+    E.g: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
+         ```// $<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
 
 
 ## Commands
@@ -174,7 +193,7 @@ Merger uses [SemVer](https://semver.org/) for versioning. You can read the chang
 
 **JavaScript Standard Style, *with semicolons*.**
 
-I only do not use semicolons on browser JS.
+Since version 3.5.0, every asynchronous function supports both callbacks and promises (async/await).
 
 &nbsp;
 
