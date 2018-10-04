@@ -2,10 +2,12 @@
 
 &nbsp;
 
-#### *v3.6.0 - /10/2018
+#### *v3.6.0 - 04/10/2018
 
- - Added support for importing entie directories. Using this methods, the files are not compiled in any specific order;
- - Fixed a bug in the github imports. Starting with a line broke the fileDownloader.js ('/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js' / 'twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js').
+ - **Added support for importing entie directories. Using this methods, the files are not compiled in any specific order**;
+ - Fixed a bug introduced in v3.5.0 (commit: https://github.com/joao-neves95/merger-js/commit/815e2f16ed62f13fd82f1d3d96362d3664b64249#diff-e8f6b017cf5303324df391ba7f9e0b07), in the auto build 'chnage' event async Callback (called multiple times);
+ - Fixed a bug in the github imports. Starting the path of the github repository with a bar broke the fileDownloader.js ('/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js' vs. 'twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js');
+ - Minor optimization and fixes on the parseImports.js module.
 
 &nbsp;
 

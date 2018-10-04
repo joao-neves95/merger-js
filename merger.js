@@ -10,7 +10,8 @@ const parseImports = require( './modules/buildModules/parseImports' );
 const build = require( './modules/buildModules/build' );
 const sourceFileModel = require( './models/sourceFileModel' );
 
-// PROGRAM:
+// #region PROGRAM
+
 mergerCLI((newConfig) => {
   config( newConfig, () => {
 
@@ -48,7 +49,6 @@ mergerCLI((newConfig) => {
               .on('error', err => console.error('Auto build error: ', err))
               .on( 'change', async ( path, stats ) => {
                 await build(file, null);
-                return Callback();
             });
           }
         });
@@ -59,5 +59,6 @@ mergerCLI((newConfig) => {
 
     });
   });
-});
-// End of PROGRAM.
+} );
+
+// #endregion

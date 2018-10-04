@@ -29,8 +29,13 @@ module.exports = ( Path, Callback ) => {
     if ( treatedLine.startsWith( '@import', 2 ) || treatedLine.startsWith( '@', 2 ) ) {
       treatedLine = Utils.removeImportFromInput( treatedLine );
 
-      if ( treatedLine.startsWith( '<<dir' ) || treatedLine.startsWith( '<<DIR' ) || treatedLine.startsWith( '<<directory' ) ) {
-        treatedLine = treatedLine.replace( /<<dir|<<directory/g, '' );
+      // FROM A DIRECTORY.
+      if ( treatedLine.startsWith( '<<dir' ) ||
+           treatedLine.startsWith( '<<DIR' ) ||
+           treatedLine.startsWith( '<<directory' ) ||
+           treatedLine.startsWith( '<<DIRECTORY' ) ) {
+
+        treatedLine = treatedLine.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
         // Build the path.
         treatedLine = Utils.cleanImportFileInput( treatedLine );
         const thisDir = path.join( path.dirname( Path ), treatedLine );
@@ -48,6 +53,7 @@ module.exports = ( Path, Callback ) => {
           return console.error( style.styledError, `There was an error while reading the file names from the directory: "${treatedLine}"\n`, err );
         }
 
+      // FROM A RELATIVE FILE PATH.
       } else {
         thisFile = cleanImportFileInput( treatedLine );
       }
@@ -89,7 +95,7 @@ module.exports = ( Path, Callback ) => {
       if ( treatedLine.startsWith( '<<gh' ) ||
            treatedLine.startsWith( '<<GH' ) ||
            treatedLine.startsWith( '<<github' ) ||
-        treatedLine.startsWith( '<<GITHUB' ) ) {
+           treatedLine.startsWith( '<<GITHUB' ) ) {
 
         let filePath = cleanImportFileInput( treatedLine );
         filePath = filePath.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
