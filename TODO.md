@@ -1,5 +1,7 @@
 # TODO
 
+- Solve bug in the auto build async Callback() (calling multiple times);
+
 - Add support for importing entire directories (without any specific order);
 
 - Fix the github imports. Bug with the bars ('/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js' / 'twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js');
