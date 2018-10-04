@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *v3.5.0 - 03/10/2018
+#### *v3.6.0 - /10/2018
+
+ - Added support for importing entie directories. Using this methods, the files are not compiled in any specific order;
+ - Fixed a bug in the github imports. Starting with a line broke the fileDownloader.js ('/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js' / 'twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js').
+
+&nbsp;
+
+#### v3.5.0 - 03/10/2018
 
  - Major update to the parseImports.js module:
    * **Added support for making file imports from an URL and GitHub repositories (read more in README.md)**;

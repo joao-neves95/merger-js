@@ -1,4 +1,5 @@
 ﻿'use strict';
+const fs = require( 'fs' );
 const path = require('path');
 const lineByLine = require( 'line-by-line' );
 const fileDownloader = require( '../fileDownloader' );
@@ -20,17 +21,38 @@ module.exports = ( Path, Callback ) => {
 
   rl.on( 'line', async ( line ) => {
     rl.pause();
+    let thisFile;
+    let treatedLine = line.replace( /\s/g, '' );
 
-    //( async () => {
-      let thisFile;
-      let treatedLine = line.replace( /\s/g, '' );
+    // #region IMPORT FROM RELATIVE PATH OR DIRECTORY
 
-      // #region IMPORT FROM RELATIVE PATH
+    if ( treatedLine.startsWith( '@import', 2 ) || treatedLine.startsWith( '@', 2 ) ) {
+      treatedLine = Utils.removeImportFromInput( treatedLine );
 
-      if ( treatedLine.startsWith( '@import', 2 ) || treatedLine.startsWith( '@', 2 ) ) {
-        // TODO: Add the dir sintax here.
+      if ( treatedLine.startsWith( '<<dir' ) || treatedLine.startsWith( '<<DIR' ) || treatedLine.startsWith( '<<directory' ) ) {
+        treatedLine = treatedLine.replace( /<<dir|<<directory/g, '' );
+        // Build the path.
+        treatedLine = Utils.cleanImportFileInput( treatedLine );
+        const thisDir = path.join( path.dirname( Path ), treatedLine );
+
+        try {
+          const files = await Utils.readDir( thisDir );
+
+          for ( let i = 0; i < files.length; ++i ) {
+            buildOrder.push( path.join( treatedLine, files[i] ) );
+          }
+
+          thisFile = null;
+
+        } catch ( e ) {
+          return console.error( style.styledError, `There was an error while reading the file names from the directory: "${treatedLine}"\n`, err );
+        }
+
+      } else {
         thisFile = cleanImportFileInput( treatedLine );
-        ++lineNum;
+      }
+
+      ++lineNum;
 
       // #endregion
 
@@ -53,64 +75,66 @@ module.exports = ( Path, Callback ) => {
 
       // #region IMPORT FROM AN URL
 
-      } else if ( treatedLine.startsWith( '%import', 2 ) || treatedLine.startsWith( '%', 2 ) ) {
-        const removedImportLine = removeImportFromInput( treatedLine );
+    } else if ( treatedLine.startsWith( '%import', 2 ) || treatedLine.startsWith( '%', 2 ) ) {
+      treatedLine = removeImportFromInput( treatedLine );
 
-        try {
-          const created = await Utils.createNodeModulesIfNeeded();
+      try {
+        const created = await Utils.createNodeModulesIfNeeded();
 
-        } catch ( e ) {
-          return nodeModulesCreationError( line );
-        }
-
-        // FROM GITHUB
-        if ( removedImportLine.startsWith( '<<gh' ) ||
-             removedImportLine.startsWith( '<<GH' ) ||
-             removedImportLine.startsWith( '<<github' ) ||
-             removedImportLine.startsWith( '<<GITHUB' ) ) {
-
-          let filePath = cleanImportFileInput( removedImportLine );
-          filePath = filePath.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
-          const fileName = Utils.getFileNameFromUrl( HOST_RAW_GITHUB + filePath );
-          const fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
-
-          if ( !fileExists ) {
-            try {
-              await fileDownloader.fromGitHub( filePath );
-
-            } catch ( e ) {
-              // Beeing logged in fileDownloader.js
-            }
-          }
-
-          thisFile = path.join( global.config.nodeModulesPath, fileName );
-
-        // FROM A SPECIFIC URL
-        } else {
-          let url = cleanImportFileInput( removedImportLine );
-          const fileName = Utils.getFileNameFromUrl( url );
-          const fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
-
-          if ( !fileExists ) {
-            try {
-              await fileDownloader.fromUrl( url );
-
-            } catch ( e ) {
-              console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
-            }
-          }
-
-          thisFile = path.join( global.config.nodeModulesPath, fileName );
-        }
-
-        // #endregion
+      } catch ( e ) {
+        return nodeModulesCreationError( line );
       }
+
+      // FROM GITHUB
+      if ( treatedLine.startsWith( '<<gh' ) ||
+           treatedLine.startsWith( '<<GH' ) ||
+           treatedLine.startsWith( '<<github' ) ||
+        treatedLine.startsWith( '<<GITHUB' ) ) {
+
+        let filePath = cleanImportFileInput( treatedLine );
+        filePath = filePath.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
+        const fileName = Utils.getFileNameFromUrl( HOST_RAW_GITHUB + filePath );
+        const fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
+
+        if ( !fileExists ) {
+          try {
+            await fileDownloader.fromGitHub( filePath );
+
+          } catch ( e ) {
+            // Beeing logged in fileDownloader.js
+          }
+        }
+
+        thisFile = path.join( global.config.nodeModulesPath, fileName );
+
+      // FROM A SPECIFIC URL
+      } else {
+        let url = cleanImportFileInput( treatedLine );
+        const fileName = Utils.getFileNameFromUrl( url );
+        const fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
+
+        if ( !fileExists ) {
+          try {
+            await fileDownloader.fromUrl( url );
+
+          } catch ( e ) {
+            console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
+          }
+        }
+
+        thisFile = path.join( global.config.nodeModulesPath, fileName );
+      }
+
+      // #endregion
+
+      ++lineNum;
+    }
 
       try {
         if ( path.extname( thisFile ) !== '.js' )
           thisFile += '.js';
 
-        if ( !buildOrder.includes( thisFile ) )
+        if ( !buildOrder.includes( thisFile ) && thisFile !== undefined || thisFile !== null )
           buildOrder.push( thisFile );
 
       } catch ( e ) {
@@ -122,7 +146,6 @@ module.exports = ( Path, Callback ) => {
       if ( lineNum >= 20 && !treatedLine.startsWith( '//' ) )
         rl.close();
 
-    //} )();
   } );
 
   rl.on( 'end', () => {

@@ -48,20 +48,22 @@ module.exports = {
    * @returns { Promise<string | Error> }
    */
   fromGitHub: ( path, Callback ) => {
-    return new Promise( ( resolve, reject ) => {
+    return new Promise( async ( resolve, reject ) => {
 
-      ( async () => {
-        let url = HOST_RAW_GITHUB + path;
-        const fileName = Utils.getFileNameFromUrl( url );
-        let fileContent = null;
+      if ( path.startsWith( '/' ) )
+        path = path.substring( 1 );
 
-        try {
+      let url = HOST_RAW_GITHUB + path;
+      const fileName = Utils.getFileNameFromUrl( url );
+      let fileContent = null;
+
+      try {
           fileContent = await httpClient.getAsync( url, false );
 
           if ( fileContent === '404: Not Found\n' ) {
             let urlArr = new URL( url ).pathname.split( '/' );
             urlArr.splice( 3, 0, 'master' );
-            url = HOST_RAW_GITHUB + urlArr.join( '/' ).substring(1);
+            url = HOST_RAW_GITHUB + urlArr.join( '/' );
 
             try {
               fileContent = await httpClient.getAsync( url, false );
@@ -94,8 +96,6 @@ module.exports = {
 
           reject( e );
         }
-
-      } )();
 
     } );
   }

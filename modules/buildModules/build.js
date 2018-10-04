@@ -29,6 +29,7 @@ const build = ( sourceFile, buildOrder ) => {
         allData[file] = data;
         Callback();
       } );
+
     }, ( err ) => {
       if ( err ) {
         console.error( style.styledError, err );
