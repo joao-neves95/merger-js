@@ -7,12 +7,30 @@ const each = require( '../node_modules/neo-async' ).each;
 const style = require( './consoleStyling' );
 
 const utils = {
-  readDir: ( path, callback ) => {
-    fs.readdir( path, 'utf8', ( err, files ) => {
-      if ( err )
-        callback( err, null );
-      else
-        callback( null, files );
+  /**
+   * @param { string } path The directory path.
+   * @param { Function } Callback Optional. (err, files[])
+   * 
+   * @returns { Promise<string[] | Error> }
+   */
+  readDir: ( path, Callback ) => {
+    return new Promise( ( resolve, reject ) => {
+
+      fs.readdir( path, 'utf8', ( err, files ) => {
+        if ( err ) {
+          if ( Callback )
+            return Callback( err, null );
+
+          return reject( err );
+
+        } else {
+          if (Callback)
+            return Callback( null, files );
+
+          return resolve( files );
+        }
+      } );
+
     } );
   },
 
@@ -35,13 +53,13 @@ const utils = {
       fs.readFile( configFilePath, 'utf8', ( err, data ) => {
         if ( err ) return Callback( err, null, null );
 
-        Callback( null, configFilePath, data );
+        return Callback( null, configFilePath, data );
       } );
     } );
   },
 
   /**
-   * @param { string } importFile The import file line input (from the user header/source file).
+   * @param { string } importStatement The import file line input (from the user header/source file).
    * @returns { string } The cleaned file name.
    */
   cleanImportFileInput: ( importStatement ) => {
@@ -49,7 +67,7 @@ const utils = {
   },
 
   removeImportFromInput: ( importStatement ) => {
-    return importStatement.replace( /\/@import|\/\/@|\/\/\$import|\/\/$|\/\/\%import|\/\/%/g, '' );
+    return importStatement.replace( /\/\/@import|\/\/@|\/\/\$import|\/\/$|\/\/\%import|\/\/%/g, '' );
   },
 
   /**
@@ -66,7 +84,7 @@ const utils = {
    * From the current directory ( process.cwd() ), it searches for and returns the path of the requested file or directory, false if the file was not found or an error.
    * 
    * @param { string } fileOrDir The name of the file or directory to find.
-   * @param { Function } Callback A callback (error, <string | false>) that receives the complete file/directory path or false if not found.
+   * @param { Function } Callback Optional. Callback (error, <string | false>) that receives the complete file/directory path or false if not found.
    * 
    * @returns { Promise<string | false | Error> }
    */
@@ -78,7 +96,7 @@ const utils = {
       if ( Callback )
         return Callback( err, false );
 
-      reject( err );
+      return reject( err );
     };
 
     return new Promise( ( resolve, reject ) => {
@@ -146,7 +164,7 @@ const utils = {
 
   /**
    * @param { string } path
-   * @param { Function } Callback (err, <boolean>)
+   * @param { Function } Callback Optional. (err, <boolean>)
    * 
    * @returns { Promise<boolean | Error> }
    */

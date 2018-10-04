@@ -35,6 +35,7 @@
  - [x] **Minification, supporting ES6+** (optional)
  - [x] **Auto builds on files changes** (optional)
  - [x] **Native OS build notifications** (optional)
+ - [x] **Import a directory** (use ```@import<<DIR 'directoryName/'```)
  - [x] **Import a file from the node_modules folder** (use ```$import 'file-name'```)
  - [x] **Import a file from an URL** (use ```%import 'url'```)
  
@@ -77,7 +78,8 @@ npm install merger-js -g
    // %import 'https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/cjs/react.development.js'
    // %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'
    // @'externalLibs'
-   // @import'utilities'
+   // @import<<dir '/enums/'
+   // @import 'utilities'
    // @import 'someModel'
    // @import 'someView'
    // @import 'someController'
@@ -138,7 +140,10 @@ npm install merger-js -g
 ## Import Syntax:
 
 - ```// @import 'relativePathToTheFile'``` or ```// @'relativePathToTheFile'```:<br/>
-   Using an ```@``` token on an import statement imports a file relative to the header file.
+   Using an ```@``` token on an import statement imports a file relative to the header file.<br/>
+
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory. Using this method, the files are not compiled in any specific order.<br/>
+    E.g.: ``` // @import<<dir '../otherDirectory/'``` ```// @<<DIR 'someDirectoryHere/'```
 
 - ```// $import 'pathRelativeToNodeModules'``` or ```// $'node_modules_file'```:<br/>
    Using a ```$``` token imports relative to the "node_modules" directory.
@@ -148,7 +153,7 @@ npm install merger-js -g
   If the branch name is not provided, it defaults to the "master" branch.
 
   * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
-    E.g: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
+    E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
          ```// $<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
 
 

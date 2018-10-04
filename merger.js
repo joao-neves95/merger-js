@@ -1,19 +1,22 @@
 #!/usr/bin/env node
-'use strict'
+'use strict';
 const path = require('path');
 const chokidar = require('chokidar');
 const mergerCLI = require('./modules/mergerCLI');
 const config = require('./modules/config');
-const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const async = require( './node_modules/neo-async' );
+const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseImports = require( './modules/buildModules/parseImports' );
-const build = require('./modules/buildModules/build');
+const build = require( './modules/buildModules/build' );
+const sourceFileModel = require( './models/sourceFileModel' );
 
-// PROGRAM:
+// #region PROGRAM
+
 mergerCLI((newConfig) => {
   config( newConfig, () => {
 
-    selectSourceFile((sourceFile) => {
+    selectSourceFile( ( sourceFile ) => {
+      /** @type { sourceFileModel[] } */
       let files = [sourceFile];
 
       // If "sourceFile" is Array it means that the user chose the "All" (files) option in selectSourceFile().
@@ -22,14 +25,15 @@ mergerCLI((newConfig) => {
         // Execute a one time build only.
         global.config.autoBuild = false;
       }
-      
+
+      // TODO: BUG with Callback. Can not call multiple times (autoBuild).
       async.eachSeries( files, ( file, Callback ) => {
 
         parseImports( file.source, async ( buildOrder ) => {
           // Execute one time builds:
           if ( !global.config.autoBuild ) {
             await build( file, buildOrder );
-            Callback();
+            return Callback();
           }
 
           // Execute an auto builds (with file watcher):
@@ -38,18 +42,16 @@ mergerCLI((newConfig) => {
 
             whatcher
               .on( 'ready', async () => {
-                console.info(' Inicial scan complete. Ready to build on changes...');
+                console.info( ' Inicial scan complete. Ready to build on changes...' );
                 await build( file, buildOrder );
-                Callback();
+                return Callback();
               })
               .on('error', err => console.error('Auto build error: ', err))
               .on( 'change', async ( path, stats ) => {
                 await build(file, null);
-                Callback();
             });
           }
         });
-
 
       }, (err) => {
           if (err) throw err;
@@ -57,5 +59,6 @@ mergerCLI((newConfig) => {
 
     });
   });
-});
-// End of PROGRAM.
+} );
+
+// #endregion
