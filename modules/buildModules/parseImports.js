@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 const fs = require( 'fs' );
 const path = require('path');
 const lineByLine = require( 'line-by-line' );
@@ -11,6 +11,7 @@ const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 
 module.exports = ( Path, Callback ) => {
   let lineNum = 0;
+  let lastLineWasComment = false;
   let buildOrder = [];
   buildOrder.push( path.basename( Path ) );
 
@@ -23,6 +24,8 @@ module.exports = ( Path, Callback ) => {
     rl.pause();
     let thisFile;
     let treatedLine = line.replace( /\s/g, '' );
+
+    lastLineWasComment = treatedLine.startsWith( '//' );
 
     // #region IMPORT FROM RELATIVE PATH OR DIRECTORY
 
@@ -140,7 +143,7 @@ module.exports = ( Path, Callback ) => {
         if ( path.extname( thisFile ) !== '.js' )
           thisFile += '.js';
 
-        if ( !buildOrder.includes( thisFile ) && thisFile !== undefined || thisFile !== null )
+        if ( !buildOrder.includes( thisFile ) && thisFile !== undefined && thisFile !== null )
           buildOrder.push( thisFile );
 
       } catch ( e ) {
@@ -149,7 +152,7 @@ module.exports = ( Path, Callback ) => {
 
       rl.resume();
 
-      if ( lineNum >= 20 && !treatedLine.startsWith( '//' ) )
+    if ( lineNum >= 20 && !lastLineWasComment )
         rl.close();
 
   } );

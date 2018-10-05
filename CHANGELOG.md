@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.6.0 - 04/10/2018
+#### *v3.6.1 - 05/10/2018
+
+ - Fixed error on the importsParser.js module introduced on the last version.
+
+&nbsp;
+
+#### v3.6.0 - 04/10/2018
 
  - **Added support for importing entie directories. Using this methods, the files are not compiled in any specific order**;
  - Fixed a bug introduced in v3.5.0 (commit: https://github.com/joao-neves95/merger-js/commit/a976bd6bf1ea317f344bcead2d991532a2db9684#diff-e8f6b017cf5303324df391ba7f9e0b07), in the auto build 'chnage' event async Callback (called multiple times);
