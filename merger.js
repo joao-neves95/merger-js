@@ -26,7 +26,6 @@ mergerCLI((newConfig) => {
         global.config.autoBuild = false;
       }
 
-      // TODO: BUG with Callback. Can not call multiple times (autoBuild).
       async.eachSeries( files, ( file, Callback ) => {
 
         parseImports( file.source, async ( buildOrder ) => {
