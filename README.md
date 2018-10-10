@@ -150,9 +150,9 @@ npm install merger-js -g
 
 - ```// %import 'https://specificUrl.com/file.min.js'``` or ```// $'https://specificUrl.com/file.min.js'```:<br/>
   Using a ```%``` token imports a file from a specific URL. The file is downloaded and stored in node_modules in the first time and later fetch from there in order to not download the file in each build.<br/>
-  If the branch name is not provided, it defaults to the "master" branch.
 
   * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
+  If the branch name is not provided, it defaults to the "master" branch.<br/>
     E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
          ```// $<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
 
