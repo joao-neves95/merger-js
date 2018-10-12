@@ -136,6 +136,7 @@ npm install merger-js -g
 >>>>|-- someOtherModel.js</br>
 >>>>|-- someController.js</br>
 
+&nbsp;
 
 ## Import Syntax:
 
@@ -156,6 +157,7 @@ npm install merger-js -g
     E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
          ```// $<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
 
+&nbsp;
 
 ## Commands
 
@@ -186,6 +188,12 @@ npm install merger-js -g
   Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
 
 - ```merger update```: Update MergerJS. Same as ```npm install merger-js -g```
+
+&nbsp;
+
+## Known Issues
+
+The auto build does not work properly and all times on Visual Studio. It works very well on Visual Studio Code though.
 
 &nbsp;
 
