@@ -2,7 +2,9 @@
 
 - Add support for importing an entire directory of files inside node_modules (``` // $import<<DIR 'dirInsideNodeModules/' ```);
 
-- Block attempts to import directories inside directories that are beeing imported (bug);
+- (Bug) Block attempts to import directories inside directories that are beeing imported;
+
+- In "merger add" ask the user if he is on the header file directory and if so, give him a drop down menu with all the files in that directory;
 
 - Solve bug where its added "\ufeff" unicode characters on the build/read files process. No interpreter errors though (Char encoding Node.js issue. Use "strip-bom" package on the next release);
 
@@ -13,6 +15,5 @@
 --------------------------------------------------------------------------------------------------------------------------
 ### Proposals:
 
-- Make a MergerJS plugin for Visual Studio Code (start/stop).
 
 --------------------------------------------------------------------------------------------------------------------------
