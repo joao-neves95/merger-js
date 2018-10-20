@@ -109,35 +109,6 @@ npm install merger-js -g
 
 &nbsp;
 
-## Example of a File Structure
-
-|-- root/</br>
-
->|-- **merger-config.json**</br>
->|-- package.json</br>
->|-- .env</br>
->|-- node_modules/</br>
->|-- (...)</br>
-
->|-- server/</br>
->>|-- (...)</br>
-
->|-- client/</br>
-
->>|-- css</br>
->>>|-- (...)</br>
-
->>|-- js</br>
->>>|-- mergerBuildFile.js</br>
->>>|-- src</br>
->>>>|-- sourceFile.header.js (the header file containing all the imports; the first file to be build)</br>
->>>>|-- utilities.js</br>
->>>>|-- someOtherView.js</br>
->>>>|-- someOtherModel.js</br>
->>>>|-- someController.js</br>
-
-&nbsp;
-
 ## Import Syntax:
 
 - ```// @import 'relativePathToTheFile'``` or ```// @'relativePathToTheFile'```:<br/>
@@ -188,6 +159,35 @@ npm install merger-js -g
   Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
 
 - ```merger update```: Update MergerJS. Same as ```npm install merger-js -g```
+
+&nbsp;
+
+## Example of a File Structure
+
+|-- root/</br>
+
+>|-- **merger-config.json**</br>
+>|-- package.json</br>
+>|-- .env</br>
+>|-- node_modules/</br>
+>|-- (...)</br>
+
+>|-- server/</br>
+>>|-- (...)</br>
+
+>|-- client/</br>
+
+>>|-- css</br>
+>>>|-- (...)</br>
+
+>>|-- js</br>
+>>>|-- mergerBuildFile.js</br>
+>>>|-- src</br>
+>>>>|-- sourceFile.header.js (the header file containing all the imports; the first file to be build)</br>
+>>>>|-- utilities.js</br>
+>>>>|-- someOtherView.js</br>
+>>>>|-- someOtherModel.js</br>
+>>>>|-- someController.js</br>
 
 &nbsp;
 
