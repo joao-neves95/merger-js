@@ -47,6 +47,9 @@ module.exports = ( Path, Callback ) => {
           const files = await Utils.readDir( thisDir );
 
           for ( let i = 0; i < files.length; ++i ) {
+            if ( path.extname( files[i] ) === '' )
+              continue;
+
             buildOrder.push( path.join( treatedLine, files[i] ) );
           }
 

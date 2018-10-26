@@ -13,9 +13,7 @@ module.exports = {
    * @returns { Promise<string | Error> }
    */
   fromUrl: ( url, Callback ) => {
-    return new Promise( ( resolve, reject ) => {
-
-      ( async () => {
+    return new Promise( async ( resolve, reject ) => {
 
         try {
           const fileName = Utils.getFileNameFromUrl( url );
@@ -33,8 +31,6 @@ module.exports = {
 
           reject( err );
         }
-
-      } )();
 
     } );
   },

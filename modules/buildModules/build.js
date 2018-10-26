@@ -26,7 +26,7 @@ const build = ( sourceFile, buildOrder ) => {
       fs.readFile( thisFilePath, 'utf-8', ( err, data ) => {
         if ( err ) return Callback( err );
 
-        allData[file] = data;
+        allData[file] = data + '\n';
         Callback();
       } );
 
