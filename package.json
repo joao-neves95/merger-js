@@ -45,13 +45,15 @@
   "keywords": [
     "build",
     "build tool",
+    "tool",
+    "make",
     "merge",
     "merger",
+    "uglify",
     "auto builds",
     "automatic",
     "pack",
     "javascript",
-    "files",
     "front-end",
     "frontend",
     "cli"
