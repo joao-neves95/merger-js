@@ -1,6 +1,8 @@
 ﻿# MergerJS
 
-[![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js) [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE) 
+[![npm](https://img.shields.io/npm/v/merger-js.svg)](https://www.npmjs.com/package/merger-js)
+[![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)
+[![DepShield Badge](https://depshield.sonatype.org/badges/joao-neves95/merger-js/depshield.svg)](https://depshield.github.io)
 
  Yet another lightweight and simple cross-platform build tool for JavaScript files, with CLI tooling, file imports, auto build capabilities and native OS notifications.
  
