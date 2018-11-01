@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.6.2 - 26/10/2018
+#### *v3.6.3 - 01/11/2018
+
+ - Multiple package updates.
+
+&nbsp;
+
+#### v3.6.2 - 26/10/2018
 
  - Solved a bug where, in non-minified builds, if the last line of a file ended with a comment it commented out the first line of the next file;
  - Solved bug where if the user imported an entire directory (e.g.: ```@import<<DIR 'someDir'```) with subdirectories, it gave an "EISDIR" read error;
