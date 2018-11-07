@@ -6,6 +6,8 @@
 
 - Solve bug where its added "\ufeff" unicode characters on the build/read files process. No interpreter errors though (Char encoding Node.js issue. Use "strip-bom" package on the next release);
 
+- Add license headers.
+
 - TESTS;
 - Add an edit source file command to the CLI;
 - Add more validation and error handling to the CLI;
