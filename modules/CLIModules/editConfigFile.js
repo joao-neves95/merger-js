@@ -1,5 +1,4 @@
 ﻿'use strict';
-const fs = require('fs');
 const path = require('path');
 const writeConfigFile = require('../utils').writeJSONFile;
 const readConfigFile = require('../utils').readConfigFile;

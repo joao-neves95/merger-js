@@ -12,7 +12,7 @@ const sourceFileModel = require( './models/sourceFileModel' );
 
 // #region PROGRAM
 
-mergerCLI((newConfig) => {
+mergerCLI( ( newConfig ) => {
   config( newConfig, () => {
 
     selectSourceFile( ( sourceFile ) => {

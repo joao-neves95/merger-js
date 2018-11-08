@@ -1,7 +1,6 @@
 ﻿'use strict';
 const path = require('path');
 const prompt = require('../../node_modules/inquirer').createPromptModule();
-const readDir = require('../utils').readDir;
 const findFile = require( '../utils' ).findFileOrDir;
 const sourceFileModel = require( '../../models/sourceFileModel' );
 const style = require('../consoleStyling');

@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *v3.6.3 - 01/11/2018
+#### *v3.6.4 - 08/11/2018
+
+ - Small bug fix on the ParseImports module (in the try/catch of the read from directory). There was a typo on the catch exception variable, that, for example, if the user made some error on the imported directory name, it caused MergerJS to crash without notifying the user;
+ - Other minor small fixes.
+
+&nbsp;
+
+#### v3.6.3 - 01/11/2018
 
  - Multiple package updates.
 

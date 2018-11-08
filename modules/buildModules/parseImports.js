@@ -1,5 +1,4 @@
 'use strict';
-const fs = require( 'fs' );
 const path = require('path');
 const lineByLine = require( 'line-by-line' );
 const fileDownloader = require( '../fileDownloader' );
@@ -56,7 +55,7 @@ module.exports = ( Path, Callback ) => {
           thisFile = null;
 
         } catch ( e ) {
-          return console.error( style.styledError, `There was an error while reading the file names from the directory: "${treatedLine}"\n`, err );
+          return console.error( style.styledError, `There was an error while reading the file names from the directory: "${treatedLine}"\n`, e );
         }
 
       // FROM A RELATIVE FILE PATH.

@@ -46,7 +46,7 @@ const build = ( sourceFile, buildOrder ) => {
             // If the dir does not exist, make a new dir.
             if ( err.code === 'ENOENT' ) {
               fs.mkdir( buildPath, ( err ) => {
-                if ( err ) if ( err ) {
+                if ( err ) {
                   console.error( style.ERROR, err );
                   return reject( err );
                 }

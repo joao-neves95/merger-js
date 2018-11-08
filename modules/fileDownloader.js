@@ -1,6 +1,4 @@
 ﻿'use strict';
-const fs = require( 'fs' );
-const path = require( 'path' );
 const httpClient = require( './httpClient' );
 const Utils = require( './utils' );
 const style = require( './consoleStyling' );
