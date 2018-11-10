@@ -16,7 +16,8 @@
   },
   "scripts": {
     "start": "merger init",
-    "test": "snyk test && nsp check"
+    "test": "nsp check",
+    "test2": "snyk test"
   },
   "author": {
     "name": "shivayl",
