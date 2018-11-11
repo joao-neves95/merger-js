@@ -1,4 +1,12 @@
-﻿'use strict';
+﻿/*
+ * Copyright (c) 2018 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
+'use strict';
 const fs = require('fs');
 const path = require( 'path' );
 const url = require( 'url' );
@@ -56,6 +64,18 @@ const utils = {
         return Callback( null, configFilePath, data );
       } );
     } );
+  },
+
+  // Based on npm's strip-bom.
+  /**
+   * Remove unicode character FEFF (UTF-16 BOM) from a string block.
+   * @param { string } stringBlock
+   */
+  removeBOM( stringBlock ) {
+    if ( stringBlock.charCodeAt( 0 ) === 0xFEFF )
+      return stringBlock.slice( 1 );
+
+    return stringBlock;
   },
 
   /**

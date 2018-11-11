@@ -269,3 +269,4 @@ obj/
 node_modules/
 *.snyk
 advisories.json
+*.licenseheader
