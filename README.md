@@ -70,7 +70,7 @@ npm install merger-js -g
 
 ## Use:
 
-1) Make an header file (the source file; the first file to be merged) containing, on the top, comments importing the files in the order you want them to be built, from the first to the last.<br/>
+1) Make a header file (the source file; the first file to be merged) containing, on the top, comments importing the files in the order you want them to be built, from the first to the last.<br/>
    Just like in a browser.
    
    Example:
@@ -208,7 +208,7 @@ Merger uses [SemVer](https://semver.org/) for versioning. You can read the chang
 
 **JavaScript Standard Style, *with semicolons*.**
 
-Since version 3.5.0, every asynchronous function supports both callbacks and promises (async/await).
+Since version 3.6.5, every asynchronous function should make exclusive use of promises with the async/await syntax, avoiding multiple callback chaining, unless using a callback instead of a promise does make sense and does not contribute to a more confusing code.
 
 &nbsp;
 

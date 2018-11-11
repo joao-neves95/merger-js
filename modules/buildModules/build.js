@@ -1,12 +1,22 @@
-﻿'use strict';
+﻿/*
+ * Copyright (c) 2018 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
+'use strict';
 const fs = require('fs');
 const path = require( 'path' );
 const async = require( 'neo-async' );
 const parseImports = require('./parseImports');
-const minifyCode = require('./minifyCode');
+const minifyCode = require( './minifyCode' );
+const { removeBOM } = require( '../utils' );
 const notify = require('../notifications').notif;
 const style = require('../consoleStyling');
-const newTimestamp = require('../newTimestamp').small;
+const newTimestamp = require( '../newTimestamp' ).small;
+
 const buildOnChanges = 'Ready to build. Listening for file changes...';
 
 const build = ( sourceFile, buildOrder ) => {
@@ -26,7 +36,7 @@ const build = ( sourceFile, buildOrder ) => {
       fs.readFile( thisFilePath, 'utf-8', ( err, data ) => {
         if ( err ) return Callback( err );
 
-        allData[file] = data + '\n';
+        allData[file] = removeBOM( data ) + '\n';
         Callback();
       } );
 

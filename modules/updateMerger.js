@@ -1,4 +1,12 @@
-﻿const exec = require('child_process').exec;
+﻿/*
+ * Copyright (c) 2018 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
+const exec = require('child_process').exec;
 const notify = require('./notifications').notif;
 const style = require('./consoleStyling');
 const newTimestamp = require('./newTimestamp').small;

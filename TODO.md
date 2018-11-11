@@ -4,16 +4,13 @@
 
 - In "merger add" ask the user if he is on the header file directory and if so, give him a drop down menu with all the files in that directory;
 
-- Add license headers;
+- Add an edit source file command to the CLI;
 
-- Solve bug where its added "\ufeff" unicode characters on the build/read files process. No interpreter errors though (Char encoding Node.js issue. Use "strip-bom" package on the next release);
+- Add more validation and error handling to the CLI;
 
-- Sometimes there is a strange bug where MergerJS goes into some sort of build loop after the initial scan (TODO: find why and fix).
+- Add contributing guidelines;
 
 - TESTS;
-- Add an edit source file command to the CLI;
-- Add more validation and error handling to the CLI;
-- Add contributing guidelines.
 
 --------------------------------------------------------------------------------------------------------------------------
 ### Proposals:

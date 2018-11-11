@@ -1,9 +1,15 @@
+/*
+ * Copyright (c) 2018 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
 'use strict';
 const path = require('path');
 const lineByLine = require( 'line-by-line' );
 const fileDownloader = require( '../fileDownloader' );
-const cleanImportFileInput = require( '../utils' ).cleanImportFileInput;
-const removeImportFromInput = require( '../utils' ).removeImportFromInput;
 const Utils = require( '../utils' );
 const style = require( '../consoleStyling' );
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
@@ -60,7 +66,7 @@ module.exports = ( Path, Callback ) => {
 
       // FROM A RELATIVE FILE PATH.
       } else {
-        thisFile = cleanImportFileInput( treatedLine );
+        thisFile = Utils.cleanImportFileInput( treatedLine );
       }
 
       ++lineNum;
@@ -70,7 +76,7 @@ module.exports = ( Path, Callback ) => {
       // #region IMPORT FROM node_modules
 
       } else if ( treatedLine.startsWith( '$import', 2 ) || treatedLine.startsWith( '$', 2 ) ) {
-        thisFile = cleanImportFileInput( treatedLine );
+        thisFile = Utils.cleanImportFileInput( treatedLine );
 
         try {
           const created = await Utils.createNodeModulesIfNeeded();
@@ -87,7 +93,7 @@ module.exports = ( Path, Callback ) => {
       // #region IMPORT FROM AN URL
 
     } else if ( treatedLine.startsWith( '%import', 2 ) || treatedLine.startsWith( '%', 2 ) ) {
-      treatedLine = removeImportFromInput( treatedLine );
+      treatedLine = Utils.removeImportFromInput( treatedLine );
 
       try {
         const created = await Utils.createNodeModulesIfNeeded();
@@ -102,7 +108,7 @@ module.exports = ( Path, Callback ) => {
            treatedLine.startsWith( '<<github' ) ||
            treatedLine.startsWith( '<<GITHUB' ) ) {
 
-        let filePath = cleanImportFileInput( treatedLine );
+        let filePath = Utils.cleanImportFileInput( treatedLine );
         filePath = filePath.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
         const fileName = Utils.getFileNameFromUrl( HOST_RAW_GITHUB + filePath );
         const fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
@@ -120,7 +126,7 @@ module.exports = ( Path, Callback ) => {
 
       // FROM A SPECIFIC URL
       } else {
-        let url = cleanImportFileInput( treatedLine );
+        let url = Utils.cleanImportFileInput( treatedLine );
         const fileName = Utils.getFileNameFromUrl( url );
         const fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
 
