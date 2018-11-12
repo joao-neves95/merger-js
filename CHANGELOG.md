@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.6.5 - 12/11/2018
+#### *v3.6.6 - 12/11/2018
+
+ - Solved a bug, introduced int the last patch by the license headers, that somehow made the shebang not work.
+
+&nbsp;
+
+#### v3.6.5 - 11/11/2018
 
  - Solved a bug where it was added an "\ufeff" unicode character as first char of each file contents on the build process (char encoding Node.js issue).
 

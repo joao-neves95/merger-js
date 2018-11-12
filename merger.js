@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Copyright (c) 2018 João Pedro Martins Neves - All Rights Reserved.
  *
@@ -6,7 +8,6 @@
  *
  */
 
-#!/usr/bin/env node
 'use strict';
 const path = require('path');
 const chokidar = require('chokidar');
