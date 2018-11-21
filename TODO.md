@@ -1,5 +1,9 @@
 # TODO
 
+- When checking if a file already exists before downloading it, check its contents to see if it's '404: Not Found\n'. If it is download it again;
+
+- Clean up the fileDownloader module;
+
 - Add support for importing an entire directory of files inside node_modules (``` // $import<<DIR 'dirInsideNodeModules/' ```);
 
 - In "merger add" ask the user if he is on the header file directory and if so, give him a drop down menu with all the files in that directory;
