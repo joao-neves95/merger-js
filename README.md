@@ -163,6 +163,12 @@ npm install merger-js -g
 
 &nbsp;
 
+## Header File Example
+
+[portfolioOS.header.js](https://github.com/joao-neves95/portfolio-os/blob/master/client/private/js/src/portfolioOS.header.js)
+
+&nbsp;
+
 ## Example of a File Structure
 
 |-- root/</br>
