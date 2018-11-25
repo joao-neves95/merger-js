@@ -6,6 +6,8 @@
 
 - Add support for importing an entire directory of files inside node_modules (``` // $import<<DIR 'dirInsideNodeModules/' ```);
 
+- Add support for importing an entire directory of files from GitHub (``` // %import<<GH<<DIR 'dirFromGithub/' ```);
+
 - In "merger add" ask the user if he is on the header file directory and if so, give him a drop down menu with all the files in that directory;
 
 - Add an edit source file command to the CLI;
@@ -19,6 +21,8 @@
 --------------------------------------------------------------------------------------------------------------------------
 ### Proposals:
 
-- A desktop app.
+- Add support for plugins (???);
+
+- A desktop app, similar to WinLess.
 
 --------------------------------------------------------------------------------------------------------------------------
