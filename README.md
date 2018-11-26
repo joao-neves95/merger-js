@@ -70,8 +70,7 @@ npm install merger-js -g
 
 ## Use:
 
-1) Make a header file (the source file; the first file to be merged) containing, on the top, comments importing the files in the order you want them to be built, from the first to the last.<br/>
-   Just like in a browser.
+1) Make a header file - the source file; the first file to be merged - containing, on the top, comments importing the files in the order you want them to be built, from the first to the last just like in a browser.<br/>
    
    Example:
    ```
@@ -139,7 +138,9 @@ npm install merger-js -g
 
 - ```merger add```: Add a new source file to the merger config file.<br/>
   You should run this command on the directory where the source file you want to add is located.<br/>
-  MergerJS will give you the directory path, you input the source file name (the extension names are optional), or a relative path to that directory, and MergerJS will locate the configuration file and update it.
+  MergerJS will give you the directory path, you input the source file name (the extension names are 
+  optional), or a relative path to that directory, and MergerJS will locate the configuration file in
+  the hierarchy before the one you are located and update it.
 
 - ```merger rm```: Remove a source file from the merger-config file.<br/>
   You can run this command anywhere within your project (after the configuration file).
@@ -192,15 +193,15 @@ npm install merger-js -g
 >>>|-- src</br>
 >>>>|-- sourceFile.header.js (the header file containing all the imports; the first file to be build)</br>
 >>>>|-- utilities.js</br>
->>>>|-- someOtherView.js</br>
->>>>|-- someOtherModel.js</br>
+>>>>|-- someView.js</br>
+>>>>|-- someModel.js</br>
 >>>>|-- someController.js</br>
 
 &nbsp;
 
 ## Known Issues
 
-The auto build does not work properly and all times on Visual Studio. It works very well on Visual Studio Code though.
+The auto build (the files watcher) does not work properly and all times on Visual Studio. It works very well on Visual Studio Code and other editors though.
 
 &nbsp;
 
