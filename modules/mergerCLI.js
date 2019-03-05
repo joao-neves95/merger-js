@@ -102,6 +102,10 @@ module.exports = ( Callback ) => {
         case 'NTFS':
           Key = configKeys.notifs;
           break;
+        case 'UPDATEONLAUNCH':
+        case 'UPDTONLNCH':
+          Key = configKeys.updateOnLaunch;
+          break;
         default:
           console.error( ` ${style.styledError}${style.errorText( `Unknown configuration key - ${key}.` )}` );
           process.exit( 1 );

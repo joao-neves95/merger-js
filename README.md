@@ -157,6 +157,7 @@ npm install merger-js -g
   - The \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
   - The \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
   - The \<configuration\> ```ntfs```, ```notifs```, ```notify```, or ```notifications``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the native OS notifications to true or false (on/off);
+  - The \<configuration\> ```updateonlaunch``` or ```updtonlnch``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the update on lauch time to true or false (on/off).
   
   Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
 

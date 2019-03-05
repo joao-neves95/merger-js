@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *v3.6.6 - 12/11/2018
+#### *v3.6.7 - 05/03/2019
+
+ - The update on launch time is now optional. Read more in... README.md;
+ - Some silent bugs fixes with error handling/catching on the checkForUpdates, updateMerger, editConfigFile.addProperty and editConfigFile.addFileToConfig;
+ - Optimizations to the config module;
+ - Added the Collections module (will do a separate NPM package in the future).
+
+&nbsp;
+
+#### v3.6.6 - 12/11/2018
 
  - Solved a bug, introduced int the last patch by the license headers, that somehow made the shebang not work.
 

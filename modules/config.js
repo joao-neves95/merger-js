@@ -10,19 +10,56 @@
 const checkForUpdates = require('./checkForUpdates');
 const findFile = require( './utils' ).findFileOrDir;
 const addPropertyToConfigFile = require( './CLIModules/editConfigFile' ).addProperty;
+const Dictionary = require( './collections' ).Dictionary;
 const style = require('./consoleStyling');
 
 module.exports = ( newConfig, Callback ) => {
-  checkForUpdates( () => {
+  const propertiesToAdd = new Dictionary();
 
-  // #region CONFIGURATIONS
-
-    findFile( 'merger-config.json', ( err, configPath ) => {
+  try {
+    findFile( 'merger-config.json', async ( err, configPath ) => {
       try {
+
         // Get the contents from the correct config file and store its content on a global:
         global.config = require( configPath );
         global.config.mergerConfigPath = configPath;
 
+        // Find the node_modules folder path and save it in merger-config.json if necessary.
+        if ( global.config.nodeModulesPath === null || global.config.nodeModulesPath === undefined ) {
+
+          findFile( 'node_modules', async ( err, npmModulesPath ) => {
+            if ( npmModulesPath !== false ) {
+              global.config.nodeModulesPath = npmModulesPath;
+              propertiesToAdd.add( 'nodeModulesPath', npmModulesPath );
+            }
+
+          } );
+        }
+
+        // Update if needed.
+        if ( global.config.updateOnLaunch !== null && global.config.updateOnLaunch !== undefined ) {
+          if ( global.config.updateOnLaunch ) {
+            try {
+              await checkForUpdates();
+
+            } catch ( e ) {
+              // Continue;
+            }
+          }
+
+          // This is to not add breaking changes.
+        } else {
+          // Set to true by default.
+          propertiesToAdd.add( 'updateOnLaunch', true );
+          try {
+            await checkForUpdates();
+
+          } catch ( e ) {
+            // Continue;
+          }
+        }
+
+        // Update glabal configurations set during the CLI launch.
         if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined )
           global.config.autoBuild = newConfig.autoBuild;
 
@@ -30,34 +67,25 @@ module.exports = ( newConfig, Callback ) => {
           warnings: true
         };
 
-        try {
-          // Find the node_modules folder path and save it in merger-config.json if necessary.
-          if ( global.config.nodeModulesPath === null || global.config.nodeModulesPath === undefined ) {
-
-            findFile( 'node_modules', ( err, npmModulesPath ) => {
-              if ( npmModulesPath !== false ) {
-                global.config.nodeModulesPath = npmModulesPath;
-                addPropertyToConfigFile( 'nodeModulesPath', npmModulesPath );
-              }
-
-            } );
-
-          }
-        } catch ( e ) {
-          console.log( '' );
-        }
-
+        await addPropertyToConfigFile( propertiesToAdd );
         Callback();
 
       } catch ( e ) {
-        if ( e.code === 'MODULE_NOT_FOUND' )
-          return console.error( ` ${style.styledError} merger-config file not found. Please run "merger init".` );
-
-        return console.error( style.styledError, e );
+        return ____returnError( e );
       }
+
     } );
-  } );
 
-  // #endregion
+  } catch ( e ) {
+    return ____returnError( e );
+  }
+};
 
+const ____returnError = ( e ) => {
+  if ( e.code === 'MODULE_NOT_FOUND' )
+    return console.error( ` ${style.styledError} merger-config file not found. Please run "merger init".` );
+  else if ( e.code === 'ENOTFOUND' )
+    return;
+
+  return console.error( style.styledError, e );
 };

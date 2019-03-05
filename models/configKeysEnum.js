@@ -9,7 +9,8 @@
 const configKeys = Object.freeze( {
   minify: 'uglify',
   autoBuild: 'autoBuild',
-  notifs: 'notifications'
+  notifs: 'notifications',
+  updateOnLaunch: 'updateOnLaunch'
 } );
 
 module.exports = configKeys;
