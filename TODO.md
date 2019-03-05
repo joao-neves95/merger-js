@@ -1,5 +1,7 @@
 # TODO
 
+- Add support for importing files with imports;
+
 - Turn collections.js into a separate NPM package;
 
 - When checking if a file already exists before downloading it, check its contents to see if it's '404: Not Found\n'. If it is download it again;
