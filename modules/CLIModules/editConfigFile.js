@@ -9,7 +9,8 @@
 'use strict';
 const path = require('path');
 const writeConfigFile = require('../utils').writeJSONFile;
-const readConfigFile = require('../utils').readConfigFile;
+const readConfigFile = require( '../utils' ).readConfigFile;
+const Dictionary = require( '../collections' ).Dictionary;
 const style = require('../consoleStyling');
 const newTimestamp = require('../newTimestamp').small;
 
@@ -41,30 +42,45 @@ module.exports = {
     } );
   },
 
+  /**
+   * It adds the new SourceFile(Model) into the merger-config.json file.
+   * 
+   * @param { SourceFileModel } newSourceFile SourceFile model.
+   * @param { Function } Callback Optional.Called when the config file editing ends.
+   * 
+   * @returns { Promise<void> } void
+   */
   addFileToConfig: ( newSourceFile, Callback ) => {
-    readConfigFile( ( err, configFilePath, data ) => {
-      if ( err )
-        return console.error( style.styledError, err );
+    return new Promise( ( _resolve, _reject ) => {
 
-      let userConfig;
-
-      try {
-        userConfig = JSON.parse( data );
-        userConfig.sourceFiles.push( newSourceFile );
-      } catch ( e ) {
-        return console.error( style.styledError, e );
-      }
-
-      writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
+      readConfigFile( ( err, configFilePath, data ) => {
         if ( err )
-          return console.error( err );
+          return console.error( style.styledError, err );
 
-        let timestamp = newTimestamp();
-        console.info( `\n ${timestamp} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`, data );
+        let userConfig;
 
-        if ( Callback )
-          Callback();
+        try {
+          userConfig = JSON.parse( data );
+          userConfig.sourceFiles.push( newSourceFile );
+
+        } catch ( e ) {
+          return console.error( style.styledError, e );
+        }
+
+        writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
+          if ( err )
+            return console.error( err );
+
+          let timestamp = newTimestamp();
+          console.info( `\n ${timestamp} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`, data );
+
+          if ( Callback )
+            return Callback();
+
+          return _reject();
+        } );
       } );
+
     } );
   },
 
@@ -108,21 +124,52 @@ module.exports = {
   },
 
   /**
-   * @param { string } key Config property.
-   * @param { string } value Config property value.
+   * It adds a new property and value to the merger-config.json file.
+   * VALUE is optional if KEY is a Dictionary of key/value par dictionaries.
+   * 
+   * @param { string | Dictionary} key Config property. < string | Dictionary<string, any> >
+   * @param { any } value Config property value.
    * @param { Function } Callback Optional. Called when the config file editing ends.
+   * 
+   * @returns { Promise<void|Error> } void
    */
   addProperty: ( key, value, Callback ) => {
-    readConfigFile( ( err, configFilePath, data ) => {
-      let userConfig = JSON.parse( data );
-      userConfig[key] = value;
+    return new Promise( ( _resolve, _reject ) => {
+      try {
 
-      writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
-        if ( err ) return console.error( err );
+        readConfigFile( ( err, configFilePath, data ) => {
+          if ( err ) {
+            console.error( err );
+            return _reject( err );
+          }
 
-        if ( Callback )
-          Callback();
-      } );
+          let userConfig = JSON.parse( data );
+
+          if ( key instanceof Dictionary ) {
+            key.__forEach( ( keyValueObj ) => {
+              userConfig[Object.keys( keyValueObj )[0]] = Object.values( keyValueObj )[0];
+            } );
+
+          } else {
+            userConfig[key] = value;
+          }
+
+          writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
+            if ( err ) {
+              console.error( err );
+              return _reject( err );
+            }
+
+            if ( Callback )
+              return Callback();
+
+            return _resolve();
+          } );
+        } );
+
+      } catch ( e ) {
+        return _reject( e );
+      }
     } );
   }
 };
