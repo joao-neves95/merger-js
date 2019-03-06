@@ -1,12 +1,10 @@
 ﻿/*
-  Copyright (c) 2018 João Pedro Martins Neves <joao95neves@gmail.com> - All Rights Reserved
-  Written by João Pedro Martins Neves <joao95neves@gmail.com>
-
-  https://github.com/joao-neves95/Exercises_Challenges_Courses/blob/master/JavaScript/Collections.js
-
-  Class Dictionary(): let dictionary = new Dictionary(uniqueKeys = false)
-  Type safe Class List(): let list = new List('string' | 'number' | 'int' | 'float' | 'boolean' | 'any')
-*/
+ * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
 
 class Errors {
   static get existingKey() { throw new Error( 'An item with the same key has already been added.' ); };
