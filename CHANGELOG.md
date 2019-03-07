@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *v3.6.7 - 05/03/2019
+#### *v3.6.8 - 07/03/2019
+
+ - MergerJS will now update only once per week;
+ - Multiple dependency updates;
+ - Multiple security fixes;
+ - Other minor improvements/fixes/refactorings.
+
+&nbsp;
+
+#### v3.6.7 - 05/03/2019
 
  - The update on launch time is now optional. Read more in... README.md;
  - Some silent bugs fixes with error handling/catching on the checkForUpdates, updateMerger, editConfigFile.addProperty and editConfigFile.addFileToConfig;

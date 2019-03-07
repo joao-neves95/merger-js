@@ -1,7 +1,7 @@
 {
   "name": "merger-js",
   "displayName": "MergerJS",
-  "version": "3.6.7",
+  "version": "3.6.8",
   "description": "Yet another lightweight and simple cross-platform CLI build tool to bundle JavaScript files, with file imports, ES6+ minification, auto build capabilities, and native OS notifications.",
   "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
   "main": "merger.js",
@@ -16,8 +16,7 @@
   },
   "scripts": {
     "start": "merger init",
-    "test": "nsp check",
-    "test2": "snyk test"
+    "test": "npm audit"
   },
   "author": {
     "name": "shivayl",
@@ -34,21 +33,21 @@
   "license": "MIT",
   "deprecated": false,
   "dependencies": {
-    "chalk": "^2.4.1",
-    "chokidar": "^2.0.3",
+    "chalk": "^2.4.2",
+    "chokidar": "^2.1.2",
     "commander": "^2.15.1",
-    "inquirer": "^6.2.0",
+    "inquirer": "^6.2.2",
+    "js.system.collections": "^1.0.0",
     "line-by-line": "^0.1.6",
     "neo-async": "^2.5.1",
-    "node-notifier": "^5.2.1",
+    "node-notifier": "^5.4.0",
     "uglify-es": "^3.3.10"
   },
+  "devDependencies": {},
   "keywords": [
     "build",
-    "build tool",
     "bundler",
     "tool",
-    "make",
     "merge",
     "merger",
     "uglify",
@@ -60,8 +59,5 @@
     "front-end",
     "frontend",
     "cli"
-  ],
-  "devDependencies": {
-    "snyk": "^1.108.2"
-  }
+  ]
 }
