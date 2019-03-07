@@ -10,7 +10,7 @@
 const path = require('path');
 const writeConfigFile = require('../utils').writeJSONFile;
 const readConfigFile = require( '../utils' ).readConfigFile;
-const Dictionary = require( '../collections' ).Dictionary;
+const Dictionary = require( 'js.system.collections' ).Dictionary;
 const style = require('../consoleStyling');
 const newTimestamp = require('../newTimestamp').small;
 

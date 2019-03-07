@@ -9,8 +9,10 @@
 'use strict';
 const checkForUpdates = require('./checkForUpdates');
 const findFile = require( './utils' ).findFileOrDir;
-const addPropertyToConfigFile = require( './CLIModules/editConfigFile' ).addProperty;
-const Dictionary = require( './collections' ).Dictionary;
+const editConfigFile = require( './CLIModules/editConfigFile' );
+const Dictionary = require( 'js.system.collections' ).Dictionary;
+const newTimestamp = require( './newTimestamp' );
+const configKeys = require( '../models/configKeysEnum' );
 const style = require('./consoleStyling');
 
 module.exports = ( newConfig, Callback ) => {
@@ -24,7 +26,7 @@ module.exports = ( newConfig, Callback ) => {
         global.config = require( configPath );
         global.config.mergerConfigPath = configPath;
 
-        // Find the node_modules folder path and save it in merger-config.json if necessary.
+        // If the file is not present on the config, try to find the node_modules folder path and save it.
         if ( global.config.nodeModulesPath === null || global.config.nodeModulesPath === undefined ) {
 
           findFile( 'node_modules', async ( err, npmModulesPath ) => {
@@ -36,28 +38,49 @@ module.exports = ( newConfig, Callback ) => {
           } );
         }
 
-        // Update if needed.
+        // #region UPDATE
+
         if ( global.config.updateOnLaunch !== null && global.config.updateOnLaunch !== undefined ) {
+          // CHECK FOR UPDATES ON LAUNCH, IF NEEDED.
           if ( global.config.updateOnLaunch ) {
             try {
               await checkForUpdates();
+              propertiesToAdd.add( configKeys.lastUpdateCheck, newTimestamp.complete() );
 
             } catch ( e ) {
               // Continue;
             }
+
+          // CHECK FOR UPDATES ONCE A WEEK.
+          } else {
+            if ( global.config.lastUpdateCheck !== null || global.config.lastUpdateCheck !== undefined ) {
+              if ( new Date( global.config.lastUpdateCheck ) >= newTimestamp.addDaysToDate( global.config.lastUpdateCheck, 7 ) ) {
+                try {
+                  await checkForUpdates();
+                  propertiesToAdd.add( configKeys.lastUpdateCheck, newTimestamp.complete() );
+
+                } catch ( e ) {
+                  // Continue;
+                }
+              }
+            }
           }
 
-          // This is to not add breaking changes.
+        // This was add in order to not add breaking changes.
         } else {
           // Set to true by default.
-          propertiesToAdd.add( 'updateOnLaunch', true );
+          global.config.updateOnLaunch = true;
+          propertiesToAdd.add( configKeys.updateOnLaunch, true );
           try {
             await checkForUpdates();
+            propertiesToAdd.add( configKeys.lastUpdateCheck, newTimestamp.complete() );
 
           } catch ( e ) {
             // Continue;
           }
         }
+
+        // #endregion
 
         // Update glabal configurations set during the CLI launch.
         if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined )
@@ -67,7 +90,7 @@ module.exports = ( newConfig, Callback ) => {
           warnings: true
         };
 
-        await addPropertyToConfigFile( propertiesToAdd );
+        await editConfigFile.addProperty( propertiesToAdd );
         Callback();
 
       } catch ( e ) {
