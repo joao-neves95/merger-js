@@ -2,7 +2,7 @@
 
 - Add the new configuration properties to the config model;
 
-- Add support for importing files with imports;
+- Add support for forced imports (downloads) from external URLs;
 
 - When checking if a file already exists before downloading it, check its contents to see if it's '404: Not Found\n'. If it is download it again;
 
@@ -17,6 +17,8 @@
 - Add an edit source file command to the CLI;
 
 - Add more validation and error handling to the CLI;
+
+- Add support for importing files with imports (big one);
 
 - Add contributing guidelines;
 
