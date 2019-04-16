@@ -1,7 +1,7 @@
 {
   "name": "merger-js",
   "displayName": "MergerJS",
-  "version": "3.6.8",
+  "version": "3.6.9",
   "description": "Yet another lightweight and simple cross-platform CLI build tool to bundle JavaScript files, with file imports, ES6+ minification, auto build capabilities, and native OS notifications.",
   "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
   "main": "merger.js",
@@ -34,9 +34,9 @@
   "deprecated": false,
   "dependencies": {
     "chalk": "^2.4.2",
-    "chokidar": "^2.1.2",
-    "commander": "^2.15.1",
-    "inquirer": "^6.2.2",
+    "chokidar": "^2.1.5",
+    "commander": "^2.20.0",
+    "inquirer": "^6.3.1",
     "js.system.collections": "^1.0.0",
     "line-by-line": "^0.1.6",
     "neo-async": "^2.5.1",

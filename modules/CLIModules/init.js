@@ -6,66 +6,104 @@
  *
  */
 
-'use strict'
+'use strict';
 const prompt = require('../../node_modules/inquirer').createPromptModule();
 const UserConfig = require('../../models/userConfigModel');
-const writeConfigFile = require('../utils').writeJSONFile;
-const newTimestamp = require('../newTimestamp').small;
+const { writeJSONFile, findFileOrDir } = require('../utils');
+const newTimestamp = require( '../newTimestamp' ).small;
+const promptResonseType = require( '../../models/promptResponseType' );
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
+const initQuestions = [
+  {
+    type: 'list',
+    name: 'customize',
+    message: '\n Do you want to customize the configuration file? ',
+    choices: [promptResonseType.Afirmative, promptResonseType.Negative],
+    default: 'Yes'
+  }
+];
+
 // TODO: Add validation.
-const questions = [
+const customizationQuestions = [
   {
     type: 'list',
     name: 'uglify',
     message: '\n Minify the JS output build file? ',
-    choices: ['Yes', 'No'],
-    default: 'Yes'
+    choices: [promptResonseType.Afirmative, promptResonseType.Negative],
+    default: promptResonseType.Afirmative
   },
   {
     type: 'list',
     name: 'auto',
     message: '\n Enable auto builds? ',
-    choices: ['Yes', 'No'],
-    default: 'No'
+    choices: [promptResonseType.Afirmative, promptResonseType.Negative],
+    default: promptResonseType.Negative
   },
   {
     type: 'list',
     name: 'notifs',
     message: '\n Enable native OS notifications? ',
-    choices: ['Yes', 'No'],
-    default: 'Yes'
+    choices: [promptResonseType.Afirmative, promptResonseType.Negative],
+    default: promptResonseType.Afirmative
   }
 ];
 
+/**
+ * 
+ * @param { UserConfig } config UserConfig model.
+ */
+const __customizationPrompt = ( config ) => {
+  return new Promise( ( _res, _rej ) => {
+
+    prompt( [customizationQuestions[0], customizationQuestions[1], customizationQuestions[2]] ).then( async ( answers ) => {
+      // Minification:
+      if ( answers.uglify === promptResonseType.Negative )
+        config.uglify = false;
+      else
+        config.uglify = true;
+      // Auto builds:
+      if ( answers.auto === promptResonseType.Afirmative )
+        config.autoBuild = true;
+      else
+        config.autoBuild = false;
+      // Notifications:
+      if ( answers.notifs === promptResonseType.Afirmative )
+        config.notifications = true;
+      else
+        config.notifications = false;
+
+      return _res();
+    } );
+
+  } );
+};
+
 module.exports = () => {
-  prompt( [questions[0], questions[1], questions[2]] ).then( ( answers ) => {
-    let config = {};
-    // Minification:
-    if ( answers.uglify === 'No' )
-      config.uglify = false;
-    else
-      config.uglify = true;
-    // Auto builds:
-    if ( answers.auto === 'Yes' )
-      config.autoBuild = true;
-    else
-      config.autoBuild = false;
-    // Notifications:
-    if ( answers.notifs === 'Yes' )
-      config.notifications = true;
-    else
-      config.notifications = false;
+  let config = new UserConfig();
 
-    const userConfig = new UserConfig( config.uglify, config.autoBuild, config.notifications );
+  prompt( [initQuestions[0]] ).then( async answers => {
 
-    writeConfigFile( process.cwd(), 'merger-config', userConfig, ( err, data ) => {
+    if ( answers.customize === promptResonseType.Afirmative )
+      await __customizationPrompt( config );
+
+    try {
+      const nodeModulesFilePath = await findFileOrDir( 'node_modules' );
+      if ( nodeModulesFilePath !== false )
+        config.nodeModulesPath = nodeModulesFilePath;
+
+    } catch ( e ) {
+      // continue;
+    }
+
+    writeJSONFile( process.cwd(), 'merger-config', config, ( err, data ) => {
       if ( err )
         return console.error( err );
+
       else {
-        let timestamp = newTimestamp();
-        console.info( `\n ${timestamp} - Init successful.\n`, data, `\n ${finalInitMessage}` );
+        console.info( `\n ${newTimestamp()} - Init successful.\n`, data, `\n ${finalInitMessage}` );
       }
     } );
   } );
 };
+

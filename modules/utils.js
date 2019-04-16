@@ -170,7 +170,7 @@ const utils = {
             return returnError( err, reject, Callback );
 
           if ( fileOrDir === 'merger-config.json' )
-            console.error( style.styledError, ' merger-config file not found. Please run "merger init".' );
+            return console.error( style.styledError, ' merger-config file not found. Please run "merger init".' );
 
           if ( Callback )
             return Callback( null, false );

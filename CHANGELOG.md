@@ -2,7 +2,17 @@
 
 &nbsp;
 
-#### *v3.6.8 - 07/03/2019
+#### *v3.6.9 - 16/04/2019
+
+ - Merger init configuration customization is now optional;
+ - Added the new configuration properties to the config model and to the CLI's init module;
+ - Fixed theNewTimestamp module. It is now a "static" class. There was a bug because of self object properties reference;
+ - Other minor fixes and refactorings;
+ - Updated dependencies.
+
+&nbsp;
+
+#### v3.6.8 - 07/03/2019
 
  - MergerJS will now update only once per week;
  - Multiple dependency updates;
