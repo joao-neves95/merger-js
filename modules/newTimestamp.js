@@ -6,67 +6,78 @@
  *
  */
 
-'use strict'
+'use strict';
 
-module.exports = {
+/** (static) class for getting timestamp. */
+class NewTimestamp {
+  constructor() { }
+
   /** No milliseconds. */
-  small: () => {
+  static small() {
     const newTimestamp = new Date();
-    const milli = newTimestamp.getMilliseconds().toString();
     return newTimestamp.toLocaleString();
-  },
+  }
+
   /** Seconds are represented by 2 digits. */
-  big: () => {
+  static big() {
     const newTimestamp = new Date();
     const milli = newTimestamp.getMilliseconds().toString();
     return newTimestamp.toLocaleString() + '.' + milli.substr( 0, 2 );
-  },
+  }
+
   /** Seconds are represented by 3 digits. */
-  max: () => {
+  static max() {
     const newTimestamp = new Date();
     const milli = newTimestamp.getMilliseconds().toString();
     return newTimestamp.toLocaleString() + '.' + milli;
-  },
+  }
+
   /** A complete timestamp (current date and time according to system settings for timezone offset). */
-  complete: () => {
+  static complete() {
     return new Date();
-  },
+  }
+
+  static completeLocale() {
+    return new Date( NewTimestamp.complete().toLocaleString() );
+  }
 
   /** 
    * 
    * @param { number } amount The amount of months from now.
    */
-  monthsFromNow: ( amount ) => {
-    return addMonthsToDate( complete(), amount );
-  },
+  static monthsFromNow( amount ) {
+    return addMonthsToDate( NewTimestamp.complete(), amount );
+  }
 
   /** 
    * 
    * @param { Date | string | number } date
    * @param { number } amount
    */
-  addMonthsToDate: ( date, amount ) => {
+  static addMonthsToDate( date, amount ) {
     date = new Date( date );
     date.setMonth( date.getMonth() + amount );
     return date;
-  },
+  }
 
   /** 
    * 
    * @param { number } amount The amount of days from now.
    */
-  daysFromNow: ( amount ) => {
-    return addDaysToDate( complete(), amount );
-  },
+  static daysFromNow( amount ) {
+    return addDaysToDate( NewTimestamp.complete(), amount );
+  }
 
   /**
    * 
    * @param { Date | string | number } date
    * @param { number } amount
    */
-  addDaysToDate: ( date, amount ) => {
+  static addDaysToDate( date, amount ) {
     date = new Date( date );
     date.setDate( date.getDate() + amount );
     return date;
   }
-};
+}
+
+module.exports = NewTimestamp;

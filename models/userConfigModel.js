@@ -6,7 +6,8 @@
  *
  */
 
-'use strict'
+'use strict';
+const newTimestamp = require( '../modules/newTimestamp' ).completeLocale;
 
 class UserConfig {
   constructor (uglify, autoBuild, notifications) {
@@ -15,10 +16,14 @@ class UserConfig {
       github: 'https://github.com/joao-neves95/merger-js',
       readme: 'https://github.com/joao-neves95/merger-js/blob/master/README.md',
       changelog: 'https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md'
-    }
-    this.uglify = uglify;
-    this.autoBuild = autoBuild;
-    this.notifications = notifications;
+    };
+
+    this.uglify = uglify === undefined || uglify === null ? true : uglify;
+    this.autoBuild = autoBuild === undefined || autoBuild === null ? false : autoBuild;
+    this.notifications = notifications === undefined || notifications === null ? true : notifications;
+    this.updateOnLaunch = true;
+    this.lastUpdateCheck = newTimestamp();
+    this.nodeModulesPath = "";
     this.sourceFiles = [];
   }
 }

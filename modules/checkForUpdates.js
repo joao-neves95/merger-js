@@ -13,8 +13,12 @@ const style = require('./consoleStyling');
 const UPDATE_ERROR = `\n ${style.warningTitle('Warn: ')} ${style.warningText('There was an error while checking for a MergerJS update.\n Please, check for updates manualy and if the problem persists, create an issue on GitHub.')}`;
 
 /**
- * @param { Function } Callback Optional. < void | Error >
- * @returns { Promise<void|Error> }
+ * 
+ * Updates MergerJS.
+ * It returns true if the update was successfull, false if the update was not necessary or an Error in case of error.
+ * 
+ * @param { Function } Callback Optional. < boolean | Error >
+ * @returns { Promise<boolean|Error> }
  */
 module.exports = ( Callback ) => {
   return new Promise( ( _resolve, _reject ) => {
@@ -39,14 +43,14 @@ module.exports = ( Callback ) => {
             console.warn( `\n ${style.warningText( 'There is a newer version of MergerJS' )} \n Please, run "npm i merger-js -g" or "merger update" to update.\n ${global.version} -> ${latestVersion}\n\n CHANGELOG: https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md \n` );
             notify( 'New version of MergerJS available.', `Please, run "merger update" to update.\n${global.version} -> ${latestVersion}` );
 
-            if ( Callback ) return Callback();
-            return _resolve();
+            if ( Callback ) return Callback( true );
+            return _resolve( true );
 
           } else {
             console.info( style.successText( ' MergerJS is up to date.' ) );
 
-            if ( Callback ) return Callback();
-            return _resolve();
+            if ( Callback ) return Callback( false );
+            return _resolve( true );
           }
 
         } );
