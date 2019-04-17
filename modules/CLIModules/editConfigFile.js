@@ -7,16 +7,35 @@
  */
 
 'use strict';
-const path = require('path');
-const writeConfigFile = require('../utils').writeJSONFile;
-const readConfigFile = require( '../utils' ).readConfigFile;
+const fs = require( 'fs' );
+const path = require( 'path' );
+const writeConfigFile = require( '../utils' ).writeJSONFile;
+const findFileOrDir = require( '../utils' ).findFileOrDir;
 const Dictionary = require( 'js.system.collections' ).Dictionary;
-const style = require('../consoleStyling');
-const newTimestamp = require('../newTimestamp').small;
+const style = require( '../consoleStyling' );
+const newTimestamp = require( '../newTimestamp' ).small;
 
-module.exports = {
-  editConfigKey: ( key, value, Callback ) => {
-    readConfigFile( ( err, configFilePath, data ) => {
+/** (static) */
+class EditConfigFile {
+  constructor() {
+    throw new Error( 'Can not instantiate the static class EditConfigFile.' );
+  }
+
+  /**
+   * @param { Function } Callback Callback return arguments: ( error, configFilePath, data )
+   */
+  static readConfigFile( Callback ) {
+    findFileOrDir( 'merger-config.json', ( err, configFilePath ) => {
+      fs.readFile( configFilePath, 'utf8', ( err, data ) => {
+        if ( err ) return Callback( err, null, null );
+
+        return Callback( null, configFilePath, data );
+      } );
+    } );
+  }
+
+  static editConfigKey( key, value, Callback ) {
+    EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
       if ( err )
         return console.error( err );
 
@@ -40,7 +59,7 @@ module.exports = {
           Callback();
       } );
     } );
-  },
+  }
 
   /**
    * It adds the new SourceFile(Model) into the merger-config.json file.
@@ -50,10 +69,10 @@ module.exports = {
    * 
    * @returns { Promise<void> } void
    */
-  addFileToConfig: ( newSourceFile, Callback ) => {
+  static addFileToConfig( newSourceFile, Callback ) {
     return new Promise( ( _resolve, _reject ) => {
 
-      readConfigFile( ( err, configFilePath, data ) => {
+      EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
         if ( err )
           return console.error( style.styledError, err );
 
@@ -82,10 +101,10 @@ module.exports = {
       } );
 
     } );
-  },
+  }
 
-  removeSourceFile: ( sourceFileObject, Callback ) => {
-    readConfigFile( ( err, configFilePath, data ) => {
+  static removeSourceFile( sourceFileObject, Callback ) {
+    EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
       if ( err )
         return console.error( style.styledError, err );
 
@@ -121,29 +140,28 @@ module.exports = {
           Callback();
       } );
     } );
-  },
+  }
 
   /**
    * It adds a new property and value to the merger-config.json file.
    * VALUE is optional if KEY is a Dictionary of key/value par dictionaries.
    * 
-   * @param { string | Dictionary} key Config property. < string | Dictionary<string, any> >
-   * @param { any } value Config property value.
-   * @param { Function } Callback Optional. Called when the config file editing ends.
+   * @param { string | Dictionary } key Config property. < string | Dictionary<string, any> >
+   * @param { any } value  Config property value. (Optional if the "key" property is a dictionary)
+   * @param { Function } Callback (Optional) Called when the config file editing ends.
    * 
    * @returns { Promise<void|Error> } void
    */
-  addProperty: ( key, value, Callback ) => {
+  static addProperty( key, value, Callback ) {
     return new Promise( ( _resolve, _reject ) => {
       try {
-
-        readConfigFile( ( err, configFilePath, data ) => {
+        EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
           if ( err ) {
             console.error( err );
             return _reject( err );
           }
 
-          let userConfig = JSON.parse( data );
+          const userConfig = JSON.parse( data );
 
           if ( key instanceof Dictionary ) {
             key.__forEach( ( keyValueObj ) => {
@@ -172,4 +190,6 @@ module.exports = {
       }
     } );
   }
-};
+}
+
+module.exports = EditConfigFile;

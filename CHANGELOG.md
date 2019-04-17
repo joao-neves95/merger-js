@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### *v3.6.9 - 16/04/2019
+#### *v3.7.0 - 17/04/2019
+
+ - Added a drop down in the "merger add" CLI command with all the files in that directory and an option to input a custom one;
+ - Added support for importing an entire directory of .js files inside node_modules;
+ - Added support for forced imports (downloads) from external URLs;
+ - Other fixes/improvements.
+
+&nbsp;
+
+#### v3.6.9 - 16/04/2019
 
  - Merger init configuration customization is now optional;
  - Added the new configuration properties to the config model and to the CLI's init module;

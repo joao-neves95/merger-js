@@ -25,24 +25,24 @@ module.exports = {
   getAsync: ( url, parseJson = true, Callback ) => {
     return new Promise( ( resolve, reject ) => {
 
-      https.get( url, ( res ) => {
-        res.setEncoding( 'utf8' );
+      try {
+        https.get( url, ( res ) => {
+          res.setEncoding( 'utf8' );
 
-        let allData = '';
+          let allData = '';
 
-        res.on( 'data', ( resData ) => {
-          allData += resData;
-        } );
+          res.on( 'data', ( resData ) => {
+            allData += resData;
+          } );
 
-        res.on( 'error', ( err ) => {
-          if ( Callback )
-            return Callback( err, null );
+          res.on( 'error', ( err ) => {
+            if ( Callback )
+              return Callback( err, null );
 
-          reject( err );
-        } );
+            reject( err );
+          } );
 
-        res.on( 'end', () => {
-          try {
+          res.on( 'end', () => {
             if ( parseJson )
               allData = JSON.parse( allData );
 
@@ -51,15 +51,15 @@ module.exports = {
 
             resolve( allData );
 
-          } catch ( err ) {
-            if ( Callback )
-              return Callback( err, null );
-
-            reject( err );
-          }
+          } );
         } );
 
-      } );
+      } catch ( e ) {
+        if ( Callback )
+          return Callback( e, null );
+
+        reject( e );
+      }
 
     } );
   }

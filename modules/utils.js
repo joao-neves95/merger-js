@@ -9,19 +9,22 @@
 'use strict';
 const fs = require('fs');
 const path = require( 'path' );
-const url = require( 'url' );
 const whilst = require( '../node_modules/neo-async' ).whilst;
 const each = require( '../node_modules/neo-async' ).each;
 const style = require( './consoleStyling' );
 
-const utils = {
+class Utils {
+  constructor() {
+    throw new Error( 'Can not instantiate the static class "Utils"' );
+  }
+
   /**
    * @param { string } path The directory path.
    * @param { Function } Callback Optional. (err, files[])
    * 
    * @returns { Promise<string[] | Error> }
    */
-  readDir: ( path, Callback ) => {
+  static readDir( path, Callback ) {
     return new Promise( ( resolve, reject ) => {
 
       fs.readdir( path, 'utf8', ( err, files ) => {
@@ -40,9 +43,9 @@ const utils = {
       } );
 
     } );
-  },
+  }
 
-  writeJSONFile: ( dir, fileName, data, callback ) => {
+  static writeJSONFile( dir, fileName, data, callback ) {
     let jsonData = JSON.stringify( data, null, '\t' );
 
     fs.writeFile( path.join( dir, fileName + '.json' ), jsonData, 'utf8', ( err ) => {
@@ -51,54 +54,41 @@ const utils = {
       else
         callback( null, jsonData );
     } );
-  },
-
-  /**
-   * @param { Function } Callback Callback return arguments: ( error, configFilePath, data )
-   */
-  readConfigFile: ( Callback ) => {
-    utils.findFileOrDir( 'merger-config.json', (err, configFilePath ) => {
-      fs.readFile( configFilePath, 'utf8', ( err, data ) => {
-        if ( err ) return Callback( err, null, null );
-
-        return Callback( null, configFilePath, data );
-      } );
-    } );
-  },
+  }
 
   // Based on npm's strip-bom.
   /**
    * Remove unicode character FEFF (UTF-16 BOM) from a string block.
    * @param { string } stringBlock
    */
-  removeBOM( stringBlock ) {
+  static removeBOM( stringBlock ) {
     if ( stringBlock.charCodeAt( 0 ) === 0xFEFF )
       return stringBlock.slice( 1 );
 
     return stringBlock;
-  },
+  }
 
   /**
    * @param { string } importStatement The import file line input (from the user header/source file).
    * @returns { string } The cleaned file name.
    */
-  cleanImportFileInput: ( importStatement ) => {
-    return importStatement.replace( /\'|;|"|,|\/\/@import|\/\/@|\/\/\$import|\/\/$|\/\/\%import|\/\/%/g, '' );
-  },
+  static cleanImportFileInput( importStatement ) {
+    return Utils.removeImportFromInput( importStatement.replace( /\'|;|"|,/g, '' ) );
+  }
 
-  removeImportFromInput: ( importStatement ) => {
-    return importStatement.replace( /\/\/@import|\/\/@|\/\/\$import|\/\/$|\/\/\%import|\/\/%/g, '' );
-  },
+  static removeImportFromInput( importStatement ) {
+    return importStatement.replace( /\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/g, '' );
+  }
 
   /**
    * @param { string } url
    * 
    * @return { string }
    */
-  getFileNameFromUrl: ( url ) => {
+  static getFileNameFromUrl( url ) {
     const fileNameArr = new URL( url ).pathname.split( '/' );
     return fileNameArr[fileNameArr.length - 1];
-  },
+  }
 
   /**
    * From the current directory ( process.cwd() ), it searches for and returns the path of the requested file or directory, false if the file was not found or an error.
@@ -108,7 +98,7 @@ const utils = {
    * 
    * @returns { Promise<string | false | Error> }
    */
-  findFileOrDir: ( fileOrDir, Callback ) => {
+  static findFileOrDir( fileOrDir, Callback ) {
 
     const returnError = ( err, reject, Callback ) => {
       console.error( style.styledError, err );
@@ -126,14 +116,10 @@ const utils = {
       let lastDir;
 
       whilst( () => {
-        let isToContinue;
-
-        !currentDir ? isToContinue = false :
-          ( lastDir === currentDir ) ? isToContinue = false :
-            foundFile ? isToContinue = false :
-              isToContinue = true;
-
-        return isToContinue;
+        return !currentDir ? false :
+                 lastDir === currentDir ? false :
+                   foundFile ? false :
+                     true;
       },
         ( whilstAgain ) => {
           fs.readdir( currentDir, 'utf8', ( err, files ) => {
@@ -180,7 +166,7 @@ const utils = {
       );
 
     } );
-  },
+  }
 
   /**
    * @param { string } path
@@ -188,7 +174,7 @@ const utils = {
    * 
    * @returns { Promise<boolean | Error> }
    */
-  fileExists: ( path, Callback ) => {
+  static fileExists( path, Callback ) {
     return new Promise( ( resolve, reject ) => {
 
       fs.open( path, 'r', ( err, fd ) => {
@@ -216,7 +202,7 @@ const utils = {
       } );
 
     } );
-  },
+  }
 
   /**
    * @param { string } fileName
@@ -225,7 +211,7 @@ const utils = {
    * 
    * @returns { Promise<void | Error> }
    */
-  saveFileInNodeModules: ( fileName, data, Callback ) => {
+  static saveFileInNodeModules( fileName, data, Callback ) {
     return new Promise( ( resolve, reject ) => {
 
       fs.writeFile( path.join( global.config.nodeModulesPath, fileName ), data, 'utf8', ( err ) => {
@@ -243,7 +229,7 @@ const utils = {
         resolve();
       } );
     } );
-  },
+  }
 
   /**
    * NOTE: Only use this function after the initial config.js configuration parser has been called.
@@ -253,16 +239,16 @@ const utils = {
    * 
    * @return { Promise<boolean | Error> }
    */
-  createNodeModulesIfNeeded: ( Callback ) => {
+  static createNodeModulesIfNeeded( Callback ) {
     return new Promise( ( resolve, reject ) => {
 
-      if ( global.config.nodeModulesPath === null || global.config.nodeModulesPath === undefined ) {
+      if ( global.config.nodeModulesPath === null || global.config.nodeModulesPath === undefined || global.config.nodeModulesPath === '' ) {
         const nodeModulesPath = path.join( path.dirname( global.config.mergerConfigPath ), 'node_modules' );
 
-        fs.mkdir( nodeModulesPath, ( err ) => {
+        fs.mkdir( nodeModulesPath, async ( err ) => {
           if ( err ) {
             if ( Callback )
-              return Callback( err );
+              return Callback( err, null );
 
             return reject( err );
           }
@@ -284,6 +270,6 @@ const utils = {
       }
     } );
   }
-};
+}
 
-module.exports = utils;
+module.exports = Utils;

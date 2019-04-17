@@ -20,7 +20,7 @@ const initQuestions = [
     name: 'customize',
     message: '\n Do you want to customize the configuration file? ',
     choices: [promptResonseType.Afirmative, promptResonseType.Negative],
-    default: 'Yes'
+    default: promptResonseType.Afirmative
   }
 ];
 

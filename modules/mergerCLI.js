@@ -8,16 +8,16 @@
 
 'use strict';
 const CLI = require('../node_modules/commander');
-const init = require('./cliModules/init');
+const init = require('./CLIModules/init');
 const update = require('./updateMerger');
-const editConfigKey = require('./cliModules/editConfigFile').editConfigKey;
-const addFileToConfig = require('./cliModules/editConfigFile').addFileToConfig;
-const removeFileFromConfig = require('./cliModules/editConfigFile').removeSourceFile;
-const addFilesPrompt = require('./cliModules/addFilesPrompt');
-const selectSourceFile = require('./cliModules/selectSourceFilePrompt');
-const readConfigFile = require('./utils').readConfigFile;
+const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
+const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
+const removeFileFromConfig = require('./CLIModules/editConfigFile').removeSourceFile;
+const addFilesPrompt = require('./CLIModules/addFilesPrompt');
+const selectSourceFile = require( './CLIModules/selectSourceFilePrompt' );
+const EditConfigFile = require( './CLIModules/editConfigFile' );
 const style = require('./consoleStyling');
-const configKeys = require('../models/configKeysEnum');
+const ConfigKeysType = require('../models/configKeysEnum');
 global.version = require('../package.json').version;
 
 module.exports = ( Callback ) => {
@@ -90,21 +90,21 @@ module.exports = ( Callback ) => {
         case 'MINIFY':
         case 'UGLIFY':
         case 'MNFY':
-          Key = configKeys.minify;
+          Key = ConfigKeysType.minify;
           break;
         case 'AUTOBUILD':
         case 'AUTO':
-          Key = configKeys.autoBuild;
+          Key = ConfigKeysType.autoBuild;
           break;
         case 'NOTIFICATIONS':
         case 'NOTIFS':
         case 'NOTIFY':
         case 'NTFS':
-          Key = configKeys.notifs;
+          Key = ConfigKeysType.notifs;
           break;
         case 'UPDATEONLAUNCH':
         case 'UPDTONLNCH':
-          Key = configKeys.updateOnLaunch;
+          Key = ConfigKeysType.updateOnLaunch;
           break;
         default:
           console.error( ` ${style.styledError}${style.errorText( `Unknown configuration key - ${key}.` )}` );
@@ -142,7 +142,7 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'log' )
     .action( () => {
-      readConfigFile( ( err, configFilePath, data ) => {
+      EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
         console.log( `\n ${style.successText( 'Merger config file path:' )}`, configFilePath );
         console.log( `\n ${style.successText( 'Configuration File:\n' )}`, data );
       } );

@@ -77,7 +77,7 @@ npm install merger-js -g
    ```
    // $import 'sweetalert2/dist/sweetalert2.all.min.js'
    // %import 'https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/cjs/react.development.js'
-   // %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'
+   // %<<github '/twbs/bootstrap/master/dist/js/bootstrap.min.js'
    // @'externalLibs'
    // @import<<dir '/enums/'
    // @import 'utilities'
@@ -115,19 +115,27 @@ npm install merger-js -g
 - ```// @import 'relativePathToTheFile'``` or ```// @'relativePathToTheFile'```:<br/>
    Using an ```@``` token on an import statement imports a file relative to the header file.<br/>
 
-  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory. Using this method, the files are not compiled in any specific order.<br/>
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory. 
+    Using this method, the files are not compiled in any specific order.<br/>
     E.g.: ``` // @import<<dir '../otherDirectory/'``` ```// @<<DIR 'someDirectoryHere/'```
 
 - ```// $import 'pathRelativeToNodeModules'``` or ```// $'node_modules_file'```:<br/>
    Using a ```$``` token imports relative to the "node_modules" directory.
 
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```$import```, imports an entire directory from node_modules. 
+    Using this method, the files are not compiled in any specific order.<br/>
+    E.g.: ``` // $import<<dir '../otherDirectory/'``` ```// $<<DIR 'someDirectoryHere/'```
+
 - ```// %import 'https://specificUrl.com/file.min.js'``` or ```// $'https://specificUrl.com/file.min.js'```:<br/>
   Using a ```%``` token imports a file from a specific URL. The file is downloaded and stored in node_modules in the first time and later fetch from there in order to not download the file in each build.<br/>
+
+  * Adding a double ```%%``` token forces the download on every build (good for updates);<br/>
+    E.g.: ```// %%'/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```<br/>
 
   * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
   If the branch name is not provided, it defaults to the "master" branch.<br/>
     E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
-         ```// $<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
+          ```// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
 
 &nbsp;
 
