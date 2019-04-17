@@ -11,7 +11,8 @@ const configKeys = Object.freeze( {
   autoBuild: 'autoBuild',
   notifs: 'notifications',
   updateOnLaunch: 'updateOnLaunch',
-  lastUpdateCheck: 'lastUpdateCheck'
+  lastUpdateCheck: 'lastUpdateCheck',
+  nodeModulesPath: 'nodeModulesPath'
 } );
 
 module.exports = configKeys;

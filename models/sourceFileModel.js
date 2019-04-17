@@ -8,12 +8,15 @@
 
 'use strict';
 
-const sourceFileModel = Object.seal( {
-    source: '',
-    output: {
+class SourceFileModel {
+  constructor() {
+    this.source = '';
+
+    this.output = {
       path: '',
       name: ''
-    }
-} );
+    };
+  }
+}
 
-module.exports = sourceFileModel;
+module.exports = SourceFileModel;

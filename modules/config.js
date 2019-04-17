@@ -12,7 +12,7 @@ const findFile = require( './utils' ).findFileOrDir;
 const editConfigFile = require( './CLIModules/editConfigFile' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const newTimestamp = require( './newTimestamp' );
-const ConfigKeys = require( '../models/ConfigKeysEnum' );
+const ConfigKeysType = require( '../models/configKeysEnum' );
 const style = require('./consoleStyling');
 
 module.exports = ( newConfig, Callback ) => {
@@ -25,14 +25,14 @@ module.exports = ( newConfig, Callback ) => {
       global.config.mergerConfigPath = configPath;
 
       // If the node_modules's path is not present on the config, try to find it and save it.
-      if ( global.config.nodeModulesPath === null &&
-           global.config.nodeModulesPath === undefined &&
+      if ( global.config.nodeModulesPath === null ||
+           global.config.nodeModulesPath === undefined ||
            global.config.nodeModulesPath === "" )
       {
         findFile( 'node_modules', async ( err, npmModulesPath ) => {
           if ( npmModulesPath !== false ) {
             global.config.nodeModulesPath = npmModulesPath;
-            propertiesToAdd.add( 'nodeModulesPath', npmModulesPath );
+            propertiesToAdd.add( ConfigKeysType.nodeModulesPath, npmModulesPath );
           }
         } );
       }
@@ -57,7 +57,7 @@ module.exports = ( newConfig, Callback ) => {
       } else {
         // Set to true by default.
         global.config.updateOnLaunch = true;
-        propertiesToAdd.add( ConfigKeys.updateOnLaunch, true );
+        propertiesToAdd.add( ConfigKeysType.updateOnLaunch, true );
         await ____checkForUpdatesAsync( propertiesToAdd );
       }
 
@@ -83,7 +83,7 @@ module.exports = ( newConfig, Callback ) => {
 const ____checkForUpdatesAsync = async ( propertiesToAdd ) => {
   try {
     await checkForUpdates();
-    propertiesToAdd.add( ConfigKeys.lastUpdateCheck, newTimestamp.completeLocale() );
+    propertiesToAdd.add( ConfigKeysType.lastUpdateCheck, newTimestamp.completeLocale() );
 
   } catch ( e ) {
     // continue;

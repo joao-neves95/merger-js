@@ -50,7 +50,7 @@ module.exports = ( Callback ) => {
             console.info( style.successText( ' MergerJS is up to date.' ) );
 
             if ( Callback ) return Callback( false );
-            return _resolve( true );
+            return _resolve( false );
           }
 
         } );

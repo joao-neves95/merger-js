@@ -96,7 +96,7 @@ module.exports = {
           if ( Callback )
             return Callback( e );
 
-          reject( e );
+          return reject( e );
         }
 
     } );

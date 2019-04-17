@@ -9,13 +9,21 @@
 'use strict'
 const path = require('path');
 const prompt = require('../../node_modules/inquirer').createPromptModule();
-const sourceFile = require('../../models/sourceFileModel');
+const SourceFile = require( '../../models/sourceFileModel' );
+const { readDir } = require( '../utils' );
 
 let questions = [
   {
+    type: 'list',
+    name: 'sourceFileSelect',
+    message: 'Source file. Select the file with the imports or select "CUSTOM FILE" to input a custom file.',
+    choices: ['>> CUSTOM FILE <<'],
+    default: process.cwd()
+  },
+  {
     type: 'input',
-    name: 'sourceFile',
-    message: 'Source file. What is the file that has the all the imports?\n Input the file name, or a relative path.\n The directory is already provided: ',
+    name: 'customSourceFile',
+    message: '\n Input the file name, or a relative path to the curent directory.\n The current directory is already provided: ',
     default: process.cwd()
   },
   {
@@ -32,21 +40,39 @@ let questions = [
   }
 ];
 
-module.exports = ( Callback ) => {
-  prompt( [questions[0], questions[1], questions[2]] ).then( ( answers ) => {
-    let source = answers.sourceFile;
-    if ( path.extname( source ) === '' )
-      source += '.js';
+module.exports = async ( Callback ) => {
+  const currentDir = process.cwd();
+  /** @type { string[] } */
+  const allFilesFromCurrentDir = await readDir( currentDir );
+  for ( let i = 0; i < allFilesFromCurrentDir.length; ++i ) {
+    if ( path.extname( allFilesFromCurrentDir[i] ) !== '' )
+      questions[0].choices.push( allFilesFromCurrentDir[i] );
+  }
 
-    sourceFile.source = path.join( process.cwd(), source );
-    sourceFile.output.path = path.join( process.cwd(), answers.outputPath );
+  const sourceFile = new SourceFile();
+  let answers = await prompt( [questions[0]] );
 
-    let outputName = answers.outputName;
-    if ( path.extname( outputName ) === '' )
-      outputName += '.js';
+  // SELECTED FILE
+  if ( answers.sourceFileSelect !== '>> CUSTOM FILE <<' ) {
+    sourceFile.source = path.join( currentDir, answers.sourceFileSelect );
 
-    sourceFile.output.name = outputName;
+  // CUSTOM FILE PATH
+  } else {
+    answers = await prompt( [questions[1]] );
 
-    Callback( sourceFile );
-  } );
+    sourceFile.source = answers.customSourceFile;
+    if ( path.extname( sourceFile.source ) === '' )
+      sourceFile.source += '.js';
+
+    sourceFile.source = path.join( currentDir, sourceFile.source );
+  }
+
+  answers = await prompt( [questions[2], questions[3]] );
+
+  sourceFile.output.path = path.join( currentDir, answers.outputPath );
+  sourceFile.output.name = answers.outputName;
+  if ( path.extname( sourceFile.output.name ) === '' )
+    sourceFile.output.name += '.js';
+
+  return Callback( sourceFile );
 };
