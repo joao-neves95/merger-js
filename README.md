@@ -5,7 +5,7 @@
 
  Yet another lightweight and simple cross-platform CLI build tool to bundle JavaScript files, with file imports, ES6+ minification, auto build capabilities, and native OS notifications. 
  
- Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in conjunction with this tool. You can use ES6+.
+ Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES6+.
  
  **MergerJS *does not* support circular dependencies**
  
@@ -40,6 +40,7 @@
  - [x] **Import a directory** (use ```@import<<DIR 'directoryName/'```)
  - [x] **Import a file from the node_modules folder** (use ```$import 'file-name'```)
  - [x] **Import a file from an URL** (use ```%import 'url'```)
+ - [x] **Import a file from a GitHub repository** (use ```%import<<github '<userName>/<repositoryName>/<branchName>/<pathToFile>.js'```)
  
 &nbsp;
 
@@ -126,7 +127,7 @@ npm install merger-js -g
     Using this method, the files are not compiled in any specific order.<br/>
     E.g.: ``` // $import<<dir '../otherDirectory/'``` ```// $<<DIR 'someDirectoryHere/'```
 
-- ```// %import 'https://specificUrl.com/file.min.js'``` or ```// $'https://specificUrl.com/file.min.js'```:<br/>
+- ```// %import 'https://specificUrl.com/file.min.js'``` or ```// %'https://specificUrl.com/file.min.js'```:<br/>
   Using a ```%``` token imports a file from a specific URL. The file is downloaded and stored in node_modules in the first time and later fetch from there in order to not download the file in each build.<br/>
 
   * Adding a double ```%%``` token forces the download on every build (good for updates);<br/>
@@ -134,7 +135,7 @@ npm install merger-js -g
 
   * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
   If the branch name is not provided, it defaults to the "master" branch.<br/>
-    E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>'```<br/>
+    E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>.js'```<br/>
           ```// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
 
 &nbsp;
