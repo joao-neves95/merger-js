@@ -175,9 +175,11 @@ npm install merger-js -g
 
 &nbsp;
 
-## Header File Example
+## Header File Examples
 
 [portfolioOS.header.js](https://github.com/joao-neves95/portfolio-os/blob/master/client/private/js/src/portfolioOS.header.js)
+
+[js.system.collections.header.js](https://github.com/joao-neves95/js.system.collections/blob/master/js.system.collections.header.js)
 
 &nbsp;
 
