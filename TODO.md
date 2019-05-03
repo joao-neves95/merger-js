@@ -4,8 +4,6 @@
 
 - When checking if a file already exists before downloading it, check its contents to see if it's '404: Not Found\n'. If it is download it again;
 
-- Add support for importing an entire directory of files from GitHub (``` // %import<<GH<<DIR 'dirFromGithub/' ```);
-
 - Add an edit source file command to the CLI;
 
 - Clean up the fileDownloader module (BIG refactoring; need to also redo the entire httpClient module);

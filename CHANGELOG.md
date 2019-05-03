@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.7.0 - 17/04/2019
+#### *v3.8.0 - /05/2019
+
+ | Added support for importing an entire directory of files from GitHub (// %import<<GH<<DIR 'dirFromGithub/');
+
+&nbsp;
+
+#### v3.7.0 - 17/04/2019
 
  - Added a drop down in the "merger add" CLI command with all the files in that directory and an option to input a custom one;
  - Added support for importing an entire directory of .js files inside node_modules;
