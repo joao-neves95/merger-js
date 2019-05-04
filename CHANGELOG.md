@@ -1,8 +1,15 @@
-﻿# CHANGELOG
+# CHANGELOG
 
 &nbsp;
 
-#### *v3.7.0 - 17/04/2019
+#### *v3.7.1 - 04/05/2019
+
+ - Fixed a bug when importing from directories. It was importing relative to the header file instead of the directory of the 
+   header file, like it used to (bug from last update).
+
+&nbsp;
+
+#### v3.7.0 - 17/04/2019
 
  - Added a drop down in the "merger add" CLI command with all the files in that directory and an option to input a custom one;
  - Added support for importing an entire directory of .js files inside node_modules;

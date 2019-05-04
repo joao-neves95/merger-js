@@ -175,14 +175,15 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
   {
     treatedLine = treatedLine.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
     treatedLine = Utils.cleanImportFileInput( treatedLine );
-    const thisDir = path.join( thePath, treatedLine );
+    // treatedLine now holds the directory inputed by the user.
+    const thisDir = path.join( path.dirname( thePath ), treatedLine );
 
     try {
       const files = await Utils.readDir( thisDir );
 
       for ( let i = 0; i < files.length; ++i ) {
-        if ( path.extname( files[i] ) === '.js'  )
-          buildOrder.push( path.join( thisDir, files[i] ) );
+        if ( path.extname( files[i] ) === '.js' )
+          buildOrder.push( path.join( treatedLine, files[i] ) );
       }
 
     } catch ( e ) {

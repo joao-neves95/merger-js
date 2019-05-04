@@ -11,6 +11,7 @@ const httpClient = require( './httpClient' );
 const Utils = require( './utils' );
 const style = require( './consoleStyling' );
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
+const GITHUB_API_BASE_URL = 'https://api.github.com/';
 
 module.exports = {
   /**
@@ -41,6 +42,17 @@ module.exports = {
     } );
   },
 
+  // --------------------------------------------------------------------------------------------------
+  // Add new sintax, but support the previous one when it's a single file to not add breaking changes.
+  // (?) // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
+  // (?) // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
+  // --------------------------------------------------------------------------------------------------
+  //     E.g.: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
+  // (?) E.g.: // %import<<GH::v4 '{user}/{repo}/{pathToFile}.js'
+  // (?) E.g.: // %import<<GH::master<<DIR '{user}/{repo}/{pathToDir}.js'
+  // --------------------------------------------------------------------------------------------------
+
+  // https://api.github.com/repos/{user}/{repoName}/contents?ref={branch}
   /**
    * Downloads a file from GitHub and saves it to node_modules. Returns the file name or an error.
    * 
