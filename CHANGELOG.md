@@ -1,10 +1,11 @@
-﻿# CHANGELOG
+# CHANGELOG
 
 &nbsp;
 
-#### *v3.8.0 - /05/2019
+#### *v3.7.1 - 04/05/2019
 
- | Added support for importing an entire directory of files from GitHub (// %import<<GH<<DIR 'dirFromGithub/');
+ - Fixed a bug when importing directories. It imported relative to the header file 
+   instead of the directory of the header file (bug from last update).
 
 &nbsp;
 
