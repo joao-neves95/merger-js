@@ -4,8 +4,8 @@
 
 #### *v3.7.1 - 04/05/2019
 
- - It was importing relative to the header file instead of the directory of the 
-   header, file like it used to (bug from last update).
+ - Fixed a bug when importing from directories. It was importing relative to the header file instead of the directory of the 
+   header file, like it used to (bug from last update).
 
 &nbsp;
 
