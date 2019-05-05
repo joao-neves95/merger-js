@@ -6,6 +6,8 @@
 
 - Add an edit source file command to the CLI;
 
+- Output the output of `merger update`;
+
 - Clean up the fileDownloader module (BIG refactoring; need to also redo the entire httpClient module);
 
 - Add support for importing files with imports (big one);
