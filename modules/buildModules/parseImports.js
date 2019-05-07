@@ -32,7 +32,7 @@ module.exports = ( Path, Callback ) => {
     let thisFile;
     let treatedLine = line.replace( /\s/g, '' );
 
-    lastLineWasComment = treatedLine.startsWith( '//' );
+    lastLineWasComment = treatedLine.trimStart().startsWith( '//' );
 
     // #region IMPORT FROM RELATIVE PATH OR DIRECTORY
 
@@ -49,9 +49,9 @@ module.exports = ( Path, Callback ) => {
 
       ++lineNum;
 
-    // #endregion
+      // #endregion
 
-    // #region IMPORT FROM node_modules
+      // #region IMPORT FROM node_modules
 
     } else if ( treatedLine.startsWith( '$import', 2 ) || treatedLine.startsWith( '$', 2 ) ) {
       treatedLine = Utils.removeImportFromInput( treatedLine );
@@ -94,32 +94,111 @@ module.exports = ( Path, Callback ) => {
         return ____nodeModulesCreationError( line );
       }
 
-      // FROM GITHUB
+      //#region FROM GITHUB
+      // // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
+      // // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
+      // // %import<<GH::master<<DIR '{user}/{repo}/{pathToFile}.js'
       if ( treatedLine.startsWith( '<<gh' ) ||
            treatedLine.startsWith( '<<GH' ) ||
            treatedLine.startsWith( '<<github' ) ||
-           treatedLine.startsWith( '<<GITHUB' ) ) {
+           treatedLine.startsWith( '<<GITHUB' ) )
+      {
+        treatedLine = Utils.removeDirTokenFromImport( treatedLine );
+        let isNewSintax = false;
+        let branch = '';
+        if ( treatedLine.startsWith( '::' ) ) {
+          treatedLine = treatedLine.replace( /::/g, '' );
 
-        let filePath = Utils.cleanImportFileInput( treatedLine );
-        filePath = filePath.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
-        const fileName = Utils.getFileNameFromUrl( HOST_RAW_GITHUB + filePath );
+          for ( let i = 0; i < treatedLine.length; ++i ) {
+            if ( treatedLine[i] === '<' || treatedLine[i] === "'" )
+              break;
 
-        let fileExists = true;
-        if ( !forceInstall )
-          fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
-
-        if ( !fileExists || forceInstall ) {
-          try {
-            await fileDownloader.fromGitHub( filePath );
-
-          } catch ( e ) {
-            // Being logged in fileDownloader.js
+            branch += treatedLine[i];
           }
+
+          isNewSintax = true;
+          treatedLine = treatedLine.substring( branch.length - 1 );
         }
 
-        thisFile = path.join( global.config.nodeModulesPath, fileName );
+        const isDir = ____pathIsDir( treatedLine );
+        treatedLine = Utils.removeDirTokenFromImport( treatedLine );
+        // "treatedLine" now contains the GitHub path imputed by the user.
+        treatedLine = Utils.cleanImportFileInput( treatedLine );
+        /** The path inputed by the user. 
+         * @type { string[] }*/
+        const githubPath = treatedLine.split( '/' );
+        /** The inputed GitHub path to the file or directory, without the user 
+         *  and repository name, inputed by the user. */
+        const inputedPathToFile = githubPath.slice( 2 ).join( '/' );
+        /** The name of this repository on node_modules. */
+        const thisRepoDirName = Utils.buildGithubRepoDirName( githubPath[0], githubPath[1] );
+        /** The directory path from node_modules, including. */
+        const thisRepoDirPath = path.join( global.config.nodeModulesPath, thisRepoDirName );
+        let alreadyDownloaded = false;
 
-      // FROM A SPECIFIC URL
+        //#region FROM A GITHUB DIRECTORY.
+        // (using the new sintax)
+        if ( isDir ) {
+          if ( !forceInstall )
+            alreadyDownloaded = await Utils.dirExists( thisRepoDirPath );
+
+          if ( !alreadyDownloaded || forceInstall ) {
+            const allFiles = await fileDownloader.fromGithub(
+              githubPath[0],
+              githubPath[1],
+              inputedPathToFile,
+              branch === '' ? 'master' : branch
+            );
+            buildOrder.concat( allFiles );
+
+          } else {
+            const allFilesFromRepoDir = await Utils.readDir( path.join( thisRepoDirPath, inputedPathToFile ) );
+
+            for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
+              if ( path.extname( allFilesFromRepoDir[i].name ) !== '.js' )
+                continue;
+
+              buildOrder.push( path_join( thisRepoDirPath, inputedPathToFile, allFilesFromRepoDir[i] ) );
+            }
+          }
+
+          thisFile = null;
+        //#endregion
+
+        //#region FROM A GIRHUB FILE.
+        // (using the new sintax, but supporting the deprecated method and sintax)
+        } else {
+          const fileName = path.basename( treatedLine );
+          let alreadyDownloadedPreviousSintax = false;
+          let alreadyDownloadedNewSintax = false;
+
+          if ( !forceInstall ) {
+            if ( !isNewSintax ) // No need to check with the previous sintax.
+              alreadyDownloadedPreviousSintax = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
+
+            alreadyDownloadedNewSintax = await Utils.fileExists( path.join( thisRepoDirPath, inputedPathToFile ) );
+          }
+
+          if ( ( !alreadyDownloadedPreviousSintax && !alreadyDownloadedNewSintax ) || forceInstall ) {
+            try {
+              if ( isNewSintax )
+                await fileDownloader.fromGithub( githubPath[0], githubPath[1], inputedPathToFile, branch );
+              else // use the deprecated method.
+                await fileDownloader.fromGitHub_deprecated( filePath );
+
+            } catch ( e ) {
+              // Being logged in fileDownloader.js
+            }
+          }
+
+          thisFile = isNewSintax ? path.join( thisRepoDirPath, fileName ) :
+                                   path.join( global.config.nodeModulesPath, inputedPathToFile );
+        }
+        //#endregion
+
+        //#endregion
+
+      //#region FROM A SPECIFIC URL
       } else {
         let url = Utils.cleanImportFileInput( treatedLine );
         const fileName = Utils.getFileNameFromUrl( url );
@@ -140,6 +219,7 @@ module.exports = ( Path, Callback ) => {
       }
 
       ++lineNum;
+      //#endregion
 
       // #endregion
     }
@@ -167,38 +247,40 @@ module.exports = ( Path, Callback ) => {
   } );
 };
 
+const ____pathIsDir = ( treatedLine ) => {
+  return treatedLine.startsWith( '<<dir' ) ||
+         treatedLine.startsWith( '<<DIR' ) ||
+         treatedLine.startsWith( '<<directory' ) ||
+         treatedLine.startsWith( '<<DIRECTORY' );
+};
+
 const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine ) => {
-  if ( treatedLine.startsWith( '<<dir' ) ||
-       treatedLine.startsWith( '<<DIR' ) ||
-       treatedLine.startsWith( '<<directory' ) ||
-       treatedLine.startsWith( '<<DIRECTORY' ) )
-  {
-    treatedLine = treatedLine.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
-    treatedLine = Utils.cleanImportFileInput( treatedLine );
-    // treatedLine now holds the directory inputed by the user.
-    const thisDir = path.join( path.dirname( thePath ), treatedLine );
+  if ( !____pathIsDir( treatedLine ) )
+    return false;
 
-    try {
-      const files = await Utils.readDir( thisDir );
+  treatedLine = Utils.removeDirTokenFromImport( treatedLine );
+  treatedLine = Utils.cleanImportFileInput( treatedLine );
+  // treatedLine now holds the directory inputed by the user.
+  const thisDir = path.join( path.dirname( thePath ), treatedLine );
 
-      for ( let i = 0; i < files.length; ++i ) {
-        if ( path.extname( files[i] ) === '.js' )
-          buildOrder.push( path.join( treatedLine, files[i] ) );
-      }
+  try {
+    const files = await Utils.readDir( thisDir );
 
-    } catch ( e ) {
-      console.error( style.styledError, `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`, e );
-      process.exit( 1 );
-      process.kill( process.pid, 'SIGINT' );
-      setTimeout( () => {
-        process.kill( process.pid, 'SIGKILL' );
-      }, 5000 );
+    for ( let i = 0; i < files.length; ++i ) {
+      if ( path.extname( files[i] ) === '.js' )
+        buildOrder.push( path.join( treatedLine, files[i] ) );
     }
 
-    return true;
+  } catch ( e ) {
+    console.error( style.styledError, `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`, e );
+    process.exit( 1 );
+    process.kill( process.pid, 'SIGINT' );
+    setTimeout( () => {
+      process.kill( process.pid, 'SIGKILL' );
+    }, 5000 );
   }
 
-  return false;
+  return true;
 };
 
 const ____nodeModulesCreationError = ( fileName ) => {
