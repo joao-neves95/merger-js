@@ -7,19 +7,21 @@
  */
 
 'use strict';
+const path_join = require( 'path' ).join;
 const httpClient = require( './httpClient' );
 const Utils = require( './utils' );
 const style = require( './consoleStyling' );
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 const GITHUB_API_BASE_URL = 'https://api.github.com/';
+const NODE_MODULES_PATH = global.config.nodeModulesPath;
 
-module.exports = {
+class FileDownloader {
   /**
    * Downloads a file from an URL and saves it to node_modules.
    * 
    * @returns { Promise<string | Error> }
    */
-  fromUrl: ( url, Callback ) => {
+  static fromUrl( url, Callback ) {
     return new Promise( async ( resolve, reject ) => {
 
         try {
@@ -40,28 +42,20 @@ module.exports = {
         }
 
     } );
-  },
+  }
 
-  // --------------------------------------------------------------------------------------------------
-  // Add new sintax, but support the previous one when it's a single file to not add breaking changes.
-  // (?) // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
-  // (?) // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
-  // --------------------------------------------------------------------------------------------------
-  //     E.g.: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
-  // (?) E.g.: // %import<<GH::v4 '{user}/{repo}/{pathToFile}.js'
-  // (?) E.g.: // %import<<GH::master<<DIR '{user}/{repo}/{pathToDir}.js'
-  // --------------------------------------------------------------------------------------------------
 
-  // https://api.github.com/repos/{user}/{repoName}/contents?ref={branch}
   /**
+   * [DEPRECATED, used for the previous sintax]
    * Downloads a file from GitHub and saves it to node_modules. Returns the file name or an error.
    * 
    * @param { string } path <userName>/<repositoryName>/(<branchName>)/<pathToFile>
    * @param { function } Callback (<string | Error>)
    * 
    * @returns { Promise<string | Error> }
+   * @deprecated
    */
-  fromGitHub: ( path, Callback ) => {
+  static fromGitHub_deprecated( path, Callback ) {
     return new Promise( async ( resolve, reject ) => {
 
       if ( path.startsWith( '/' ) )
@@ -113,4 +107,62 @@ module.exports = {
 
     } );
   }
-};
+
+  // https://api.github.com/repos/{user}/{repoName}/contents{pathToFile}?ref={branch}
+  /**
+   * Downloads a file or directory of files from github and save it/them to node_modules.
+   * 
+   * @param { string[] } buildOrder
+   * @param { string } user
+   * @param { string } repo
+   * @param { string } pathToFile
+   * @param { string } branch
+   * 
+   * @returns { string[] }
+   */
+  static async fromGithub( user, repo, pathToFile, branch = 'master' ) {
+    let allFilePaths = [];
+    let i;
+
+    try {
+      const thisRepoDirName = Utils.buildGithubRepoDirName( user, repo );
+      const jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
+      await Utils.mkdir( path_join( global.config.nodeModulesPath, thisRepoDirName ) );
+
+      let currentFileContent = '';
+      let currentFilePath = '';
+
+      for ( i = 0; i < jsonApiResponse.length; ++i ) {
+        if ( Utils.fileExt( jsonApiResponse[i].name ) !== '.js' )
+          continue;
+
+        currentFilePath = path_join( NODE_MODULES_PATH, thisRepoDirName, jsonApiResponse[i].path );
+        allFilePaths.push( currentFilePath );
+        currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
+        await Utils.saveFileInNodeModules( currentFilePath, currentFileContent );
+      }
+
+      return allFilePaths;
+
+    } catch ( e ) {
+      console.error(
+        style.styledError,
+        `There was an error while downloading a file from GitHUb: "${user}/${repo}/${pathToFile}".\nCheck the path name.\n\n`, e );
+      process.exit( 1 );
+      process.kill( process.pid, 'SIGINT' );
+      setTimeout( () => {
+        process.kill( process.pid, 'SIGKILL' );
+      }, 5000 );
+    }
+  }
+
+  static async getJsonFromGithubApi( user, repo, pathToFile, branch = 'master' ) {
+    return await httpClient.getAsync( FileDownloader.buildGithubAPIUrl( user, repo, pathToFile, branch ) );
+  }
+
+  static buildGithubAPIUrl( user, repo, pathToFile, branch = 'master' ) {
+    return `${GITHUB_API_BASE_URL}repos/${user}/${repo}/contents/${pathToFile}?ref=${master}`;
+  }
+}
+
+module.exports = FileDownloader;
