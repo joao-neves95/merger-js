@@ -45,6 +45,29 @@ class Utils {
     } );
   }
 
+  /**
+   * Creates a new directory.
+   * Returns a promise with a boolean stating whether the file was created or not, or an Error.
+   * 
+   * @param { string } path
+   * 
+   * @returns { Promise<boolean | Error> }
+   */
+  static mkdir( path ) {
+    return new Promise( ( _res, _rej ) => {
+      fs.mkdir( path, ( err ) => {
+        if ( err ) {
+          if ( err.code !== 'EEXIST' )
+            return _rej( err );
+
+          return _res( false );
+        }
+
+        return _res( true );
+      } );
+    } );
+  }
+
   static writeJSONFile( dir, fileName, data, callback ) {
     let jsonData = JSON.stringify( data, null, '\t' );
 
@@ -80,6 +103,10 @@ class Utils {
     return importStatement.replace( /\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/g, '' );
   }
 
+  static removeDirTokenFromImport( importStatement ) {
+    return importStatement.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
+  }
+
   /**
    * @param { string } url
    * 
@@ -88,6 +115,21 @@ class Utils {
   static getFileNameFromUrl( url ) {
     const fileNameArr = new URL( url ).pathname.split( '/' );
     return fileNameArr[fileNameArr.length - 1];
+  }
+
+  /**
+   * Get the extension name of a file.
+   * Same as Nodejs.path.extname( path )
+   * 
+   * @param { string } path
+   * @returns { string }
+   */
+  static fileExt( path ) {
+    return path.extname( path );
+  }
+
+  static buildGithubRepoDirName( user, repo ) {
+    return `${user}@${repo}`;
   }
 
   /**
@@ -199,6 +241,19 @@ class Utils {
           return Callback( null, true );
 
         return resolve( true );
+      } );
+
+    } );
+  }
+
+  static dirExists( thePath ) {
+    return new Promise( ( _res, _rej ) => {
+
+      fs.stat( path.normalize( thePath ), ( err, stats ) => {
+        if ( err )
+          return _res( false );
+
+        return _res( stats.isDirectory() );
       } );
 
     } );
