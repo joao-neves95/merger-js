@@ -8,6 +8,7 @@
 
 'use strict';
 const https = require( 'https' );
+const { IncomingMessage } = require( 'http' );
 
 /**
  * Allways HTTPS.
@@ -15,24 +16,24 @@ const https = require( 'https' );
 module.exports = {
   /**
    * Get HTTPS async.
+   * It returns a Response object with the data in Response.body.
    * 
    * @param { string } url
    * @param { boolean } parseJson Defaults to true. Whether to parse the JSON before return.
    * @param { Function } Callback Optional callback that receives (error, data).
    * 
-   * @returns { Promise<string | Error> }
+   * @returns { Promise<IncomingMessage | Error> }
    */
-  getAsync: ( url, parseJson = true, Callback ) => {
+  getAsync: ( url, Callback ) => {
     return new Promise( ( resolve, reject ) => {
 
       try {
-        https.get( url, ( res ) => {
+        https.get( url, { headers: { "User-Agent": `MergerJS/${global.version}` } }, ( res ) => {
           res.setEncoding( 'utf8' );
-
-          let allData = '';
+          res.body = '';
 
           res.on( 'data', ( resData ) => {
-            allData += resData;
+            res.body += resData;
           } );
 
           res.on( 'error', ( err ) => {
@@ -43,14 +44,10 @@ module.exports = {
           } );
 
           res.on( 'end', () => {
-            if ( parseJson )
-              allData = JSON.parse( allData );
-
             if ( Callback )
-              return Callback( null, allData );
+              return Callback( null, res );
 
-            resolve( allData );
-
+            resolve( res );
           } );
         } );
 
