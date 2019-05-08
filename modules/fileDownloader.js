@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
@@ -13,7 +13,6 @@ const Utils = require( './utils' );
 const style = require( './consoleStyling' );
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 const GITHUB_API_BASE_URL = 'https://api.github.com/';
-const NODE_MODULES_PATH = global.config.nodeModulesPath;
 
 class FileDownloader {
   /**
@@ -26,8 +25,8 @@ class FileDownloader {
 
         try {
           const fileName = Utils.getFileNameFromUrl( url );
-          const fileContent = await httpClient.getAsync( url, false );
-          await Utils.saveFileInNodeModules( fileName, fileContent );
+          const fileContentRes = await httpClient.getAsync( url, false );
+          await Utils.saveFileInNodeModules( fileName, fileContentRes.body );
 
           if ( Callback )
             return Callback( fileName );
@@ -45,66 +44,75 @@ class FileDownloader {
   }
 
 
+  // DEPRECATED SINTAX: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
+  // https://raw.githubusercontent.com/{user}/{repo}/{brach}/{pathToFle}.js
   /**
    * [DEPRECATED, used for the previous sintax]
    * Downloads a file from GitHub and saves it to node_modules. Returns the file name or an error.
    * 
    * @param { string } path <userName>/<repositoryName>/(<branchName>)/<pathToFile>
+   * @param { string } brach If it's an empty string, the deprecated solution will used.
    * @param { function } Callback (<string | Error>)
    * 
    * @returns { Promise<string | Error> }
    * @deprecated
    */
-  static fromGitHub_deprecated( path, Callback ) {
+  static fromGitHub_deprecated( path, branch, Callback ) {
     return new Promise( async ( resolve, reject ) => {
 
       if ( path.startsWith( '/' ) )
         path = path.substring( 1 );
+
+      if ( branch !== '' ) {
+        path = path.split( '/' );
+        path.splice( 2, 0, branch );
+        path = path.join( '/' );
+      }
 
       let url = HOST_RAW_GITHUB + path;
       const fileName = Utils.getFileNameFromUrl( url );
       let fileContent = null;
 
       try {
-          fileContent = await httpClient.getAsync( url, false );
+        fileContent = await httpClient.getAsync( url, false );
 
-          if ( fileContent === '404: Not Found\n' ) {
-            let urlArr = new URL( url ).pathname.split( '/' );
-            urlArr.splice( 3, 0, 'master' );
-            url = HOST_RAW_GITHUB + urlArr.join( '/' );
+        if ( fileContent.statusCode === 404 ) {
+          path = path.split( '/' );
+          path.splice( 2, 0, 'master' );
+          url = HOST_RAW_GITHUB + path.join( '/' );
 
-            try {
-              fileContent = await httpClient.getAsync( url, false );
+          try {
+            fileContent = await httpClient.getAsync( url, false );
 
-              if ( fileContent === '404: Not Found\n' )
-                console.error( style.styledError, `There was an error while downloading file from GitHub ("${new URL( url ).pathname}"):\n` );
+            if ( fileContent.statusCode !== 200 )
+              FileDownloader.githubDownloadError( new URL( url ).pathname, e );
 
-            } catch ( e ) {
-              console.error( style.styledError, `There was an error while downloading file from GitHub ("${new URL( url ).pathname}"):\n` );
-            }
+          } catch ( e ) {
+            FileDownloader.githubDownloadError( new URL( url ).pathname, e );
           }
-
-        } catch ( e ) {
-          console.error( style.styledError, `There was an error while downloading file from GitHub ("${path}"):\n` );
         }
 
-        try {
-          await Utils.saveFileInNodeModules( fileName, fileContent );
+      } catch ( e ) {
+        FileDownloader.githubDownloadError( path, e );
+      }
 
-          if ( Callback )
-            return Callback( fileName );
+      try {
+        fileContent = fileContent.body;
+        await Utils.saveFileInNodeModules( fileName, fileContent );
 
-          resolve( fileName );
+        if ( Callback )
+          return Callback( fileName );
 
-        } catch ( e ) {
-          console.error( style.styledError, `There was an error while saving the file from GitHub ("${path}") on node_modules:\n` );
+        resolve( fileName );
 
-          if ( Callback )
-            return Callback( e );
+      } catch ( e ) {
+        FileDownloader.githubDownloadError( path, e );
 
-          return reject( e );
-        }
+        if ( Callback )
+          return Callback( e );
 
+        return reject( e );
+      }
     } );
   }
 
@@ -125,10 +133,14 @@ class FileDownloader {
     let i;
 
     try {
+      const NODE_MODULES_PATH = global.config.nodeModulesPath;
       const thisRepoDirName = Utils.buildGithubRepoDirName( user, repo );
-      const jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
-      await Utils.mkdir( path_join( global.config.nodeModulesPath, thisRepoDirName ) );
+      let jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
+      jsonApiResponse = JSON.parse( jsonApiResponse.body );
+      if ( !Array.isArray( jsonApiResponse ) )
+        jsonApiResponse = [jsonApiResponse];
 
+      await Utils.mkdir( path_join( NODE_MODULES_PATH, thisRepoDirName ) );
       let currentFileContent = '';
       let currentFilePath = '';
 
@@ -136,23 +148,17 @@ class FileDownloader {
         if ( Utils.fileExt( jsonApiResponse[i].name ) !== '.js' )
           continue;
 
-        currentFilePath = path_join( NODE_MODULES_PATH, thisRepoDirName, jsonApiResponse[i].path );
-        allFilePaths.push( currentFilePath );
+        currentFilePath = path_join( thisRepoDirName, jsonApiResponse[i].path );
         currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
-        await Utils.saveFileInNodeModules( currentFilePath, currentFileContent );
+        await Utils.saveFileInNodeModules( currentFilePath, currentFileContent.body );
+        currentFilePath = path_join( NODE_MODULES_PATH, currentFilePath );
+        allFilePaths.push( currentFilePath );
       }
 
       return allFilePaths;
 
     } catch ( e ) {
-      console.error(
-        style.styledError,
-        `There was an error while downloading a file from GitHUb: "${user}/${repo}/${pathToFile}".\nCheck the path name.\n\n`, e );
-      process.exit( 1 );
-      process.kill( process.pid, 'SIGINT' );
-      setTimeout( () => {
-        process.kill( process.pid, 'SIGKILL' );
-      }, 5000 );
+      FileDownloader.githubDownloadError( `${user}/${repo}/${pathToFile}`, e );
     }
   }
 
@@ -161,7 +167,21 @@ class FileDownloader {
   }
 
   static buildGithubAPIUrl( user, repo, pathToFile, branch = 'master' ) {
-    return `${GITHUB_API_BASE_URL}repos/${user}/${repo}/contents/${pathToFile}?ref=${master}`;
+    return `${GITHUB_API_BASE_URL}repos/${user}/${repo}/contents/${pathToFile}?ref=${branch}`;
+  }
+
+  static githubDownloadError( filePath, exception ) {
+    console.error(
+      style.styledError,
+      `There was an error while downloading a file from GitHub ("${filePath}"):\nCheck the path name you've inputed.\n\n`,
+      exception
+    );
+
+    process.exit( 1 );
+    process.kill( process.pid, 'SIGINT' );
+    setTimeout( () => {
+      process.kill( process.pid, 'SIGKILL' );
+    }, 5000 );
   }
 }
 
