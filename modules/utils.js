@@ -103,6 +103,10 @@ class Utils {
     return importStatement.replace( /\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/g, '' );
   }
 
+  static removeGithubTokenFromImport( importStatement ) {
+    return importStatement.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
+  }
+
   static removeDirTokenFromImport( importStatement ) {
     return importStatement.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
   }
@@ -124,8 +128,8 @@ class Utils {
    * @param { string } path
    * @returns { string }
    */
-  static fileExt( path ) {
-    return path.extname( path );
+  static fileExt( inputPath ) {
+    return path.extname( inputPath );
   }
 
   static buildGithubRepoDirName( user, repo ) {
@@ -266,10 +270,15 @@ class Utils {
    * 
    * @returns { Promise<void | Error> }
    */
-  static saveFileInNodeModules( fileName, data, Callback ) {
-    return new Promise( ( resolve, reject ) => {
+  static async saveFileInNodeModules( fileName, data, Callback ) {
+    return new Promise( async ( resolve, reject ) => {
 
-      fs.writeFile( path.join( global.config.nodeModulesPath, fileName ), data, 'utf8', ( err ) => {
+      const thisDirName = path.dirname( path.join( global.config.nodeModulesPath, fileName ) );
+      const dirExists = await Utils.dirExists( thisDirName );
+      if ( !dirExists )
+        await Utils.mkdir( thisDirName );
+
+      fs.writeFile( path.join( thisDirName, path.basename( fileName ) ), data, 'utf8', ( err ) => {
 
         if ( err ) {
           if ( Callback )
