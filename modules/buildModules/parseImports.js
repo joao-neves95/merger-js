@@ -17,6 +17,7 @@ const ConfigKeysType = require( '../../models/configKeysEnum' );
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 
 module.exports = ( Path, Callback ) => {
+  let NODE_MODULES_PATH = global.config.nodeModulesPath;
   let lineNum = 0;
   let lastLineWasComment = false;
   let buildOrder = [];
@@ -51,24 +52,26 @@ module.exports = ( Path, Callback ) => {
 
       // #endregion
 
-      // #region IMPORT FROM node_modules
+    // #region IMPORT FROM node_modules
 
     } else if ( treatedLine.startsWith( '$import', 2 ) || treatedLine.startsWith( '$', 2 ) ) {
       treatedLine = Utils.removeImportFromInput( treatedLine );
 
       try {
         const createdNodeModules = await Utils.createNodeModulesIfNeeded();
-        if ( createdNodeModules )
-          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, global.config.nodeModulesPath );
+        if ( createdNodeModules ) {
+          NODE_MODULES_PATH = global.config.nodeModulesPath;
+          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
+        }
 
         // AN ENTIRE DIRECTORY.
-        const wasDir = await ____addAllDirectoryToBuildOrder( buildOrder, global.config.nodeModulesPath, treatedLine );
+        const wasDir = await ____addAllDirectoryToBuildOrder( buildOrder, NODE_MODULES_PATH, treatedLine );
         if ( wasDir )
           thisFile = null;
         else {
           // A FILE.
           thisFile = Utils.cleanImportFileInput( treatedLine );
-          thisFile = path.join( global.config.nodeModulesPath, thisFile );
+          thisFile = path.join( NODE_MODULES_PATH, thisFile );
         }
 
       } catch ( e ) {
@@ -79,7 +82,7 @@ module.exports = ( Path, Callback ) => {
 
       // #endregion
 
-      // #region IMPORT FROM AN URL
+    // #region IMPORT FROM AN URL
 
     } else if ( treatedLine.startsWith( '%import', 2 ) || treatedLine.startsWith( '%', 2 ) || treatedLine.startsWith( '%%', 2 ) ) {
       const forceInstall = treatedLine.startsWith( '%%', 2 );
@@ -87,8 +90,10 @@ module.exports = ( Path, Callback ) => {
 
       try {
         const createdNodeModules = await Utils.createNodeModulesIfNeeded();
-        if ( createdNodeModules )
-          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, global.config.nodeModulesPath );
+        if ( createdNodeModules ) {
+          NODE_MODULES_PATH = global.config.nodeModulesPath
+          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
+        }
 
       } catch ( e ) {
         return ____nodeModulesCreationError( line );
@@ -98,12 +103,13 @@ module.exports = ( Path, Callback ) => {
       // // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
       // // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
       // // %import<<GH::master<<DIR '{user}/{repo}/{pathToFile}.js'
+      // DEPRECATED SINTAX: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
       if ( treatedLine.startsWith( '<<gh' ) ||
            treatedLine.startsWith( '<<GH' ) ||
            treatedLine.startsWith( '<<github' ) ||
            treatedLine.startsWith( '<<GITHUB' ) )
       {
-        treatedLine = Utils.removeDirTokenFromImport( treatedLine );
+        treatedLine = Utils.removeGithubTokenFromImport( treatedLine );
         let isNewSintax = false;
         let branch = '';
         if ( treatedLine.startsWith( '::' ) ) {
@@ -117,7 +123,7 @@ module.exports = ( Path, Callback ) => {
           }
 
           isNewSintax = true;
-          treatedLine = treatedLine.substring( branch.length - 1 );
+          treatedLine = treatedLine.substring( branch.length );
         }
 
         const isDir = ____pathIsDir( treatedLine );
@@ -133,11 +139,12 @@ module.exports = ( Path, Callback ) => {
         /** The name of this repository on node_modules. */
         const thisRepoDirName = Utils.buildGithubRepoDirName( githubPath[0], githubPath[1] );
         /** The directory path from node_modules, including. */
-        const thisRepoDirPath = path.join( global.config.nodeModulesPath, thisRepoDirName );
+        const thisRepoDirPath = path.join( NODE_MODULES_PATH, thisRepoDirName );
         let alreadyDownloaded = false;
 
         //#region FROM A GITHUB DIRECTORY.
         // (using the new sintax)
+        // TODO: (FIX) GITHUB DIRECTORY IMPORTS NOT WORKING.
         if ( isDir ) {
           if ( !forceInstall )
             alreadyDownloaded = await Utils.dirExists( thisRepoDirPath );
@@ -172,27 +179,24 @@ module.exports = ( Path, Callback ) => {
           let alreadyDownloadedPreviousSintax = false;
           let alreadyDownloadedNewSintax = false;
 
-          if ( !forceInstall ) {
-            if ( !isNewSintax ) // No need to check with the previous sintax.
-              alreadyDownloadedPreviousSintax = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
+          if ( !forceInstall && !isNewSintax ) {
+            // No need to check with the previous sintax.
+            alreadyDownloadedPreviousSintax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
 
+          } else if ( !forceInstall && isNewSintax ) {
             alreadyDownloadedNewSintax = await Utils.fileExists( path.join( thisRepoDirPath, inputedPathToFile ) );
           }
 
-          if ( ( !alreadyDownloadedPreviousSintax && !alreadyDownloadedNewSintax ) || forceInstall ) {
-            try {
-              if ( isNewSintax )
-                await fileDownloader.fromGithub( githubPath[0], githubPath[1], inputedPathToFile, branch );
-              else // use the deprecated method.
-                await fileDownloader.fromGitHub_deprecated( filePath );
+          if ( ( isNewSintax && !alreadyDownloadedNewSintax ) || ( isNewSintax && forceInstall ) ) {
+            await fileDownloader.fromGithub( githubPath[0], githubPath[1], inputedPathToFile, branch === '' ? 'master' : branch );
 
-            } catch ( e ) {
-              // Being logged in fileDownloader.js
-            }
-          }
+          } else if ( ( !isNewSintax && !alreadyDownloadedPreviousSintax ) || ( !isNewSintax && forceInstall ) ) { 
+            // use the deprecated method. 
+            await fileDownloader.fromGitHub_deprecated( treatedLine, branch );
+          } 
 
-          thisFile = isNewSintax ? path.join( thisRepoDirPath, fileName ) :
-                                   path.join( global.config.nodeModulesPath, inputedPathToFile );
+          thisFile = isNewSintax ? path.join( thisRepoDirPath, inputedPathToFile ) :
+                                   path.join( NODE_MODULES_PATH, fileName );
         }
         //#endregion
 
@@ -204,7 +208,7 @@ module.exports = ( Path, Callback ) => {
         const fileName = Utils.getFileNameFromUrl( url );
         let fileExists = true;
         if ( !forceInstall )
-          fileExists = await Utils.fileExists( path.join( global.config.nodeModulesPath, fileName ) );
+          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
 
         if ( !fileExists || forceInstall ) {
           try {
@@ -215,7 +219,7 @@ module.exports = ( Path, Callback ) => {
           }
         }
 
-        thisFile = path.join( global.config.nodeModulesPath, fileName );
+        thisFile = path.join( NODE_MODULES_PATH, fileName );
       }
 
       ++lineNum;
