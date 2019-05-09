@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
@@ -50,12 +50,13 @@ class Utils {
    * Returns a promise with a boolean stating whether the file was created or not, or an Error.
    * 
    * @param { string } path
+   * @param { boolean } doItRecursive
    * 
    * @returns { Promise<boolean | Error> }
    */
-  static mkdir( path ) {
+  static mkdir( path, doItRecursive = true ) {
     return new Promise( ( _res, _rej ) => {
-      fs.mkdir( path, ( err ) => {
+      fs.mkdir( path, { recursive: doItRecursive }, ( err ) => {
         if ( err ) {
           if ( err.code !== 'EEXIST' )
             return _rej( err );
@@ -252,14 +253,18 @@ class Utils {
 
   static dirExists( thePath ) {
     return new Promise( ( _res, _rej ) => {
+      try {
 
-      fs.stat( path.normalize( thePath ), ( err, stats ) => {
-        if ( err )
-          return _res( false );
+        fs.stat( path.normalize( thePath ), ( err, stats ) => {
+          if ( err )
+            return _res( false );
 
-        return _res( stats.isDirectory() );
-      } );
+          return _res( stats.isDirectory() );
+        } );
 
+      } catch ( e ) {
+        return _res( false );
+      }
     } );
   }
 
@@ -279,7 +284,6 @@ class Utils {
         await Utils.mkdir( thisDirName );
 
       fs.writeFile( path.join( thisDirName, path.basename( fileName ) ), data, 'utf8', ( err ) => {
-
         if ( err ) {
           if ( Callback )
             return Callback( err );
