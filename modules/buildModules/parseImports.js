@@ -50,7 +50,7 @@ module.exports = ( Path, Callback ) => {
 
       ++lineNum;
 
-      // #endregion
+    // #endregion
 
     // #region IMPORT FROM node_modules
 
@@ -80,7 +80,7 @@ module.exports = ( Path, Callback ) => {
 
       ++lineNum;
 
-      // #endregion
+    // #endregion
 
     // #region IMPORT FROM AN URL
 
@@ -116,7 +116,7 @@ module.exports = ( Path, Callback ) => {
           treatedLine = treatedLine.replace( /::/g, '' );
 
           for ( let i = 0; i < treatedLine.length; ++i ) {
-            if ( treatedLine[i] === '<' || treatedLine[i] === "'" )
+            if ( treatedLine[i] === '<' || treatedLine[i] === "'" || treatedLine[i] === ' ' )
               break;
 
             branch += treatedLine[i];
@@ -128,10 +128,14 @@ module.exports = ( Path, Callback ) => {
 
         const isDir = ____pathIsDir( treatedLine );
         treatedLine = Utils.removeDirTokenFromImport( treatedLine );
-        // "treatedLine" now contains the GitHub path imputed by the user.
+
+        if ( treatedLine.startsWith( '::' ) )
+          console.error( style.styledError, `Unexpected token "::" on the line: "${line}" \n` );
+
+        // "treatedLine" now contains only the GitHub path imputed by the user.
         treatedLine = Utils.cleanImportFileInput( treatedLine );
         /** The path inputed by the user. 
-         * @type { string[] }*/
+         * @type { string[] } */
         const githubPath = treatedLine.split( '/' );
         /** The inputed GitHub path to the file or directory, without the user 
          *  and repository name, inputed by the user. */
@@ -140,14 +144,16 @@ module.exports = ( Path, Callback ) => {
         const thisRepoDirName = Utils.buildGithubRepoDirName( githubPath[0], githubPath[1] );
         /** The directory path from node_modules, including. */
         const thisRepoDirPath = path.join( NODE_MODULES_PATH, thisRepoDirName );
-        let alreadyDownloaded = false;
 
         //#region FROM A GITHUB DIRECTORY.
-        // (using the new sintax)
+        // (using exclusively the new sintax)
         // TODO: (FIX) GITHUB DIRECTORY IMPORTS NOT WORKING.
         if ( isDir ) {
+          const thisRepoDirDirPath = path.join( thisRepoDirPath, inputedPathToFile );
+          let alreadyDownloaded = false;
+
           if ( !forceInstall )
-            alreadyDownloaded = await Utils.dirExists( thisRepoDirPath );
+            alreadyDownloaded = await Utils.dirExists( thisRepoDirDirPath );
 
           if ( !alreadyDownloaded || forceInstall ) {
             const allFiles = await fileDownloader.fromGithub(
@@ -156,16 +162,17 @@ module.exports = ( Path, Callback ) => {
               inputedPathToFile,
               branch === '' ? 'master' : branch
             );
-            buildOrder.concat( allFiles );
+
+            buildOrder = buildOrder.concat( allFiles );
 
           } else {
-            const allFilesFromRepoDir = await Utils.readDir( path.join( thisRepoDirPath, inputedPathToFile ) );
+            const allFilesFromRepoDir = await Utils.readDir( thisRepoDirDirPath );
 
             for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
-              if ( path.extname( allFilesFromRepoDir[i].name ) !== '.js' )
+              if ( path.extname( allFilesFromRepoDir[i] ) !== '.js' )
                 continue;
 
-              buildOrder.push( path_join( thisRepoDirPath, inputedPathToFile, allFilesFromRepoDir[i] ) );
+              buildOrder.push( path.join( thisRepoDirDirPath, allFilesFromRepoDir[i] ) );
             }
           }
 
@@ -174,6 +181,7 @@ module.exports = ( Path, Callback ) => {
 
         //#region FROM A GIRHUB FILE.
         // (using the new sintax, but supporting the deprecated method and sintax)
+        // TODO: Remove support for the deprecated sintax on v4, if there is one.
         } else {
           const fileName = path.basename( treatedLine );
           let alreadyDownloadedPreviousSintax = false;
@@ -190,17 +198,17 @@ module.exports = ( Path, Callback ) => {
           if ( ( isNewSintax && !alreadyDownloadedNewSintax ) || ( isNewSintax && forceInstall ) ) {
             await fileDownloader.fromGithub( githubPath[0], githubPath[1], inputedPathToFile, branch === '' ? 'master' : branch );
 
-          } else if ( ( !isNewSintax && !alreadyDownloadedPreviousSintax ) || ( !isNewSintax && forceInstall ) ) { 
+          } else if ( ( !isNewSintax && !alreadyDownloadedPreviousSintax ) || ( !isNewSintax && forceInstall ) ) {
             // use the deprecated method. 
             await fileDownloader.fromGitHub_deprecated( treatedLine, branch );
-          } 
+          }
 
           thisFile = isNewSintax ? path.join( thisRepoDirPath, inputedPathToFile ) :
-                                   path.join( NODE_MODULES_PATH, fileName );
+            path.join( NODE_MODULES_PATH, fileName );
         }
         //#endregion
 
-        //#endregion
+      //#endregion
 
       //#region FROM A SPECIFIC URL
       } else {
@@ -277,11 +285,7 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
 
   } catch ( e ) {
     console.error( style.styledError, `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`, e );
-    process.exit( 1 );
-    process.kill( process.pid, 'SIGINT' );
-    setTimeout( () => {
-      process.kill( process.pid, 'SIGKILL' );
-    }, 5000 );
+    killProcess();
   }
 
   return true;
@@ -293,4 +297,12 @@ const ____nodeModulesCreationError = ( fileName ) => {
     style.errorText( `There has been an error while creating the node_modules file.\n Could not merge "${fileName}", "node_modules" directory not found.` ),
     '\n Please run "npm init", if you didn\'t, and install a package with "npm install <package name>".\n'
   );
+};
+
+const killProcess = () => {
+  process.exit( 1 );
+  process.kill( process.pid, 'SIGINT' );
+  setTimeout( () => {
+    process.kill( process.pid, 'SIGKILL' );
+  }, 5000 );
 };
