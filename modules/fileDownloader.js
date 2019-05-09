@@ -126,40 +126,42 @@ class FileDownloader {
    * @param { string } pathToFile
    * @param { string } branch
    * 
-   * @returns { string[] }
+   * @returns { Promise<string[]> }
    */
   static async fromGithub( user, repo, pathToFile, branch = 'master' ) {
-    let allFilePaths = [];
-    let i;
+    return new Promise( async ( _res, _rej ) => {
+      let allFilePaths = [];
+      let i;
 
-    try {
-      const NODE_MODULES_PATH = global.config.nodeModulesPath;
-      const thisRepoDirName = Utils.buildGithubRepoDirName( user, repo );
-      let jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
-      jsonApiResponse = JSON.parse( jsonApiResponse.body );
-      if ( !Array.isArray( jsonApiResponse ) )
-        jsonApiResponse = [jsonApiResponse];
+      try {
+        const NODE_MODULES_PATH = global.config.nodeModulesPath;
+        const thisRepoDirName = Utils.buildGithubRepoDirName( user, repo );
+        let jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
+        jsonApiResponse = JSON.parse( jsonApiResponse.body );
+        if ( !Array.isArray( jsonApiResponse ) )
+          jsonApiResponse = [jsonApiResponse];
 
-      await Utils.mkdir( path_join( NODE_MODULES_PATH, thisRepoDirName ) );
-      let currentFileContent = '';
-      let currentFilePath = '';
+        await Utils.mkdir( path_join( NODE_MODULES_PATH, thisRepoDirName ) );
+        let currentFileContent = '';
+        let currentFilePath = '';
 
-      for ( i = 0; i < jsonApiResponse.length; ++i ) {
-        if ( Utils.fileExt( jsonApiResponse[i].name ) !== '.js' )
-          continue;
+        for ( i = 0; i < jsonApiResponse.length; ++i ) {
+          if ( Utils.fileExt( jsonApiResponse[i].name ) !== '.js' )
+            continue;
 
-        currentFilePath = path_join( thisRepoDirName, jsonApiResponse[i].path );
-        currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
-        await Utils.saveFileInNodeModules( currentFilePath, currentFileContent.body );
-        currentFilePath = path_join( NODE_MODULES_PATH, currentFilePath );
-        allFilePaths.push( currentFilePath );
+          currentFilePath = path_join( thisRepoDirName, jsonApiResponse[i].path );
+          currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
+          await Utils.saveFileInNodeModules( currentFilePath, currentFileContent.body );
+          currentFilePath = path_join( NODE_MODULES_PATH, currentFilePath );
+          allFilePaths.push( currentFilePath );
+        }
+
+        return _res( allFilePaths );
+
+      } catch ( e ) {
+        FileDownloader.githubDownloadError( `${user}/${repo}/${pathToFile}`, e );
       }
-
-      return allFilePaths;
-
-    } catch ( e ) {
-      FileDownloader.githubDownloadError( `${user}/${repo}/${pathToFile}`, e );
-    }
+    } );
   }
 
   static async getJsonFromGithubApi( user, repo, pathToFile, branch = 'master' ) {
@@ -173,7 +175,7 @@ class FileDownloader {
   static githubDownloadError( filePath, exception ) {
     console.error(
       style.styledError,
-      `There was an error while downloading a file from GitHub ("${filePath}"):\nCheck the path name you've inputed.\n\n`,
+      `There was an error while downloading a file from GitHub ("${filePath}"):\nPlease, check the import sintax again.\n\n`,
       exception
     );
 
