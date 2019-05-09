@@ -19,7 +19,6 @@ module.exports = {
    * It returns a Response object with the data in Response.body.
    * 
    * @param { string } url
-   * @param { boolean } parseJson Defaults to true. Whether to parse the JSON before return.
    * @param { Function } Callback Optional callback that receives (error, data).
    * 
    * @returns { Promise<IncomingMessage | Error> }
