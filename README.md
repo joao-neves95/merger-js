@@ -39,9 +39,9 @@
  - [x] **Auto builds on files changes** (optional)
  - [x] **Native OS build notifications** (optional)
  - [x] **Import a directory** (use ```@import<<DIR 'directoryName/'```)
- - [x] **Import a file from the node_modules folder** (use ```$import 'file-name'```)
+ - [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
  - [x] **Import a file from an URL** (use ```%import 'url'```)
- - [x] **Import a file from a GitHub repository** (use ```%import<<github '<userName>/<repositoryName>/<branchName>/<pathToFile>.js'```)
+ - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github '<userName>/<repositoryName>/<pathToFile>.js'```)
  
 &nbsp;
 
@@ -117,15 +117,15 @@ npm install merger-js -g
 - ```// @import 'relativePathToTheFile'``` or ```// @'relativePathToTheFile'```:<br/>
    Using an ```@``` token on an import statement imports a file relative to the header file.<br/>
 
-  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory. 
-    Using this method, the files are not compiled in any specific order.<br/>
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory.<br/>
+    Note that using this method, the files are not compiled in any specific order.<br/>
     E.g.: ``` // @import<<dir '../otherDirectory/'``` ```// @<<DIR 'someDirectoryHere/'```
 
 - ```// $import 'pathRelativeToNodeModules'``` or ```// $'node_modules_file'```:<br/>
    Using a ```$``` token imports relative to the "node_modules" directory.
 
-  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```$import```, imports an entire directory from node_modules. 
-    Using this method, the files are not compiled in any specific order.<br/>
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```$import```, imports an entire directory from node_modules.<br/>
+    Note that using this method, the files are not compiled in any specific order.<br/>
     E.g.: ``` // $import<<dir '../otherDirectory/'``` ```// $<<DIR 'someDirectoryHere/'```
 
 - ```// %import 'https://specificUrl.com/file.min.js'``` or ```// %'https://specificUrl.com/file.min.js'```:<br/>
@@ -134,16 +134,20 @@ npm install merger-js -g
   * Adding a double ```%%``` token forces the download on every build (good for updates). Valid for specific URLs and GitHub.<br/>
     E.g.: ```// %%'/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```<br/>
 
-  * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
-  If the branch name is not provided, it defaults to the "master" branch.<br/>
+  * Pushing (`<<`) `GH`, `gh`, `github` or `GITHUB` into `%import`, imports a file from a GitHub repository.<br/>
+  If the branch name is not provided, it is defaulted to the "master" branch.<br/>
     E.g.:<br>
     `// %import<<GH::{branch} '{user}/{repository}/{pathToFile}.js'`<br/>
     `// %<<github::v4-dev '/twbs/bootstrap/dist/js/bootstrap.min.js'`
 
     * You can specify the branch using the `::` token.
 
-    * MergerJS still supports the previous GitHub import sintax for file, where the branch is specified directly on the path (not supported on directories). This sintax is deprecated.
-      E.g.: ```// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```<br/>
+    * MergerJS still supports the previous GitHub import sintax for files, where the branch is specified directly on the path (not supported on directories). This sintax is deprecated.<br/>
+      E.g.: `// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'`
+
+    * Pushing (`<<`) `dir`, `DIR`, `directory` or `DIRECTORY` into `%import<<github`, imports an entire directory from GitHub.<br/>
+      Note that using this method, the files are not compiled in any specific order.<br/> 
+      E.g.: `// %%import<<GH::master<<dir 'twbs/bootstrap/dist/js'`
 
 
 &nbsp;
