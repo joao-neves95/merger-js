@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
@@ -45,6 +45,30 @@ class Utils {
     } );
   }
 
+  /**
+   * Creates a new directory.
+   * Returns a promise with a boolean stating whether the file was created or not, or an Error.
+   * 
+   * @param { string } path
+   * @param { boolean } doItRecursive
+   * 
+   * @returns { Promise<boolean | Error> }
+   */
+  static mkdir( path, doItRecursive = true ) {
+    return new Promise( ( _res, _rej ) => {
+      fs.mkdir( path, { recursive: doItRecursive }, ( err ) => {
+        if ( err ) {
+          if ( err.code !== 'EEXIST' )
+            return _rej( err );
+
+          return _res( false );
+        }
+
+        return _res( true );
+      } );
+    } );
+  }
+
   static writeJSONFile( dir, fileName, data, callback ) {
     let jsonData = JSON.stringify( data, null, '\t' );
 
@@ -80,6 +104,14 @@ class Utils {
     return importStatement.replace( /\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/g, '' );
   }
 
+  static removeGithubTokenFromImport( importStatement ) {
+    return importStatement.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
+  }
+
+  static removeDirTokenFromImport( importStatement ) {
+    return importStatement.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
+  }
+
   /**
    * @param { string } url
    * 
@@ -88,6 +120,21 @@ class Utils {
   static getFileNameFromUrl( url ) {
     const fileNameArr = new URL( url ).pathname.split( '/' );
     return fileNameArr[fileNameArr.length - 1];
+  }
+
+  /**
+   * Get the extension name of a file.
+   * Same as Nodejs.path.extname( path )
+   * 
+   * @param { string } path
+   * @returns { string }
+   */
+  static fileExt( inputPath ) {
+    return path.extname( inputPath );
+  }
+
+  static buildGithubRepoDirName( user, repo ) {
+    return `${user}@${repo}`;
   }
 
   /**
@@ -204,6 +251,23 @@ class Utils {
     } );
   }
 
+  static dirExists( thePath ) {
+    return new Promise( ( _res, _rej ) => {
+      try {
+
+        fs.stat( path.normalize( thePath ), ( err, stats ) => {
+          if ( err )
+            return _res( false );
+
+          return _res( stats.isDirectory() );
+        } );
+
+      } catch ( e ) {
+        return _res( false );
+      }
+    } );
+  }
+
   /**
    * @param { string } fileName
    * @param { string } data
@@ -211,11 +275,15 @@ class Utils {
    * 
    * @returns { Promise<void | Error> }
    */
-  static saveFileInNodeModules( fileName, data, Callback ) {
-    return new Promise( ( resolve, reject ) => {
+  static async saveFileInNodeModules( fileName, data, Callback ) {
+    return new Promise( async ( resolve, reject ) => {
 
-      fs.writeFile( path.join( global.config.nodeModulesPath, fileName ), data, 'utf8', ( err ) => {
+      const thisDirName = path.dirname( path.join( global.config.nodeModulesPath, fileName ) );
+      const dirExists = await Utils.dirExists( thisDirName );
+      if ( !dirExists )
+        await Utils.mkdir( thisDirName );
 
+      fs.writeFile( path.join( thisDirName, path.basename( fileName ) ), data, 'utf8', ( err ) => {
         if ( err ) {
           if ( Callback )
             return Callback( err );

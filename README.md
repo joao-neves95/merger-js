@@ -4,15 +4,16 @@
 [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
 [![GitHub stars](https://img.shields.io/github/stars/joao-neves95/merger-js.svg?label=star&style=social)](https://github.com/joao-neves95/merger-js)
 
- Yet another lightweight and simple cross-platform CLI build tool to bundle JavaScript files, with file imports, ES6+ minification, auto build capabilities, and native OS notifications. 
+ Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES6+ minification, auto build capabilities, and native OS notifications. 
  
  Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES6+.
  
- **MergerJS *does not* support circular dependencies**
+ **MergerJS *is not* a module bundler, is a file bundler.**
  
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
  **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)<br/>
  **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
+ **Changelog:** [LINK](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md)<br/>
  **Dependencies:**<br/>
  ├── [uglify-es](https://www.npmjs.com/package/uglify-es)<br/>
  ├── [neo-async](https://github.com/suguru03/neo-async)<br/>
@@ -31,17 +32,17 @@
 <br/>
 
 ## Features
- - [x] **CLI tooling**
+ - [x] **Command Line Interface (CLI)**
  - [x] **Merge multiple JS files into one**
- - [x] **Support for multiple source/build files**
+ - [x] **Support for multiple source/header files**
  - [x] **Use @import comments on a source file to specify the build order**
  - [x] **Minification, supporting ES6+** (optional)
- - [x] **Auto builds on files changes** (optional)
+ - [x] **Auto builds on file changes** (optional)
  - [x] **Native OS build notifications** (optional)
- - [x] **Import a directory** (use ```@import<<DIR 'directoryName/'```)
- - [x] **Import a file from the node_modules folder** (use ```$import 'file-name'```)
+ - [x] **Import an entire directory** (use ```@import<<DIR 'directoryName/'```)
+ - [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
  - [x] **Import a file from an URL** (use ```%import 'url'```)
- - [x] **Import a file from a GitHub repository** (use ```%import<<github '<userName>/<repositoryName>/<branchName>/<pathToFile>.js'```)
+ - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github '<userName>/<repositoryName>/<pathToFile>.js'```)
  
 &nbsp;
 
@@ -73,7 +74,9 @@ npm install merger-js -g
 
 ## Use:
 
-1) Make a header file - the source file; the first file to be merged - containing, on the top, comments importing the files in the order you want them to be built, from the first to the last just like in a browser.<br/>
+1) Make a header file - the source file; the first file to be merged - containing, on the top,
+   comments importing the files in the order you want them to be built, from the first to the
+   last just like in a browser.<br/>
    
    Example:
    ```
@@ -101,8 +104,9 @@ npm install merger-js -g
 &nbsp;
 
 2) Run ```merger init``` on the root of your project:<br/>
-  This will set up the configuration model as well as some global configurations (minification, auto builds on file changes, native OS notifications).<br/>
-  You can alter them later through the CLI with the "merger set" command (learn more below in the "Commands" section).
+   This will set up the configuration model as well as some global configurations (minification, auto builds on file changes,
+   native OS notifications).<br/>
+   You can alter them later through the CLI with the "merger set" command (learn more below in the "Commands" section).
 
 &nbsp;
 
@@ -117,27 +121,38 @@ npm install merger-js -g
 - ```// @import 'relativePathToTheFile'``` or ```// @'relativePathToTheFile'```:<br/>
    Using an ```@``` token on an import statement imports a file relative to the header file.<br/>
 
-  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory. 
-    Using this method, the files are not compiled in any specific order.<br/>
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```@import```, imports an entire directory.<br/>
+    Note that using this method, the files are not compiled in any specific order.<br/>
     E.g.: ``` // @import<<dir '../otherDirectory/'``` ```// @<<DIR 'someDirectoryHere/'```
 
 - ```// $import 'pathRelativeToNodeModules'``` or ```// $'node_modules_file'```:<br/>
    Using a ```$``` token imports relative to the "node_modules" directory.
 
-  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```$import```, imports an entire directory from node_modules. 
-    Using this method, the files are not compiled in any specific order.<br/>
+  * Pushing (```<<```) ```dir```, ```DIR```, ```directory``` or ```DIRECTORY``` into ```$import```, imports an entire directory from node_modules.<br/>
+    Note that using this method, the files are not compiled in any specific order.<br/>
     E.g.: ``` // $import<<dir '../otherDirectory/'``` ```// $<<DIR 'someDirectoryHere/'```
 
 - ```// %import 'https://specificUrl.com/file.min.js'``` or ```// %'https://specificUrl.com/file.min.js'```:<br/>
   Using a ```%``` token imports a file from a specific URL. The file is downloaded and stored in node_modules in the first time and later fetch from there in order to not download the file in each build.<br/>
 
-  * Adding a double ```%%``` token forces the download on every build (good for updates);<br/>
+  * Adding a double ```%%``` token forces the download on every build (good for updates). Valid for specific URLs and GitHub.<br/>
     E.g.: ```// %%'/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```<br/>
 
-  * Pushing (```<<```) ```GH```, ```gh```, ```github``` or ```GITHUB``` into ```%import```, imports a file from a GitHub repository.<br/>
-  If the branch name is not provided, it defaults to the "master" branch.<br/>
-    E.g.: ```// %import<<GH '<userName>/<repositoryName>/<branchName>/<pathToFile>.js'```<br/>
-          ```// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```
+  * Pushing (`<<`) `GH`, `gh`, `github` or `GITHUB` into `%import`, imports a file from a GitHub repository.<br/>
+  If the branch name is not provided, it is defaulted to the "master" branch.<br/>
+    E.g.:<br>
+    `// %import<<GH::{branch} '{user}/{repository}/{pathToFile}.js'`<br/>
+    `// %<<github::v4-dev '/twbs/bootstrap/dist/js/bootstrap.min.js'`
+
+    * You can specify the branch using the `::` token.
+
+    * MergerJS still supports the previous GitHub import syntax for files, where the branch is specified directly on the path, to avoid breaking changes (not supported on directories). This syntax should be considered as deprecated.<br/>
+      E.g.: `// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'`
+
+    * Pushing (`<<`) `dir`, `DIR`, `directory` or `DIRECTORY` into `%import<<github`, imports an entire directory from GitHub.<br/>
+      Note that using this method, the files are not compiled in any specific order.<br/> 
+      E.g.: `// %%import<<GH::master<<dir 'twbs/bootstrap/dist/js'`
+
 
 &nbsp;
 
@@ -229,11 +244,14 @@ Merger uses [SemVer](https://semver.org/) for versioning. You can read the chang
 
 **JavaScript Standard Style, *with semicolons*.**
 
-Since version 3.6.5, every asynchronous function should make exclusive use of promises with the async/await syntax, avoiding multiple callback chaining, unless using a callback instead of a promise does make sense and does not contribute to a more confusing code.
+Since version 3.6.5, every asynchronous function should make exclusive use of promises and the async/await syntax,
+avoiding multiple callback chaining (I.e.: "callback hell"), unless using a callback instead of a promise does make 
+sense and does not contribute to a more confusing code.
 
 &nbsp;
 
 ## Motivation
 
-When I started doing academic web projects, I felt the need for a build tool to merge all my JS files into one, cleaning the HTML pages and optimizing my workflow.<br/>
+When I started doing academic web projects, I felt the need for a build tool to merge all my JS files into one,
+cleaning the HTML pages and optimizing my workflow.<br/>
 I wanted something simple and fast, so I built MergerJS to use in my small web-app projects.

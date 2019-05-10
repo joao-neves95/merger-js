@@ -18,9 +18,9 @@ const selectSourceFile = require( './CLIModules/selectSourceFilePrompt' );
 const EditConfigFile = require( './CLIModules/editConfigFile' );
 const style = require('./consoleStyling');
 const ConfigKeysType = require('../models/configKeysEnum');
-global.version = require('../package.json').version;
 
 module.exports = ( Callback ) => {
+  global.version = require('../package.json').version;
   global.config = {};
   let newConfig = {};
 

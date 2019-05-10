@@ -2,7 +2,19 @@
 
 &nbsp;
 
-#### *v3.7.1 - 04/05/2019
+#### *v3.8.0 - 10/05/2019
+
+  - Added support for importing an entire directory from GitHub.<br/>
+    There is a new import syntax for GitHub now.
+    The previous one is still supported to avoid breaking changes, but should be considered as deprecated.<br/>
+    New syntax: `// %%import<<GH::master<<dir 'twbs/bootstrap/dist/js'`<br/>
+    (Read the README.md for more information).
+  - Multiple big internal refactorings.
+  - Other minor fixes.
+
+&nbsp;
+
+#### v3.7.1 - 04/05/2019
 
  - Fixed a bug when importing from directories. It was importing relative to the header file instead of the directory of the 
    header file, like it used to (bug from last update).
