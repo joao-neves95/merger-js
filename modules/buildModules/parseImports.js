@@ -103,14 +103,14 @@ module.exports = ( Path, Callback ) => {
       // // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
       // // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
       // // %import<<GH::master<<DIR '{user}/{repo}/{pathToFile}.js'
-      // DEPRECATED SINTAX: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
+      // DEPRECATED syntax: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
       if ( treatedLine.startsWith( '<<gh' ) ||
            treatedLine.startsWith( '<<GH' ) ||
            treatedLine.startsWith( '<<github' ) ||
            treatedLine.startsWith( '<<GITHUB' ) )
       {
         treatedLine = Utils.removeGithubTokenFromImport( treatedLine );
-        let isNewSintax = false;
+        let isNewSyntax = false;
         let branch = '';
         if ( treatedLine.startsWith( '::' ) ) {
           treatedLine = treatedLine.replace( /::/g, '' );
@@ -122,7 +122,7 @@ module.exports = ( Path, Callback ) => {
             branch += treatedLine[i];
           }
 
-          isNewSintax = true;
+          isNewSyntax = true;
           treatedLine = treatedLine.substring( branch.length );
         }
 
@@ -146,7 +146,7 @@ module.exports = ( Path, Callback ) => {
         const thisRepoDirPath = path.join( NODE_MODULES_PATH, thisRepoDirName );
 
         //#region FROM A GITHUB DIRECTORY.
-        // (using exclusively the new sintax)
+        // (using exclusively the new syntax)
         // TODO: (FIX) GITHUB DIRECTORY IMPORTS NOT WORKING.
         if ( isDir ) {
           const thisRepoDirDirPath = path.join( thisRepoDirPath, inputedPathToFile );
@@ -180,30 +180,30 @@ module.exports = ( Path, Callback ) => {
         //#endregion
 
         //#region FROM A GIRHUB FILE.
-        // (using the new sintax, but supporting the deprecated method and sintax)
-        // TODO: Remove support for the deprecated sintax on v4, if there is one.
+        // (using the new syntax, but supporting the deprecated syntax)
+        // TODO: Remove support for the deprecated syntax on v4, if there is one.
         } else {
           const fileName = path.basename( treatedLine );
-          let alreadyDownloadedPreviousSintax = false;
-          let alreadyDownloadedNewSintax = false;
+          let alreadyDownloadedPreviousSyntax = false;
+          let alreadyDownloadedNewSyntax = false;
 
-          if ( !forceInstall && !isNewSintax ) {
-            // No need to check with the previous sintax.
-            alreadyDownloadedPreviousSintax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+          if ( !forceInstall && !isNewSyntax ) {
+            // No need to check with the previous syntax.
+            alreadyDownloadedPreviousSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
 
-          } else if ( !forceInstall && isNewSintax ) {
-            alreadyDownloadedNewSintax = await Utils.fileExists( path.join( thisRepoDirPath, inputedPathToFile ) );
+          } else if ( !forceInstall && isNewSyntax ) {
+            alreadyDownloadedNewSyntax = await Utils.fileExists( path.join( thisRepoDirPath, inputedPathToFile ) );
           }
 
-          if ( ( isNewSintax && !alreadyDownloadedNewSintax ) || ( isNewSintax && forceInstall ) ) {
+          if ( ( isNewSyntax && !alreadyDownloadedNewSyntax ) || ( isNewSyntax && forceInstall ) ) {
             await fileDownloader.fromGithub( githubPath[0], githubPath[1], inputedPathToFile, branch === '' ? 'master' : branch );
 
-          } else if ( ( !isNewSintax && !alreadyDownloadedPreviousSintax ) || ( !isNewSintax && forceInstall ) ) {
+          } else if ( ( !isNewSyntax && !alreadyDownloadedPreviousSyntax ) || ( !isNewSyntax && forceInstall ) ) {
             // use the deprecated method. 
             await fileDownloader.fromGitHub_deprecated( treatedLine, branch );
           }
 
-          thisFile = isNewSintax ? path.join( thisRepoDirPath, inputedPathToFile ) :
+          thisFile = isNewSyntax ? path.join( thisRepoDirPath, inputedPathToFile ) :
             path.join( NODE_MODULES_PATH, fileName );
         }
         //#endregion

@@ -44,10 +44,10 @@ class FileDownloader {
   }
 
 
-  // DEPRECATED SINTAX: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
+  // DEPRECATED syntax: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
   // https://raw.githubusercontent.com/{user}/{repo}/{brach}/{pathToFle}.js
   /**
-   * [DEPRECATED, used for the previous sintax]
+   * [DEPRECATED, used for the previous syntax]
    * Downloads a file from GitHub and saves it to node_modules. Returns the file name or an error.
    * 
    * @param { string } path <userName>/<repositoryName>/(<branchName>)/<pathToFile>
@@ -175,7 +175,7 @@ class FileDownloader {
   static githubDownloadError( filePath, exception ) {
     console.error(
       style.styledError,
-      `There was an error while downloading a file from GitHub ("${filePath}"):\nPlease, check the import sintax again.\n\n`,
+      `There was an error while downloading a file from GitHub ("${filePath}"):\nPlease, check the import syntax again.\n\n`,
       exception
     );
 
