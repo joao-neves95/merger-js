@@ -146,7 +146,7 @@ npm install merger-js -g
 
     * You can specify the branch using the `::` token.
 
-    * MergerJS still supports the previous GitHub import syntax for files, where the branch is specified directly on the path (not supported on directories). This syntax is deprecated.<br/>
+    * MergerJS still supports the previous GitHub import syntax for files, where the branch is specified directly on the path, to avoid breaking changes (not supported on directories). This syntax should be considered as deprecated.<br/>
       E.g.: `// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'`
 
     * Pushing (`<<`) `dir`, `DIR`, `directory` or `DIRECTORY` into `%import<<github`, imports an entire directory from GitHub.<br/>
