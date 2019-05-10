@@ -91,7 +91,7 @@ module.exports = ( Path, Callback ) => {
       try {
         const createdNodeModules = await Utils.createNodeModulesIfNeeded();
         if ( createdNodeModules ) {
-          NODE_MODULES_PATH = global.config.nodeModulesPath
+          NODE_MODULES_PATH = global.config.nodeModulesPath;
           await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
         }
 

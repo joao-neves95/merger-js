@@ -85,7 +85,7 @@ class FileDownloader {
             fileContent = await httpClient.getAsync( url, false );
 
             if ( fileContent.statusCode !== 200 )
-              FileDownloader.githubDownloadError( new URL( url ).pathname, e );
+              FileDownloader.githubDownloadError( new URL( url ).pathname );
 
           } catch ( e ) {
             FileDownloader.githubDownloadError( new URL( url ).pathname, e );
