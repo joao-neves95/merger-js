@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "merger init",
-    "test": "npm audit"
+    "test": "npm audit && node tests/test.js"
   },
   "author": {
     "name": "shivayl",
@@ -43,7 +43,9 @@
     "node-notifier": "^5.4.0",
     "uglify-es": "^3.3.10"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine": "^3.4.0"
+  },
   "keywords": [
     "build",
     "bundler",
