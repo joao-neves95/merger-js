@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.8.0 - 10/05/2019
+#### *v3.8.1 - 19/05/2019
+
+  - Added the first set of tests (parseImports and minifyCode).
+
+&nbsp;
+
+#### v3.8.0 - 10/05/2019
 
   - Added support for importing an entire directory from GitHub.<br/>
     There is a new import syntax for GitHub now.
