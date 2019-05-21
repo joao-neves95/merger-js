@@ -14,8 +14,12 @@ const Utils = require( '../utils' );
 const addPropertyToConfig = require( '../CLIModules/editConfigFile' ).addProperty;
 const style = require( '../consoleStyling' );
 const ConfigKeysType = require( '../../models/configKeysEnum' );
-const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 
+/**
+ * 
+ * @param { string } Path The path of the header file.
+ * @param { Function } Callback ( buildOrder:string[] ) Receives the build order array of file paths inputed by the user.
+ */
 module.exports = ( Path, Callback ) => {
   let NODE_MODULES_PATH = global.config.nodeModulesPath;
   let lineNum = 0;
