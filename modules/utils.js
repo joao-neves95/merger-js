@@ -12,10 +12,11 @@ const path = require( 'path' );
 const whilst = require( '../node_modules/neo-async' ).whilst;
 const each = require( '../node_modules/neo-async' ).each;
 const style = require( './consoleStyling' );
+const StaticClass = require( '../models/staticClassBase' );
 
-class Utils {
+class Utils extends StaticClass {
   constructor() {
-    throw new Error( 'Can not instantiate the static class "Utils"' );
+    super( 'Utils' );
   }
 
   /**

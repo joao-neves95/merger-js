@@ -1,4 +1,10 @@
-﻿class TokenType {
+﻿const StaticClass = require( '../models/staticClassBase' );
+
+class TokenType extends StaticClass {
+  constructor() {
+    super( 'TokenType' );
+  }
+
   static get token_push() { return '<<' }
   static get token_DIR() { return `${TokenType.token_push}DIR` }
   static get token_DIRECTORY() { return `${TokenType.token_push}DIRECTORY` }
