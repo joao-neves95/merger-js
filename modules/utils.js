@@ -106,11 +106,11 @@ class Utils extends StaticClass {
   }
 
   static removeGithubTokenFromImport( importStatement ) {
-    return importStatement.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
+    return importStatement.replace( /<<|gh|GH|github|GITHUB/g, '' );
   }
 
   static removeDirTokenFromImport( importStatement ) {
-    return importStatement.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
+    return importStatement.replace( /<<|directory|DIRECTORY|dir|DIR/g, '' );
   }
 
   /**
