@@ -245,7 +245,7 @@ module.exports = ( Path, Callback ) => {
         thisFile += '.js';
 
       if ( !buildOrder.includes( thisFile ) && thisFile !== undefined && thisFile !== null )
-        buildOrder.push( thisFile );
+        buildOrder.push( path.normalize( thisFile ) );
 
     } catch ( e ) {
       // Invalid import statement.
