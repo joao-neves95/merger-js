@@ -32,8 +32,8 @@ describe( 'Utils', () => {
 
   it( 'Should read an entire directory.', async () => {
     const dirPathsArr = await Utils.readDir( __dirname );
-    expect( dirPathsArr ).toBeDefined();
     expect( dirPathsArr ).not.toBeNull();
+    expect( dirPathsArr ).toBeDefined();
     expect( dirPathsArr ).toEqual( jasmine.arrayContaining( ['httpClient_spec.js', 'parseImports_spec.js', 'mergerCLI_specs'] ) );
     expect( dirPathsArr.length ).toBeGreaterThanOrEqual( 6 );
   } );
