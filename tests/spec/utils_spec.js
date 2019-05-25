@@ -34,7 +34,7 @@ describe( 'Utils', () => {
     const dirPathsArr = await Utils.readDir( __dirname );
     expect( dirPathsArr ).not.toBeNull();
     expect( dirPathsArr ).toBeDefined();
-    expect( dirPathsArr ).toEqual( jasmine.arrayContaining( ['httpClient_spec.js', 'parseImports_spec.js', 'mergerCLI_specs'] ) );
+    expect( dirPathsArr ).toEqual( jasmine.arrayContaining( ['httpClient_spec.js', 'parseImports_spec.js', 'minifyCode_spec.js'] ) );
     expect( dirPathsArr.length ).toBeGreaterThanOrEqual( 6 );
   } );
 
