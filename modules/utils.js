@@ -102,15 +102,15 @@ class Utils extends StaticClass {
   }
 
   static removeImportFromInput( importStatement ) {
-    return importStatement.replace( /\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/g, '' );
+    return importStatement.replace( /(?<!:)\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/gi, '' );
   }
 
   static removeGithubTokenFromImport( importStatement ) {
-    return importStatement.replace( /<<|gh|GH|github|GITHUB/g, '' );
+    return importStatement.replace( /<<GH|<<GITHUB/gi, '' );
   }
 
   static removeDirTokenFromImport( importStatement ) {
-    return importStatement.replace( /<<|directory|DIRECTORY|dir|DIR/g, '' );
+    return importStatement.replace( /<<DIRECTORY|<<DIR/gi, '' );
   }
 
   /**
