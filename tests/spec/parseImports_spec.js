@@ -72,56 +72,65 @@ describe( 'ParseImports', () => {
   } );
 
   it( 'Should parse a URL file import, download the file and cache it in the node_modules folder.', async () => {
-    const thisDownloadedFilePath = path.join( NODE_MODULES_PATH, 'jquery.min.js' );
+    await __parseImportsUrlsTest( 'specificUrlPaths.header.js', path.join( NODE_MODULES_PATH, 'jquery.min.js' ) );
+  } );
 
-    return new Promise( ( _resolve, _reject ) => {
-      parseImports( path.join( HEADER_FILES_DIR_PATH, 'specificUrlPaths.header.js' ), async ( buildOrder ) => {
-        console.debug( buildOrder );
-        expect( buildOrder ).not.toBeNull();
-        expect( buildOrder ).toBeDefined();
-        expect( buildOrder ).toEqual( jasmine.arrayContaining(
-          [
-            'specificUrlPaths.header.js',
-            thisDownloadedFilePath
-          ]
-        ) );
-
-        let downloadSuccessful = false;
-        let downloadFileError = null;
-
-        try {
-          downloadSuccessful = await fileExists( thisDownloadedFilePath );
-
-        } catch ( e ) {
-          downloadSuccessful = false;
-          downloadFileError = e;
-        }
-
-        expect( downloadSuccessful ).toEqual( true, 'ParseImports > URL file import > Download file : FAILED, Error:\n' + downloadFileError );
-
-        if ( downloadSuccessful ) {
-          fs.readFile( thisDownloadedFilePath, 'utf8', ( err, data ) => {
-            expect( err ).toBeNull();
-            expect( data ).not.toBeNull();
-            expect( data ).toBeDefined();
-            expect( data ).not.toEqual( '404: Not Found\n' );
-            expect( data.length ).toBeGreaterThan( 50 );
-
-            // Delete the downloaded file.
-            fs.unlink( thisDownloadedFilePath, ( err ) => {
-              if ( err ) {
-                console.error( 'ParseImports > URL file import > (delete downloaded file) : FAILED, Error:' );
-                console.error( err );
-                return _reject( err );
-              }
-
-              return _resolve();
-            } );
-          } );
-        }
-      } );
-    } );
-
+  it( 'Should parse a GitHub file path, download it and cache it into the node_modules folder.', async () => {
+    await __parseImportsUrlsTest( 'githubFilePath.header.js', path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' ) );
   } );
 
 } );
+
+/**
+ * 
+ * @param { string } headerFile The header file path, with all the imports.
+ * @param { string } thisDownloadedFilePath The path location where the downloaded file should be.
+ */
+const __parseImportsUrlsTest = ( headerFile, thisDownloadedFilePath ) => {
+  return new Promise( ( _resolve, _reject ) => {
+    parseImports( path.join( HEADER_FILES_DIR_PATH, headerFile ), async ( buildOrder ) => {
+      expect( buildOrder ).not.toBeNull();
+      expect( buildOrder ).toBeDefined();
+      expect( buildOrder ).toEqual( jasmine.arrayContaining(
+        [
+          headerFile,
+          thisDownloadedFilePath
+        ]
+      ) );
+
+      let downloadSuccessful = false;
+      let downloadFileError = null;
+
+      try {
+        downloadSuccessful = await fileExists( thisDownloadedFilePath );
+
+      } catch ( e ) {
+        downloadSuccessful = false;
+        downloadFileError = e;
+      }
+
+      expect( downloadSuccessful ).toEqual( true, 'ParseImports > URL file import > Download file : FAILED, Error:\n' + downloadFileError );
+
+      if ( downloadSuccessful ) {
+        fs.readFile( thisDownloadedFilePath, 'utf8', ( err, data ) => {
+          expect( err ).toBeNull();
+          expect( data ).not.toBeNull();
+          expect( data ).toBeDefined();
+          expect( data ).not.toEqual( '404: Not Found\n' );
+          expect( data.length ).toBeGreaterThan( 50 );
+
+          // Delete the downloaded file.
+          fs.unlink( thisDownloadedFilePath, ( err ) => {
+            if ( err ) {
+              console.error( 'ParseImports > URL file import > (delete downloaded file) : FAILED, Error:' );
+              console.error( err );
+              return _reject( err );
+            }
+
+            return _resolve();
+          } );
+        } );
+      }
+    } );
+  } );
+};
