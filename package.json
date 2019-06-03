@@ -34,7 +34,7 @@
   "deprecated": false,
   "dependencies": {
     "chalk": "^2.4.2",
-    "chokidar": "^2.1.5",
+    "chokidar": "^3.0.1",
     "commander": "^2.20.0",
     "inquirer": "^6.3.1",
     "js.system.collections": "^1.0.0",
