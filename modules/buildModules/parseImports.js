@@ -151,7 +151,6 @@ module.exports = ( Path, Callback ) => {
 
         //#region FROM A GITHUB DIRECTORY.
         // (using exclusively the new syntax)
-        // TODO: (FIX) GITHUB DIRECTORY IMPORTS NOT WORKING.
         if ( isDir ) {
           const thisRepoDirDirPath = path.join( thisRepoDirPath, inputedPathToFile );
           let alreadyDownloaded = false;
