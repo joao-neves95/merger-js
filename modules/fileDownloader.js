@@ -139,6 +139,10 @@ class FileDownloader {
         const NODE_MODULES_PATH = global.config.nodeModulesPath;
         const thisRepoDirName = Utils.buildGithubRepoDirName( user, repo );
         let jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
+
+        if ( jsonApiResponse.statusCode === 404 )
+          throw new Error( jsonApiResponse.statusMessage );
+
         jsonApiResponse = JSON.parse( jsonApiResponse.body );
         if ( !Array.isArray( jsonApiResponse ) )
           jsonApiResponse = [jsonApiResponse];
@@ -167,6 +171,7 @@ class FileDownloader {
   }
 
   static async getJsonFromGithubApi( user, repo, pathToFile, branch = 'master' ) {
+    pathToFile = pathToFile.endsWith( '/' ) ? pathToFile.substring( 0, pathToFile.length - 1 ) : pathToFile;
     return await httpClient.getAsync( FileDownloader.buildGithubAPIUrl( user, repo, pathToFile, branch ) );
   }
 
