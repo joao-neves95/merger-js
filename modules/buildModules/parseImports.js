@@ -13,7 +13,7 @@ const fileDownloader = require( '../fileDownloader' );
 const Utils = require( '../utils' );
 const addPropertyToConfig = require( '../CLIModules/editConfigFile' ).addProperty;
 const style = require( '../consoleStyling' );
-const ConfigKeysType = require( '../../models/configKeysEnum' );
+const ConfigKeysType = require( '../../enums/configKeysEnum' );
 
 /**
  * 

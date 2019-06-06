@@ -11,7 +11,7 @@ const prompt = require('../../node_modules/inquirer').createPromptModule();
 const UserConfig = require('../../models/userConfigModel');
 const { writeJSONFile, findFileOrDir } = require('../utils');
 const newTimestamp = require( '../newTimestamp' ).small;
-const promptResonseType = require( '../../models/promptResponseType' );
+const promptResonseType = require( '../../enums/promptResponseType' );
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
 const initQuestions = [

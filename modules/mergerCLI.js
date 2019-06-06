@@ -17,7 +17,7 @@ const addFilesPrompt = require('./CLIModules/addFilesPrompt');
 const selectSourceFile = require( './CLIModules/selectSourceFilePrompt' );
 const EditConfigFile = require( './CLIModules/editConfigFile' );
 const style = require('./consoleStyling');
-const ConfigKeysType = require('../models/configKeysEnum');
+const ConfigKeysType = require('../enums/configKeysEnum');
 
 module.exports = ( Callback ) => {
   global.version = require('../package.json').version;
