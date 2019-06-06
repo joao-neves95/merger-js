@@ -2,7 +2,19 @@
 
 &nbsp;
 
-#### *v3.8.1 - 19/05/2019
+#### *v3.8.2 - 06/06/2019
+
+  - Added tests (finally!);
+  - fileDownloader module:
+    - Fixed an issue when the user added a '/' in the end of a GitHub path;
+    - Improved the fileDownloader error messages and handling.
+  - Fixed and improved the import syntax token removers regex functions;
+  - Cross platform fixes;
+  - Other multiple minor internal fixes/refactorings/improvements.
+
+&nbsp;
+
+#### v3.8.1 - 19/05/2019
 
   - Added the first set of tests (parseImports and minifyCode).
 
