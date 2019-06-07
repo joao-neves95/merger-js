@@ -2,7 +2,7 @@
 
 &nbsp;
 
-#### *v3.8.2 - 06/06/2019
+#### *v3.8.2 - 07/06/2019
 
   - Added tests (finally!);
   - fileDownloader module:
