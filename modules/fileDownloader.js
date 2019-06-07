@@ -23,17 +23,17 @@ class FileDownloader {
   static fromUrl( url, Callback ) {
     return new Promise( async ( resolve, reject ) => {
 
-        try {
-          const fileName = Utils.getFileNameFromUrl( url );
-          const fileContentRes = await httpClient.getAsync( url, false );
-          await Utils.saveFileInNodeModules( fileName, fileContentRes.body );
+      try {
+        const fileName = Utils.getFileNameFromUrl( url );
+        const fileContentRes = await httpClient.getAsync( url );
+        await Utils.saveFileInNodeModules( fileName, fileContentRes.body );
 
-          if ( Callback )
-            return Callback( fileName );
+        if ( Callback )
+          return Callback( fileName );
 
-          resolve( fileName );
+        resolve( fileName );
 
-        } catch ( err ) {
+      } catch ( err ) {
           if ( Callback )
             return Callback( err, null );
 
@@ -84,7 +84,9 @@ class FileDownloader {
           try {
             fileContent = await httpClient.getAsync( url, false );
 
-            if ( fileContent.statusCode !== 200 )
+            if ( fileContent.statusCode === 404 )
+              FileDownloader.githubDownloadError( new URL( url ).pathname, 'The file was not found (404).' );
+            else if ( fileContent.statusCode !== 200 )
               FileDownloader.githubDownloadError( new URL( url ).pathname );
 
           } catch ( e ) {
@@ -137,6 +139,10 @@ class FileDownloader {
         const NODE_MODULES_PATH = global.config.nodeModulesPath;
         const thisRepoDirName = Utils.buildGithubRepoDirName( user, repo );
         let jsonApiResponse = await FileDownloader.getJsonFromGithubApi( user, repo, pathToFile, branch );
+
+        if ( jsonApiResponse.statusCode === 404 )
+          throw new Error( jsonApiResponse.statusMessage );
+
         jsonApiResponse = JSON.parse( jsonApiResponse.body );
         if ( !Array.isArray( jsonApiResponse ) )
           jsonApiResponse = [jsonApiResponse];
@@ -165,6 +171,7 @@ class FileDownloader {
   }
 
   static async getJsonFromGithubApi( user, repo, pathToFile, branch = 'master' ) {
+    pathToFile = pathToFile.endsWith( '/' ) ? pathToFile.substring( 0, pathToFile.length - 1 ) : pathToFile;
     return await httpClient.getAsync( FileDownloader.buildGithubAPIUrl( user, repo, pathToFile, branch ) );
   }
 
@@ -175,7 +182,7 @@ class FileDownloader {
   static githubDownloadError( filePath, exception ) {
     console.error(
       style.styledError,
-      `There was an error while downloading a file from GitHub ("${filePath}"):\nPlease, check the import syntax again.\n\n`,
+      `There was an error while downloading a file from GitHub ("${filePath}"):\nPlease, check your import syntax again.\n\n`,
       exception
     );
 
