@@ -12,10 +12,11 @@ const path = require( 'path' );
 const whilst = require( '../node_modules/neo-async' ).whilst;
 const each = require( '../node_modules/neo-async' ).each;
 const style = require( './consoleStyling' );
+const StaticClass = require( '../models/staticClassBase' );
 
-class Utils {
+class Utils extends StaticClass {
   constructor() {
-    throw new Error( 'Can not instantiate the static class "Utils"' );
+    super( 'Utils' );
   }
 
   /**
@@ -101,15 +102,15 @@ class Utils {
   }
 
   static removeImportFromInput( importStatement ) {
-    return importStatement.replace( /\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/g, '' );
+    return importStatement.replace( /(?<!:)\/\/|@import|@|\$import|\$|\%import|\%|\%%import|\%\%/gi, '' );
   }
 
   static removeGithubTokenFromImport( importStatement ) {
-    return importStatement.replace( /<<gh|<<GH|<<github|<<GITHUB/g, '' );
+    return importStatement.replace( /<<GH|<<GITHUB/gi, '' );
   }
 
   static removeDirTokenFromImport( importStatement ) {
-    return importStatement.replace( /<<dir|<<DIR|<<directory|<<DIRECTORY/g, '' );
+    return importStatement.replace( /<<DIRECTORY|<<DIR/gi, '' );
   }
 
   /**

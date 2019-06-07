@@ -12,7 +12,7 @@ const findFile = require( './utils' ).findFileOrDir;
 const editConfigFile = require( './CLIModules/editConfigFile' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const newTimestamp = require( './newTimestamp' );
-const ConfigKeysType = require( '../models/configKeysEnum' );
+const ConfigKeysType = require( '../enums/configKeysEnum' );
 const style = require('./consoleStyling');
 
 module.exports = ( newConfig, Callback ) => {
