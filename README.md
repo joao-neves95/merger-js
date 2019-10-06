@@ -42,7 +42,7 @@
  - [x] **Import an entire directory** (use ```@import<<DIR 'directoryName/'```)
  - [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
  - [x] **Import a file from an URL** (use ```%import 'url'```)
- - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github '<userName>/<repositoryName>/<pathToFile>.js'```)
+ - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github::{branch-name} '{userName}/{repositoryName}/{pathToFile}.js'```)
  
 &nbsp;
 
@@ -82,7 +82,7 @@ npm install merger-js -g
    ```
    // $import 'sweetalert2/dist/sweetalert2.all.min.js'
    // %import 'https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/cjs/react.development.js'
-   // %<<github '/twbs/bootstrap/master/dist/js/bootstrap.min.js'
+   // %<<github::v4-dev '/twbs/bootstrap/dist/js/bootstrap.min.js'
    // @'externalLibs'
    // @import<<dir '/enums/'
    // @import 'utilities'
