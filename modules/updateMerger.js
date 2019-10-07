@@ -6,7 +6,7 @@
  *
  */
 
-const exec = require('child_process').exec;
+const spawn = require( 'child_process' ).spawn;
 const notify = require('./notifications').notif;
 const style = require('./consoleStyling');
 const newTimestamp = require('./newTimestamp').small;
@@ -14,19 +14,41 @@ const newTimestamp = require('./newTimestamp').small;
 module.exports = ( cmd, Callback ) => {
   return new Promise( ( _resolve, _reject ) => {
 
-    let command = 'npm install merger-js';
+    let hasErrors = false;
+
+    let command = 'npm';
+    // The 'win64' value is just in case Node.js changes in the future.
+    if ( process.platform === 'win32' || process.platform === 'win64' ) {
+      command += '.cmd';
+    }
+
+    let params = [ 'install', 'merger-js' ];
     if ( !cmd.local )
-      command += ' -g';
+      params.push( '-g' );
 
-    exec( command, ( err, stdout, stderr ) => {
-      if ( err )
-        return console.error( ' It was not possible to update MergerJS. Please, try again.' );
+    const proc = spawn( command, params );
 
-      console.info( ` ${command}` );
-      console.log( `\n ${stdout}` );
-      console.log( `\n ${stderr}` );
+    console.info( `${command} ${params.join( ' ' )}` );
 
-      let timestamp = newTimestamp();
+    proc.stdout.on( 'data', ( data ) => {
+      console.log( data.toString() );
+    } );
+
+    proc.stderr.on( 'data', ( data ) => {
+      __handleError( data.toString() );
+    } );
+
+    proc.on( 'error', ( err ) => {
+      __handleError( err );
+    } );
+
+    proc.on( 'close', ( code ) => {
+      if ( hasErrors ) {
+        console.error( ' It was not possible to update MergerJS. Please, try again.' );
+        return _reject();
+      }
+
+      const timestamp = newTimestamp();
       console.info( ` ${timestamp} - ${style.successText( 'Update successful.' )}\n You can read the CHANGELOG file at https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md. \n You can read the README file at https://github.com/joao-neves95/merger-js/blob/master/README.md. ` );
       notify( 'Update successful.', 'You can read the CHANGELOG file at https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md. \nYou can read the README file at https://github.com/joao-neves95/merger-js/blob/master/README.md.' );
 
@@ -35,5 +57,11 @@ module.exports = ( cmd, Callback ) => {
 
       return _resolve();
     } );
+
+    const __handleError = ( error ) => {
+      console.log( error );
+      hasErrors = true;
+    };
+
   } );
 };
