@@ -1,3 +1,3 @@
 ﻿# Current Branch Version
 
-**v3.8.3**
+**v3.8.4**
