@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.8.3 - 06/10/2019
+#### *v3.8.4 - 07/10/2019
+
+  - The output of `merger update` is now printed on the console;
+  
+&nbsp;
+
+#### v3.8.3 - 06/10/2019
 
   - Fixed dependency vulnerability issues.
   - Updated dependencies.

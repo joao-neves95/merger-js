@@ -4,8 +4,6 @@
 
 - Add an edit source file command to the CLI;
 
-- Output the output of `merger update`;
-
 - Add support for importing files with imports (big one);
 
 - Add more validation and error handling to the CLI;
