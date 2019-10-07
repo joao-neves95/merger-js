@@ -4,7 +4,7 @@
 
 #### *v3.8.4 - 07/10/2019
 
-  - The output of `merger update` is now printed on the console;
+  - The output of `merger update` is now printed on the console.
   
 &nbsp;
 
