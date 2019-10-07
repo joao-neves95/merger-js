@@ -8,9 +8,7 @@
 
 - Add more validation and error handling to the CLI;
 
-- Add contributing guidelines;
-
-- TESTS;
+- Add contributing guidelines.
 
 --------------------------------------------------------------------------------------------------------------------------
 ### Proposals:
