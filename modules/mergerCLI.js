@@ -50,10 +50,16 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'update' )
     .option( '-l, --local' )
-    .action( ( cmd ) => {
-      update( cmd, () => {
-        process.exit( 0 );
-      } );
+    .action( async ( cmd ) => {
+      try {
+        await update( cmd );
+
+      } catch ( e ) {
+        console.error( e );
+      }
+
+      process.exit( 0 );
+      
     } );
 
   // merger build
