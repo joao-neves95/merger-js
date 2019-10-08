@@ -6,7 +6,7 @@
 
  Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES6+ minification, auto build capabilities, and native OS notifications. 
  
- Because merger uses uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES6+.
+ Because merger uses a modified version of uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES8+.
  
  **MergerJS *is not* a module bundler, is a file bundler.**
  
