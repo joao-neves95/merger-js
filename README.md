@@ -4,7 +4,7 @@
 [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
 [![GitHub stars](https://img.shields.io/github/stars/joao-neves95/merger-js.svg?label=star&style=social)](https://github.com/joao-neves95/merger-js)
 
- Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES6+ minification, auto build capabilities, and native OS notifications. 
+ Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES8+ minification, auto build capabilities, and native OS notifications. 
  
  Because merger uses a modified version of uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES8+.
  
