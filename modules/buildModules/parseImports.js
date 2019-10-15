@@ -34,29 +34,20 @@ module.exports = ( Path, Callback ) => {
     skipEmptyLines: true
   } );
 
+  // TODO: Reduce code duplication.
+  // TODO: Changed the treatedLine logic. It is already treated in the ImportLineParser.
   rl.on( 'line', async ( line ) => {
     rl.pause();
     let thisFile = null;
-    /**
-     * @type { string }
-     */
+    /** @type { string } */
     let directotyPath = null;
 
     const parsedLine = ImportLineParser.parse( line );
 
     switch ( parsedLine.importType ) {
-
-      case ImportType.RelativePath:
-        if ( parsedLine.isDir ) {
-          directotyPath = path;
-
-        } else {
-          thisFile = Utils.cleanImportFileInput( treatedLine );
-        }
-
-        break;
-
       case ImportType.NodeModules:
+      case ImportType.SpecificURL:
+      case ImportType.GitHub:
 
         try {
           const createdNodeModules = await Utils.createNodeModulesIfNeeded();
@@ -65,23 +56,53 @@ module.exports = ( Path, Callback ) => {
             await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
           }
 
-          // AN ENTIRE DIRECTORY.
-          if ( parsedLine.isDir ) {
-            directotyPath = NODE_MODULES_PATH;
-
-          } else {
-            // A FILE.
-            thisFile = Utils.cleanImportFileInput( treatedLine );
-            thisFile = path.join( NODE_MODULES_PATH, thisFile );
-          }
-
         } catch ( e ) {
-          return ____nodeModulesCreationError( thisFile );
+          return ____nodeModulesCreationError( line );
         }
 
         break;
 
-      case ImportType.URL:
+      default:
+        break;
+    }
+
+    switch ( parsedLine.importType ) {
+
+      case ImportType.RelativePath:
+        if ( parsedLine.isDir ) {
+          directotyPath = path;
+        }
+
+        break;
+
+      case ImportType.NodeModules:
+        // AN ENTIRE DIRECTORY.
+        if ( parsedLine.isDir ) {
+          directotyPath = NODE_MODULES_PATH;
+
+        } else {
+          // A FILE.
+          thisFile = path.join( NODE_MODULES_PATH, thisFile );
+        }
+
+        break;
+
+      case ImportType.SpecificURL:
+        const fileName = Utils.getFileNameFromUrl( parsedLine.path );
+        let fileExists = true;
+        if ( !parsedLine.forceInstall )
+          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+
+        if ( !fileExists || parsedLine.forceInstall ) {
+          try {
+            await fileDownloader.fromUrl( url );
+
+          } catch ( e ) {
+            console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
+          }
+        }
+
+        thisFile = path.join( NODE_MODULES_PATH, fileName );
         break;
 
       case ImportType.GitHub:
@@ -92,74 +113,15 @@ module.exports = ( Path, Callback ) => {
     }
 
     if ( parsedLine.isDir ) {
-      await ____addAllDirectoryToBuildOrder( buildOrder, Path, treatedLine );
+      await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, treatedLine );
+
+    } else if ( file === null ) {
+      thisFile = Utils.cleanImportFileInput( treatedLine );
     }
 
     ++line;
 
-    // #region IMPORT FROM RELATIVE PATH OR DIRECTORY
-
-    // if ( treatedLine.startsWith( '@import', 2 ) || treatedLine.startsWith( '@', 2 ) ) {
-      //treatedLine = Utils.removeImportFromInput( treatedLine );
-
-      // FROM A DIRECTORY.
-      //const wasDir = await ____addAllDirectoryToBuildOrder( buildOrder, Path, treatedLine );
-      //if ( wasDir )
-      //  thisFile = null;
-      //else
-      //  // FROM A RELATIVE FILE PATH.
-      //  thisFile = Utils.cleanImportFileInput( treatedLine );
-
-      //++lineNum;
-
-    // #endregion IMPORT FROM RELATIVE PATH OR DIRECTORY
-
-    // #region IMPORT FROM node_modules
-
-    //} else if ( treatedLine.startsWith( '$import', 2 ) || treatedLine.startsWith( '$', 2 ) ) {
-      //treatedLine = Utils.removeImportFromInput( treatedLine );
-
-      //try {
-      //  const createdNodeModules = await Utils.createNodeModulesIfNeeded();
-      //  if ( createdNodeModules ) {
-      //    NODE_MODULES_PATH = global.config.nodeModulesPath;
-      //    await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
-      //  }
-
-      //  // AN ENTIRE DIRECTORY.
-      //  const wasDir = await ____addAllDirectoryToBuildOrder( buildOrder, NODE_MODULES_PATH, treatedLine );
-      //  if ( wasDir )
-      //    thisFile = null;
-      //  else {
-      //    // A FILE.
-      //    thisFile = Utils.cleanImportFileInput( treatedLine );
-      //    thisFile = path.join( NODE_MODULES_PATH, thisFile );
-      //  }
-
-      //} catch ( e ) {
-      //  return ____nodeModulesCreationError( thisFile );
-      //}
-
-      //++lineNum;
-
-    // #endregion IMPORT FROM node_modules
-
     // #region IMPORT FROM AN URL
-
-    // } else if ( treatedLine.startsWith( '%import', 2 ) || treatedLine.startsWith( '%', 2 ) || treatedLine.startsWith( '%%', 2 ) ) {
-      //const forceInstall = treatedLine.startsWith( '%%', 2 );
-      treatedLine = Utils.removeImportFromInput( treatedLine );
-
-      try {
-        const createdNodeModules = await Utils.createNodeModulesIfNeeded();
-        if ( createdNodeModules ) {
-          NODE_MODULES_PATH = global.config.nodeModulesPath;
-          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
-        }
-
-      } catch ( e ) {
-        return ____nodeModulesCreationError( line );
-      }
 
       //#region FROM GITHUB
 
@@ -174,24 +136,11 @@ module.exports = ( Path, Callback ) => {
       //     treatedLine.startsWith( '<<GITHUB' ) )
       //{
         //treatedLine = Utils.removeGithubTokenFromImport( treatedLine );
-        let isNewSyntax = false;
-        let branch = '';
-        //if ( treatedLine.startsWith( '::' ) ) {
-        //  treatedLine = treatedLine.replace( /::/g, '' );
+        //let isNewSyntax = false;
+        //let branch = '';
 
-        //  for ( let i = 0; i < treatedLine.length; ++i ) {
-        //    if ( treatedLine[i] === '<' || treatedLine[i] === "'" || treatedLine[i] === ' ' )
-        //      break;
-
-        //    branch += treatedLine[i];
-        //  }
-
-        //  isNewSyntax = true;
-        //  treatedLine = treatedLine.substring( branch.length );
-        //}
-
-        const isDir = ImportLineParser.__pathIsDir( treatedLine );
-        treatedLine = Utils.removeDirTokenFromImport( treatedLine );
+        //const isDir = ImportLineParser.__pathIsDir( treatedLine );
+        //treatedLine = Utils.removeDirTokenFromImport( treatedLine );
 
         if ( treatedLine.startsWith( '::' ) )
           console.error( style.styledError, `Unexpected token "::" on the line: "${line}" \n` );
@@ -274,27 +223,6 @@ module.exports = ( Path, Callback ) => {
       //#endregion FROM GITHUB
 
       //#region FROM A SPECIFIC URL
-
-      } else {
-        let url = Utils.cleanImportFileInput( treatedLine );
-        const fileName = Utils.getFileNameFromUrl( url );
-        let fileExists = true;
-        if ( !forceInstall )
-          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
-
-        if ( !fileExists || forceInstall ) {
-          try {
-            await fileDownloader.fromUrl( url );
-
-          } catch ( e ) {
-            console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
-          }
-        }
-
-        thisFile = path.join( NODE_MODULES_PATH, fileName );
-      }
-
-      ++lineNum;
 
       //#endregion FROM A SPECIFIC URL
 

@@ -23,6 +23,7 @@ class ImportLineParser {
       return parsedLine;
     }
 
+    // TODO: Reduce code duplication.
     switch ( line ) {
 
       // #region IMPORT FROM RELATIVE PATH OR DIRECTORY
@@ -39,9 +40,13 @@ class ImportLineParser {
 
       case line.startsWith( '$import', 2 ) || line.startsWith( '$', 2 ):
         parsedLine.importType = ImportType.NodeModules;
+        line = Utils.removeImportFromInput( line );
+        parsedLine.isDir = ImportParser.__pathIsDir( line );
         break;
 
       // #endregion IMPORT FROM node_modules
+
+      // #region IMPORT FROM AN URL
 
       case line.startsWith( '%import', 2 ) || line.startsWith( '%', 2 ) || line.startsWith( '%%', 2 ):
         parsedLine.forceInstall = line.startsWith( '%%', 2 );
@@ -86,10 +91,13 @@ class ImportLineParser {
           }
 
           parsedLine.branchName = branchName;
+          parsedLine.isDir = ImportLineParser.__pathIsDir( line );
 
         } else {
-          parsedLine.importType = ImportType.URL;
+          parsedLine.importType = ImportType.SpecificURL;
         }
+
+      // #ENDregion IMPORT FROM AN URL
 
         break;
 
@@ -98,6 +106,12 @@ class ImportLineParser {
         break;
 
     }
+
+    if ( parsedLine.isDir ) {
+      line = Utils.removeDirTokenFromImport( line );
+    }
+
+    parsedLine.path = Utils.cleanImportFileInput( line );
 
   }
 
