@@ -1,19 +1,13 @@
 # TODO
 
-- Add optional custom source file configuration that overwrites the global merger configuration (minfication, etc.);
+## Moved to: [Projects (MergerJS)](https://github.com/joao-neves95/merger-js/projects/1)
 
-- Add an edit source file command to the CLI;
-
-- Add support for importing files with imports (big one);
-
-- Add more validation and error handling to the CLI;
-
-- Add contributing guidelines.
+- Add more validation and error handling to the CLI.
 
 --------------------------------------------------------------------------------------------------------------------------
 ### Proposals:
 
-- Add support for plugins and turn some MergerJS modules into plugins (???);
+- Add support for plugins and turn some MergerJS modules into plugins (???).
 
 - A desktop app, similar to WinLess.
 
