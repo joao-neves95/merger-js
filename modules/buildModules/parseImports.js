@@ -54,7 +54,7 @@ module.exports = ( Path, Callback ) => {
 
       ++lineNum;
 
-    // #endregion
+    // #endregion IMPORT FROM RELATIVE PATH OR DIRECTORY
 
     // #region IMPORT FROM node_modules
 
@@ -84,7 +84,7 @@ module.exports = ( Path, Callback ) => {
 
       ++lineNum;
 
-    // #endregion
+    // #endregion IMPORT FROM node_modules
 
     // #region IMPORT FROM AN URL
 
@@ -104,6 +104,7 @@ module.exports = ( Path, Callback ) => {
       }
 
       //#region FROM GITHUB
+
       // // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
       // // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
       // // %import<<GH::master<<DIR '{user}/{repo}/{pathToFile}.js'
@@ -211,9 +212,10 @@ module.exports = ( Path, Callback ) => {
         }
         //#endregion
 
-      //#endregion
+      //#endregion FROM GITHUB
 
       //#region FROM A SPECIFIC URL
+
       } else {
         let url = Utils.cleanImportFileInput( treatedLine );
         const fileName = Utils.getFileNameFromUrl( url );
@@ -234,9 +236,11 @@ module.exports = ( Path, Callback ) => {
       }
 
       ++lineNum;
-      //#endregion
 
-      // #endregion
+      //#endregion FROM A SPECIFIC URL
+
+      // #endregion IMPORT FROM AN URL
+
     }
 
     try {
@@ -262,6 +266,14 @@ module.exports = ( Path, Callback ) => {
   } );
 };
 
+// #region HELPER FUNCTIONS
+
+/**
+ * 
+ * @param { string } treatedLine
+ * 
+ * @returns { boolean }
+ */
 const ____pathIsDir = ( treatedLine ) => {
   return treatedLine.startsWith( '<<dir' ) ||
          treatedLine.startsWith( '<<DIR' ) ||
@@ -269,6 +281,15 @@ const ____pathIsDir = ( treatedLine ) => {
          treatedLine.startsWith( '<<DIRECTORY' );
 };
 
+/**
+ * 
+ * @param {any} buildOrder
+ * @param {any} thePath
+ * @param {any} treatedLine
+ * 
+ * @return { boolean } Returns false in cae it's not a directory.
+ * In case of exception, it kill the process and logs the error message.
+ */
 const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine ) => {
   if ( !____pathIsDir( treatedLine ) )
     return false;
@@ -294,6 +315,12 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
   return true;
 };
 
+/**
+ * 
+ * @param { string } fileName The file name where the error occured.
+ * 
+ * @returns { void } Logs the error to the console.
+ */
 const ____nodeModulesCreationError = ( fileName ) => {
   return console.error(
     style.styledError,
@@ -309,3 +336,5 @@ const killProcess = () => {
     process.kill( process.pid, 'SIGKILL' );
   }, 5000 );
 };
+
+// #endregion HELPER FUNCTIONS
