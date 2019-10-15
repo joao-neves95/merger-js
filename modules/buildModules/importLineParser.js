@@ -1,7 +1,7 @@
-﻿const ParsedLine = require( '../../../models/parsedLineModel' );
-const ImportType = require( '../../../enums/importType' );
+﻿const ParsedLine = require( '../../models/parsedLineModel' );
+const ImportType = require( '../../enums/importType' );
 
-class ImportParser {
+class ImportLineParser {
 
   constructor() {
     throw new Error( 'Can not intantiate a static class' );
@@ -13,7 +13,7 @@ class ImportParser {
    * 
    * @return { ParsedLine }
    */
-  static parseLine( line ) {
+  static parse( line ) {
     const parsedLine = new ParsedLine();
     parsedLine.isComment = line.trimStart().startsWith( '//' );
 
@@ -110,4 +110,4 @@ class ImportParser {
 
 }
 
-module.exports = ImportParser;
+module.exports = ImportLineParser;

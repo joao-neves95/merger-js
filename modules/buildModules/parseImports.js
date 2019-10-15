@@ -11,7 +11,7 @@ const path = require('path');
 const lineByLine = require( 'line-by-line' );
 const fileDownloader = require( '../fileDownloader' );
 const Utils = require( '../utils' );
-const ImportParser = require( './importParser/importParser' );
+const ImportLineParser = require( './importLineParser' );
 const addPropertyToConfig = require( '../CLIModules/editConfigFile' ).addProperty;
 const ImportType = require( '../../enums/importType' );
 const ConfigKeysType = require( '../../enums/configKeysEnum' );
@@ -42,7 +42,7 @@ module.exports = ( Path, Callback ) => {
      */
     let directotyPath = null;
 
-    const parsedLine = ImportParser.parseLine( line );
+    const parsedLine = ImportLineParser.parse( line );
 
     switch ( parsedLine.importType ) {
 
@@ -190,7 +190,7 @@ module.exports = ( Path, Callback ) => {
         //  treatedLine = treatedLine.substring( branch.length );
         //}
 
-        const isDir = ImportParser.__pathIsDir( treatedLine );
+        const isDir = ImportLineParser.__pathIsDir( treatedLine );
         treatedLine = Utils.removeDirTokenFromImport( treatedLine );
 
         if ( treatedLine.startsWith( '::' ) )
@@ -338,7 +338,7 @@ module.exports = ( Path, Callback ) => {
  */
 const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine ) => {
   // TODO: Refactor: mthe line is already treated.
-  if ( !ImportParser.__pathIsDir( treatedLine ) )
+  if ( !ImportLineParser.__pathIsDir( treatedLine ) )
     return false;
 
   treatedLine = Utils.removeDirTokenFromImport( treatedLine );
