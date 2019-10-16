@@ -39,9 +39,9 @@ class ParsedLine {
     this.branchName = null;
 
     /**
-     * @type { boolean }
+     * @type { boolean | null }
      **/
-    this.isGithubNewSyntax = false;
+    this.isGithubNewSyntax = null;
   }
 
 }

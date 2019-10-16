@@ -63,13 +63,15 @@ module.exports = ( Path, Callback ) => {
         break;
 
       default:
+        ++line;
+        rl.resume();
         break;
     }
 
     switch ( parsedLine.importType ) {
 
       case ImportType.RelativePath:
-        directotyPath = path;
+        directotyPath = Path;
         break;
 
       case ImportType.NodeModules:
@@ -78,15 +80,15 @@ module.exports = ( Path, Callback ) => {
 
       case ImportType.SpecificURL:
         directotyPath = NODE_MODULES_PATH;
-        const fileName = Utils.getFileNameFromUrl( parsedLine.path );
+        thisFile = Utils.getFileNameFromUrl( parsedLine.path );
         let fileExists = true;
         if ( !parsedLine.forceInstall ) {
-          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, thisFile ) );
         }
 
         if ( !fileExists || parsedLine.forceInstall ) {
           try {
-            fileName = await fileDownloader.fromUrl( parsedLine.path );
+            await fileDownloader.fromUrl( parsedLine.path );
 
           } catch ( e ) {
             console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
@@ -97,13 +99,16 @@ module.exports = ( Path, Callback ) => {
 
       case ImportType.GitHub:
         const splitedPath = parsedLine.path.split( '/' );
+        const pathToFile = splitedPath.slice( 2 ).join( '/' );
 
         /** 
          *  The name of the folder where the file(s) will be stored on node_modules.
          *  @type { string }
          */
-        repoDirName = path.join( Utils.buildGithubRepoDirName( splitedPath[0], splitedPath[1] ) );
+        const repoDirName = path.join( Utils.buildGithubRepoDirName( splitedPath[0], splitedPath[1] ) );
         directotyPath = path.join( NODE_MODULES_PATH, repoDirName );
+
+        // #region GITHUB FILES
 
         if ( !parsedLine.isDir ) {
           const fileName = path.basename( parsedLine.path );
@@ -118,18 +123,29 @@ module.exports = ( Path, Callback ) => {
             alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, repoDirName ) );
           }
 
-          const pathToFile = splitedPath.slice( 2 ).join( '/' );
 
-          if ( ( parsedLine.isGithubNewSyntax && !alreadyDowloadedNewSyntax ) || ( parsedLine.forceInstall || parsedLine.isGithubNewSyntax ) ) {
+          if (
+            ( parsedLine.isGithubNewSyntax && !alreadyDowloadedNewSyntax ) ||
+            ( parsedLine.forceInstall || parsedLine.isGithubNewSyntax )
+          ) {
             await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
 
+
             // We need to use the deprecated method to avoid breaking changes.
-          } else if ( ( !parsedLine.isGithubNewSyntax && !alreadyDowloadedDeprecatedSyntax ) || ( parsedLine.forceInstall && !parsedLine.isGithubNewSyntax ) ) {
+          } else if (
+            ( !parsedLine.isGithubNewSyntax && !alreadyDowloadedDeprecatedSyntax ) ||
+            ( parsedLine.forceInstall && !parsedLine.isGithubNewSyntax )
+          ) {
+            console.log( 'parsedLine.path', parsedLine.path)
             await fileDownloader.fromGitHub_deprecated( parsedLine.path );
           }
 
           thisFile = parsedLine.isGithubNewSyntax ? path.join( directotyPath, pathToFile ) :
-            path.join( NODE_MODULES_PATH, fileName );
+                                                    path.join( NODE_MODULES_PATH, fileName );
+
+        // #endregion GITHUB FILES
+
+        // #region GITHUB DIRECTORIES
 
         // For directories it is used exclusively the new syntax.
         } else {
@@ -139,6 +155,34 @@ module.exports = ( Path, Callback ) => {
           if ( !parsedLine.forceInstall ) {
             alreadyDownloaded = await Utils.dirExists( path.join( directotyPath, pathToFile ) );
           }
+
+          if ( !alreadyDownloaded || forceInstall ) {
+            const allFiles = await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
+            buildOrder = buildOrder.concat( allFiles );
+
+            // This is to block adding any files to build order,
+            // bellow this switch.
+            parsedLine.isDir = false;
+            thisFile = '';
+
+          } else {
+            const allFilesFromRepoDir = await Utils.readDir( directotyPath );
+
+            for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
+              if ( path.extname( allFilesFromRepoDir[i] ) !== '.js' ) {
+                continue;
+              }
+
+              buildOrder.push( path.join( directotyPath, allFilesFromRepoDir[i] ) );
+            }
+
+            // This is to block adding any files to build order,
+            // bellow this switch.
+            parsedLine.isDir = false;
+            thisFile = '';
+          }
+
+        // #endregion GITHUB DIRECTORIES
 
         }
 
@@ -151,27 +195,32 @@ module.exports = ( Path, Callback ) => {
     if ( parsedLine.isDir ) {
       await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, parsedLine.path );
 
-    } else if ( file === null ) {
+    } else if ( thisFile === null || thisFile !== undefined ) {
+      console.log( 'directotyPath: ', directotyPath );
+      console.log( 'parsedLine.path: ', parsedLine.path );
+
       thisFile = path.join( directotyPath, parsedLine.path );
+
+      try {
+        if ( path.extname( thisFile ) !== '.js' ) {
+          thisFile += '.js';
+        }
+      
+        if ( !buildOrder.includes( thisFile ) ) {
+          buildOrder.push( path.normalize( thisFile ) );
+        }
+      
+      } catch ( e ) {
+        // Invalid import statement.
+      }
     }
 
     ++line;
-
-    try {
-      if ( path.extname( thisFile ) !== '.js' )
-        thisFile += '.js';
-
-      if ( !buildOrder.includes( thisFile ) && thisFile !== undefined && thisFile !== null )
-        buildOrder.push( path.normalize( thisFile ) );
-
-    } catch ( e ) {
-      // Invalid import statement.
-    }
-
     rl.resume();
 
-    if ( lineNum >= 20 && !lastLineWasComment )
+    if ( lineNum >= 20 && !lastLineWasComment ) {
       rl.close();
+    }
 
   } );
 
@@ -204,7 +253,11 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
     }
 
   } catch ( e ) {
-    console.error( style.styledError, `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`, e );
+    console.error(
+      style.styledError,
+      `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`,
+      e
+    );
     killProcess();
   }
 

@@ -65,6 +65,8 @@ class FileDownloader {
       }
 
       let url = HOST_RAW_GITHUB + path;
+      console.log( 'path', path );
+      console.log( 'url', url );
       const fileName = Utils.getFileNameFromUrl( url );
       let fileContent = null;
 
