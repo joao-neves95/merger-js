@@ -57,16 +57,11 @@ class FileDownloader {
    * @returns { Promise<string | Error> }
    * @deprecated
    */
-  static fromGitHub_deprecated( path, branch, Callback ) {
+  static fromGitHub_deprecated( path, Callback ) {
     return new Promise( async ( resolve, reject ) => {
 
-      if ( path.startsWith( '/' ) )
+      if ( path.startsWith( '/' ) ) {
         path = path.substring( 1 );
-
-      if ( branch !== '' ) {
-        path = path.split( '/' );
-        path.splice( 2, 0, branch );
-        path = path.join( '/' );
       }
 
       let url = HOST_RAW_GITHUB + path;
@@ -78,16 +73,19 @@ class FileDownloader {
 
         if ( fileContent.statusCode === 404 ) {
           path = path.split( '/' );
+          // If the download was not successfull, try to add the master branch.
           path.splice( 2, 0, 'master' );
           url = HOST_RAW_GITHUB + path.join( '/' );
 
           try {
             fileContent = await httpClient.getAsync( url, false );
 
-            if ( fileContent.statusCode === 404 )
+            if ( fileContent.statusCode === 404 ) {
               FileDownloader.githubDownloadError( new URL( url ).pathname, 'The file was not found (404).' );
-            else if ( fileContent.statusCode !== 200 )
+
+            } else if ( fileContent.statusCode !== 200 ) {
               FileDownloader.githubDownloadError( new URL( url ).pathname );
+            }
 
           } catch ( e ) {
             FileDownloader.githubDownloadError( new URL( url ).pathname, e );
