@@ -31,7 +31,17 @@ class ParsedLine {
     /**
      * @type { string | null }
      */
+    this.directory = null;
+
+    /**
+     * @type { string | null }
+     */
     this.branchName = null;
+
+    /**
+     * @type { boolean }
+     **/
+    this.isGithubNewSyntax = false;
   }
 
 }

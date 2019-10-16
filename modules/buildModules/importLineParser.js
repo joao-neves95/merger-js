@@ -1,4 +1,5 @@
-﻿const ParsedLine = require( '../../models/parsedLineModel' );
+﻿const path = require( 'path' );
+const ParsedLine = require( '../../models/parsedLineModel' );
 const ImportType = require( '../../enums/importType' );
 
 class ImportLineParser {
@@ -67,37 +68,33 @@ class ImportLineParser {
              line.startsWith( '<<github' ) ||
              line.startsWith( '<<GITHUB' )
         ) {
-          let branchName = 'master';
-          let isNewSyntax = false;
-
           parsedLine.importType = ImportType.GitHub;
+          parsedLine.branchName = 'master';
 
           line = Utils.removeGithubTokenFromImport( line );
 
           if ( treatedLine.startsWith( '::' ) ) {
-            branchName = '';
+            parsedLine.branchName = '';
             line = line.replace( /::/g, '' );
 
-            for ( let i = 0; i < treatedLine.length; ++i ) {
+            for ( let i = 0; i < line.length; ++i ) {
               if ( line[i] === '<' || line[i] === "'" || line[i] === ' ' )
                 break;
 
-              branchName += treatedLine[i];
+              parsedLine.branchName += treatedLine[i];
             }
 
-            isNewSyntax = true;
-
+            parsedLine.isGithubNewSyntax = true;
             line = line.substring( branch.length );
           }
 
-          parsedLine.branchName = branchName;
           parsedLine.isDir = ImportLineParser.__pathIsDir( line );
 
         } else {
           parsedLine.importType = ImportType.SpecificURL;
         }
 
-      // #ENDregion IMPORT FROM AN URL
+      // #endregion IMPORT FROM AN URL
 
         break;
 
