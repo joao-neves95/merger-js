@@ -40,7 +40,7 @@ module.exports = ( Path, Callback ) => {
     rl.pause();
     let thisFile = null;
     /** @type { string } */
-    let directotyPath = null;
+    let directotyPath = '';
 
     const parsedLine = ImportLineParser.parse( line );
 
@@ -51,6 +51,7 @@ module.exports = ( Path, Callback ) => {
 
         try {
           const createdNodeModules = await Utils.createNodeModulesIfNeeded();
+
           if ( createdNodeModules ) {
             NODE_MODULES_PATH = global.config.nodeModulesPath;
             await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
@@ -81,6 +82,9 @@ module.exports = ( Path, Callback ) => {
       case ImportType.SpecificURL:
         directotyPath = NODE_MODULES_PATH;
         thisFile = Utils.getFileNameFromUrl( parsedLine.path );
+
+        console.log( 'thisFile specific url:', thisFile );
+
         let fileExists = true;
         if ( !parsedLine.forceInstall ) {
           fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, thisFile ) );
@@ -118,11 +122,10 @@ module.exports = ( Path, Callback ) => {
           if ( !parsedLine.forceInstall && parsedLine.isGithubNewSyntax ) {
             alreadyDowloadedDeprecatedSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
 
-            // We need to check with the deprecated syntax, to avoid breaking changes.
+          // We need to check with the deprecated syntax, to avoid breaking changes.
           } else if ( !parsedLine.forceInstall && !parsedLine.isGithubNewSyntax ) {
             alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, repoDirName ) );
           }
-
 
           if (
             ( parsedLine.isGithubNewSyntax && !alreadyDowloadedNewSyntax ) ||
@@ -130,18 +133,23 @@ module.exports = ( Path, Callback ) => {
           ) {
             await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
 
-
-            // We need to use the deprecated method to avoid breaking changes.
+          // We need to use the deprecated method to avoid breaking changes.
           } else if (
             ( !parsedLine.isGithubNewSyntax && !alreadyDowloadedDeprecatedSyntax ) ||
             ( parsedLine.forceInstall && !parsedLine.isGithubNewSyntax )
           ) {
-            console.log( 'parsedLine.path', parsedLine.path)
             await fileDownloader.fromGitHub_deprecated( parsedLine.path );
           }
 
-          thisFile = parsedLine.isGithubNewSyntax ? path.join( directotyPath, pathToFile ) :
-                                                    path.join( NODE_MODULES_PATH, fileName );
+          console.log( 'github file directotyPath: ', directotyPath );
+
+          if ( parsedLine.isGithubNewSyntax ) {
+            parsedLine.path = pathToFile;
+
+          } else {
+            directotyPath = NODE_MODULES_PATH;
+            parsedLine.path = fileName;
+          }
 
         // #endregion GITHUB FILES
 
@@ -195,7 +203,15 @@ module.exports = ( Path, Callback ) => {
     if ( parsedLine.isDir ) {
       await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, parsedLine.path );
 
-    } else if ( thisFile === null || thisFile !== undefined ) {
+    } else if ( thisFile === null || thisFile === undefined ) {
+
+      if ( parsedLine.importType === ImportType.RelativePath || parsedLine.importType === ImportType.GitHub ) {
+        directotyPath = '';
+
+      } else if ( parsedLine.importType === ImportType.SpecificURL ) {
+        parsedLine.path = thisFile;
+      }
+
       console.log( 'directotyPath: ', directotyPath );
       console.log( 'parsedLine.path: ', parsedLine.path );
 
@@ -205,11 +221,11 @@ module.exports = ( Path, Callback ) => {
         if ( path.extname( thisFile ) !== '.js' ) {
           thisFile += '.js';
         }
-      
+
         if ( !buildOrder.includes( thisFile ) ) {
           buildOrder.push( path.normalize( thisFile ) );
         }
-      
+
       } catch ( e ) {
         // Invalid import statement.
       }
@@ -244,12 +260,16 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
   // treatedLine now holds the directory inputed by the user.
   const thisDir = path.join( path.dirname( thePath ), treatedLine );
 
+  console.log( 'treatedLine', treatedLine );
+  console.log( 'thisDir', thisDir );
+
   try {
     const files = await Utils.readDir( thisDir );
 
     for ( let i = 0; i < files.length; ++i ) {
-      if ( path.extname( files[i] ) === '.js' )
+      if ( path.extname( files[i] ) === '.js' ) {
         buildOrder.push( path.join( treatedLine, files[i] ) );
+      }
     }
 
   } catch ( e ) {

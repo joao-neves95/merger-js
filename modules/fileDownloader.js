@@ -65,8 +65,6 @@ class FileDownloader {
       }
 
       let url = HOST_RAW_GITHUB + path;
-      console.log( 'path', path );
-      console.log( 'url', url );
       const fileName = Utils.getFileNameFromUrl( url );
       let fileContent = null;
 
@@ -157,6 +155,7 @@ class FileDownloader {
 
           currentFilePath = path_join( thisRepoDirName, jsonApiResponse[i].path );
           currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
+
           await Utils.saveFileInNodeModules( currentFilePath, currentFileContent.body );
           currentFilePath = path_join( NODE_MODULES_PATH, currentFilePath );
           allFilePaths.push( currentFilePath );

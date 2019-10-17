@@ -81,6 +81,10 @@ class Utils extends StaticClass {
     } );
   }
 
+  static isNullOrEmptyStr( str ) {
+    return str === null || str === undefined || str === '';
+  }
+
   // Based on npm's strip-bom.
   /**
    * Remove unicode character FEFF (UTF-16 BOM) from a string block.

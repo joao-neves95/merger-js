@@ -121,12 +121,16 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
 
       let downloadSuccessful = false;
       let downloadFileError = null;
+      let currentLink = '';
 
       try {
         for ( let i = 0; i < downloadedFilePaths.length; ++i ) {
+          currentLink = downloadedFilePaths[i];
           downloadSuccessful = await fileExists( downloadedFilePaths[i] );
 
-          if ( !downloadSuccessful ) break;
+          if ( !downloadSuccessful ) {
+            break;
+          }
         }
 
       } catch ( e ) {
@@ -134,7 +138,7 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
         downloadFileError = e;
       }
 
-      expect( downloadSuccessful ).toEqual( true, 'ParseImports > URL file import > Download file : FAILED, Error:\n' + downloadFileError );
+      expect( downloadSuccessful ).toEqual( true, `ParseImports > URL file import > URL: ${currentLink} ; Download file : FAILED, Error:\n ${downloadFileError}` );
 
       if ( downloadSuccessful ) {
 
