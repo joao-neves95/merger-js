@@ -115,11 +115,11 @@ module.exports = ( Path, Callback ) => {
           let alreadyDowloadedNewSyntax = false;
 
           if ( !parsedLine.forceInstall && parsedLine.isGithubNewSyntax ) {
-            alreadyDowloadedDeprecatedSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+            alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( directotyPath, pathToFile ) );
 
           // We need to check with the deprecated syntax, to avoid breaking changes.
           } else if ( !parsedLine.forceInstall && !parsedLine.isGithubNewSyntax ) {
-            alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, repoDirName ) );
+            alreadyDowloadedDeprecatedSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
           }
 
           if (
