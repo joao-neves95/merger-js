@@ -252,6 +252,13 @@ sense and does not contribute to a more confusing code.
 
 ## Motivation
 
-When I started doing academic web projects, I felt the need for a build tool to merge all my JS files into one,
-cleaning the HTML pages and optimizing my workflow.<br/>
-I wanted something simple and fast, so I built MergerJS to use in my small web-app projects.
+When I started doing academic web projects,
+I felt the need for a build tool to merge all my
+JS files into one, cleaning the HTML pages and
+optimizing my workflow.
+I wanted something simple and fast.
+My schoolmates couldn't get around with other 
+projects like WebPack and similar tools,
+so I decided to build MergerJS in order to use
+a file bundler in a very simple and fast way.
+This is and it always will be a work in progress.
