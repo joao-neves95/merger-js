@@ -142,7 +142,7 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
 
       if ( downloadSuccessful ) {
 
-        const ____validateFileAsync = ( downloadedFilePath) => {
+        const ____validateFileAsync = ( downloadedFilePath ) => {
           return new Promise( ( _res, _rej ) => {
             fs.readFile( downloadedFilePath, 'utf8', ( err, data ) => {
               if ( err )

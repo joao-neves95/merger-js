@@ -12,22 +12,22 @@ describe( 'Utils', () => {
   } );
 
   it( 'Should remove all "import" tokens types from the import input.', () => {
-    expect( Utils.removeImportFromInput( MockImports.relative_DIR( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.token_importPath );
-    expect( Utils.removeImportFromInput( MockImports.github_DIR( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.token_importUrl_simbol );
-    expect( Utils.removeImportFromInput( MockImports.GH_dir( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.token_importUrl );
+    expect( Utils.removeImportFromInput( MockImports.relative_DIR( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.importPath );
+    expect( Utils.removeImportFromInput( MockImports.github_DIR( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.importUrl_simbol );
+    expect( Utils.removeImportFromInput( MockImports.GH_dir( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.importUrl );
   } );
 
   it( 'Should remove all GITHUB tokens from the import input.', () => {
-    expect( Utils.removeGithubTokenFromImport( MockImports.github_DIR( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.token_github );
-    expect( Utils.removeGithubTokenFromImport( MockImports.GH_dir( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.token_GH );
+    expect( Utils.removeGithubTokenFromImport( MockImports.github_DIR( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.push_symbol_github );
+    expect( Utils.removeGithubTokenFromImport( MockImports.GH_dir( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.push_symbol_GH );
   } );
 
   it( 'Should remove all DIRECTORY tokens from the import input.', () => {
-    expect( Utils.removeDirTokenFromImport( MockImports.relative_dir( RANDOM_PATH_1 )) ).not.toContain( TokenType.token_dir );
-    expect( Utils.removeDirTokenFromImport( MockImports.relative_DIR( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.token_DIR );
-    expect( Utils.removeDirTokenFromImport( MockImports.github_DIR( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.token_DIR );
-    expect( Utils.removeDirTokenFromImport( MockImports.relative_DIRECTORY( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.token_DIRECTORY );
-    expect( Utils.removeDirTokenFromImport( MockImports.relative_directory( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.token_directory );
+    expect( Utils.removeDirTokenFromImport( MockImports.relative_dir( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.push_symbol_dir );
+    expect( Utils.removeDirTokenFromImport( MockImports.relative_DIR( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.push_symbol_DIR );
+    expect( Utils.removeDirTokenFromImport( MockImports.github_DIR( RANDOM_LINK_1 ) ) ).not.toContain( TokenType.push_symbol_DIR );
+    expect( Utils.removeDirTokenFromImport( MockImports.relative_DIRECTORY( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.push_symbol_DIRECTORY );
+    expect( Utils.removeDirTokenFromImport( MockImports.relative_directory( RANDOM_PATH_1 ) ) ).not.toContain( TokenType.push_symbol_directory );
   } );
 
   it( 'Should read an entire directory.', async () => {
