@@ -34,8 +34,6 @@ module.exports = ( Path, Callback ) => {
     skipEmptyLines: true
   } );
 
-  // TODO: Reduce code duplication.
-  // TODO: Changed the treatedLine logic. It is already treated in the ImportLineParser.
   rl.on( 'line', async ( line ) => {
     rl.pause();
     let thisFile = null;
@@ -64,8 +62,6 @@ module.exports = ( Path, Callback ) => {
         break;
 
       default:
-        ++line;
-        rl.resume();
         break;
     }
 
@@ -81,13 +77,11 @@ module.exports = ( Path, Callback ) => {
 
       case ImportType.SpecificURL:
         directotyPath = NODE_MODULES_PATH;
-        thisFile = Utils.getFileNameFromUrl( parsedLine.path );
-
-        console.log( 'thisFile specific url:', thisFile );
+        const fileName = Utils.getFileNameFromUrl( parsedLine.path );
 
         let fileExists = true;
         if ( !parsedLine.forceInstall ) {
-          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, thisFile ) );
+          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
         }
 
         if ( !fileExists || parsedLine.forceInstall ) {
@@ -99,6 +93,7 @@ module.exports = ( Path, Callback ) => {
           }
         }
 
+        parsedLine.path = fileName;
         break;
 
       case ImportType.GitHub:
@@ -130,18 +125,18 @@ module.exports = ( Path, Callback ) => {
           if (
             ( parsedLine.isGithubNewSyntax && !alreadyDowloadedNewSyntax ) ||
             ( parsedLine.forceInstall || parsedLine.isGithubNewSyntax )
-          ) {
+          )
+          {
             await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
 
           // We need to use the deprecated method to avoid breaking changes.
           } else if (
             ( !parsedLine.isGithubNewSyntax && !alreadyDowloadedDeprecatedSyntax ) ||
             ( parsedLine.forceInstall && !parsedLine.isGithubNewSyntax )
-          ) {
+          )
+          {
             await fileDownloader.fromGitHub_deprecated( parsedLine.path );
           }
-
-          console.log( 'github file directotyPath: ', directotyPath );
 
           if ( parsedLine.isGithubNewSyntax ) {
             parsedLine.path = pathToFile;
@@ -157,7 +152,6 @@ module.exports = ( Path, Callback ) => {
 
         // For directories it is used exclusively the new syntax.
         } else {
-          // TODO: Finish the GitHub directory downloads.
           let alreadyDownloaded = false;
 
           if ( !parsedLine.forceInstall ) {
@@ -193,7 +187,6 @@ module.exports = ( Path, Callback ) => {
         // #endregion GITHUB DIRECTORIES
 
         }
-
         break;
 
       default:
@@ -203,17 +196,11 @@ module.exports = ( Path, Callback ) => {
     if ( parsedLine.isDir ) {
       await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, parsedLine.path );
 
-    } else if ( thisFile === null || thisFile === undefined ) {
+    } else if ( thisFile === null ) {
 
-      if ( parsedLine.importType === ImportType.RelativePath || parsedLine.importType === ImportType.GitHub ) {
+      if ( parsedLine.importType === ImportType.RelativePath ) {
         directotyPath = '';
-
-      } else if ( parsedLine.importType === ImportType.SpecificURL ) {
-        parsedLine.path = thisFile;
       }
-
-      console.log( 'directotyPath: ', directotyPath );
-      console.log( 'parsedLine.path: ', parsedLine.path );
 
       thisFile = path.join( directotyPath, parsedLine.path );
 
@@ -250,7 +237,7 @@ module.exports = ( Path, Callback ) => {
 /**
  * 
  * @param { string[] } buildOrder
- * @param { string } thePath The path of the directory.
+ * @param { string } thePath The path of the header file directory.
  * @param { string } treatedLine
  * 
  * @return { boolean } Returns false in cae it's not a directory.
@@ -259,9 +246,6 @@ module.exports = ( Path, Callback ) => {
 const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine ) => {
   // treatedLine now holds the directory inputed by the user.
   const thisDir = path.join( path.dirname( thePath ), treatedLine );
-
-  console.log( 'treatedLine', treatedLine );
-  console.log( 'thisDir', thisDir );
 
   try {
     const files = await Utils.readDir( thisDir );
@@ -278,7 +262,8 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
       `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`,
       e
     );
-    killProcess();
+
+    return killProcess();
   }
 
   return true;
@@ -303,7 +288,10 @@ const killProcess = () => {
   process.kill( process.pid, 'SIGINT' );
   setTimeout( () => {
     process.kill( process.pid, 'SIGKILL' );
+    return false;
   }, 5000 );
+
+  return false;
 };
 
 // #endregion HELPER FUNCTIONS
