@@ -158,7 +158,7 @@ module.exports = ( Path, Callback ) => {
             alreadyDownloaded = await Utils.dirExists( path.join( directotyPath, pathToFile ) );
           }
 
-          if ( !alreadyDownloaded || forceInstall ) {
+          if ( !alreadyDownloaded || parsedLine.forceInstall ) {
             const allFiles = await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
             buildOrder = buildOrder.concat( allFiles );
 
@@ -168,14 +168,14 @@ module.exports = ( Path, Callback ) => {
             thisFile = '';
 
           } else {
-            const allFilesFromRepoDir = await Utils.readDir( directotyPath );
+            const allFilesFromRepoDir = await Utils.readDir( path.join( directotyPath, pathToFile ) );
 
             for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
               if ( path.extname( allFilesFromRepoDir[i] ) !== '.js' ) {
                 continue;
               }
 
-              buildOrder.push( path.join( directotyPath, allFilesFromRepoDir[i] ) );
+              buildOrder.push( path.join( directotyPath, pathToFile, allFilesFromRepoDir[i] ) );
             }
 
             // This is to block adding any files to build order,
@@ -190,13 +190,14 @@ module.exports = ( Path, Callback ) => {
         break;
 
       default:
+        parsedLine.path = null;
         break;
     }
 
     if ( parsedLine.isDir ) {
       await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, parsedLine.path );
 
-    } else if ( thisFile === null ) {
+    } else if ( thisFile === null && parsedLine.path !== null ) {
 
       if ( parsedLine.importType === ImportType.RelativePath ) {
         directotyPath = '';
