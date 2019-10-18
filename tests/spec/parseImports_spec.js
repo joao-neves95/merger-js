@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
 const path = require( 'path' );
 const fs = require( 'fs' );
 const parseImports = require( '../../modules/buildModules/parseImports' );
@@ -121,12 +129,16 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
 
       let downloadSuccessful = false;
       let downloadFileError = null;
+      let currentLink = '';
 
       try {
         for ( let i = 0; i < downloadedFilePaths.length; ++i ) {
+          currentLink = downloadedFilePaths[i];
           downloadSuccessful = await fileExists( downloadedFilePaths[i] );
 
-          if ( !downloadSuccessful ) break;
+          if ( !downloadSuccessful ) {
+            break;
+          }
         }
 
       } catch ( e ) {
@@ -134,11 +146,11 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
         downloadFileError = e;
       }
 
-      expect( downloadSuccessful ).toEqual( true, 'ParseImports > URL file import > Download file : FAILED, Error:\n' + downloadFileError );
+      expect( downloadSuccessful ).toEqual( true, `ParseImports > URL file import > URL: ${currentLink} ; Download file : FAILED, Error:\n ${downloadFileError}` );
 
       if ( downloadSuccessful ) {
 
-        const ____validateFileAsync = ( downloadedFilePath) => {
+        const ____validateFileAsync = ( downloadedFilePath ) => {
           return new Promise( ( _res, _rej ) => {
             fs.readFile( downloadedFilePath, 'utf8', ( err, data ) => {
               if ( err )

@@ -1,4 +1,12 @@
-﻿const minifyCode = require( '../../modules/buildModules/minifyCode' );
+﻿/*
+ * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
+const minifyCode = require( '../../modules/buildModules/minifyCode' );
 
 const UNMINIFIED_CODE = 'function f(a, b, x, y) { return a < b && x > y; }';
 const MINIFIED_CODE = 'function f(n,f,r,t){return n<f&&r>t}';

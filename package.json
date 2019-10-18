@@ -15,7 +15,6 @@
     "npm": ">=6.4.0"
   },
   "scripts": {
-    "install": "npm install -g",
     "start": "merger init",
     "test": "npm audit && node tests/test.js",
     "update": "merger update"
