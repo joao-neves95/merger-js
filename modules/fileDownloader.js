@@ -119,6 +119,7 @@ class FileDownloader {
   // https://api.github.com/repos/{user}/{repoName}/contents{pathToFile}?ref={branch}
   /**
    * Downloads a file or directory of files from github and save it/them to node_modules.
+   * Returns all the files with a complete directory relative to node_modules.
    * 
    * @param { string[] } buildOrder
    * @param { string } user
