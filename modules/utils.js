@@ -20,6 +20,7 @@ class Utils extends StaticClass {
   }
 
   /**
+   * Reads the requested directory and returns an array of all its file names.
    * @param { string } path The directory path.
    * @param { Function } Callback Optional. (err, files[])
    * 
@@ -78,6 +79,42 @@ class Utils extends StaticClass {
         callback( err, null );
       else
         callback( null, jsonData );
+    } );
+  }
+
+  /**
+   * 
+   * @param { string } filePath
+   * 
+   * @returns { Promise<fs.Stats | Error> }
+   */
+  static fileStat( filePath ) {
+    return new Promise( ( _res, _rej ) => {
+      fs.stat( filePath, async ( err, stats ) => {
+        if ( err ) {
+          return _rej( err );
+        }
+
+        return _res( stats );
+      } );
+    } );
+  }
+
+  /**
+   * Deletes the requested file.
+   * @param { string } filePath
+   * 
+   * @returns { Promise<void> }
+   */
+  static deleteFile( filePath ) {
+    return new Promise( ( _res, _rej ) => {
+      fs.unlink( filePath, ( err ) => {
+        if ( err ) {
+          return _rej( err );
+        }
+
+        return _res();
+      } );
     } );
   }
 
