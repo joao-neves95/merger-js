@@ -85,26 +85,43 @@ describe( 'ParseImports', () => {
 
   it( 'Should parse a URL file import, download the file and cache it in the node_modules folder.', async () => {
     await __parseImportsUrlsTest( 'specificUrlPaths.header.js', [path.join( NODE_MODULES_PATH, 'jquery.min.js' )] );
+    // TODO: (new) BUG: remove the jquery file.
   } );
+
+  let allDownloadedFilePaths = [];
 
   it( 'Should parse a GitHub file path, download it and cache it into the node_modules folder.', async () => {
-    await __parseImportsUrlsTest( 'githubFilePath.header.js', [path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' )] );
-    await ____removeBootsrapFolder();
+    allDownloadedFilePaths = await __parseImportsUrlsTest( 'githubFilePath.header.js', [path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' )] );
+    await ____removeBootsrapFolder( allDownloadedFilePaths );
   } );
 
-  it( 'Should parse an entire GitHub directory path, download it and cache it into the node_modules folder.', async () => {
-    await __parseImportsUrlsTest( 'githubDirPath.header.js',
-      [
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.min.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.min.js' )
-      ]
-    );
 
-    await ____removeBootsrapFolder();
+  it( 'Should parse an entire GitHub directory path, download it and cache it into the node_modules folder.\n' +
+      'After that, it should parse an existing GitHub directory path cached in the node_modules folder, not downloading it.',
+    async () => {
+      const headerFilePath = 'githubDirPath.header.js';
+
+      allDownloadedFilePaths = await __parseImportsUrlsTest( headerFilePath,
+        [
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.min.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.min.js' )
+        ]
+      );
+
+      const buildOrder = await parseImports( path.join( HEADER_FILES_DIR_PATH, headerFilePath ) );
+
+      fs.stat( buildOrder[1], async ( err, stats ) => {
+
+        expect( stats.mtime ).toEqual( stats.ctime );
+        expect( stats.mtimeMs ).toEqual( stats.ctimeMs );
+
+        await ____removeBootsrapFolder( allDownloadedFilePaths );
+      } );
+
   } );
 
   afterAll( () => {
@@ -113,10 +130,15 @@ describe( 'ParseImports', () => {
 
 } );
 
+// #region HELPER FUNCTIONS
+
 /**
+ * Checks if the files exists to confirm if it was successfull.
  * 
  * @param { string } headerFile The header file path, with all the imports.
  * @param { string[] } downloadedFilePaths The path location where the downloaded file should be.
+ * 
+ * @return { Promise<string[] | Error> }
  */
 const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
   return new Promise( ( _resolve, _reject ) => {
@@ -161,16 +183,8 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
               expect( data ).not.toEqual( '404: Not Found\n' );
               expect( data.length ).toBeGreaterThan( 50 );
 
-              // Delete the downloaded file.
-              fs.unlink( downloadedFilePath, ( err ) => {
-                if ( err ) {
-                  console.error( 'ParseImports > URL file import > (delete downloaded file) : FAILED, Error:' );
-                  console.error( err );
-                  return _rej( err );
-                }
+              return _res();
 
-                return _res();
-              } );
             } );
           } );
         };
@@ -179,7 +193,7 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
           await ____validateFileAsync( downloadedFilePaths[i] );
         }
 
-        return _resolve();
+        return _resolve( downloadedFilePaths );
       }
 
       return _reject( downloadFileError );
@@ -188,10 +202,29 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
   } );
 };
 
-const ____removeBootsrapFolder = () => {
-  return new Promise( ( _res, _rej ) => {
+const ____removeBootsrapFolder = ( allFiles ) => {
+  return new Promise( async ( _res, _rej ) => {
     // This is orrible and all hardcoded as #uck.
     // TODO: Redo this test data removal part.
+
+    const removeFile = ( filePath ) => {
+      return new Promise( ( _res, _rej ) => {
+        fs.unlink( filePath, ( err ) => {
+          if ( err ) {
+            console.error( 'ParseImports > URL file import > (delete downloaded file) : FAILED, Error:' );
+            console.error( err );
+            return _rej( err );
+          }
+
+          return _res();
+        } );
+      } );
+    };
+
+    for ( let i = 0; i < allFiles.length; ++i ) {
+      await removeFile( allFiles[i] );
+    }
+
     fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js' ), ( err ) => {
       fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/' ), ( errr ) => {
         fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/' ), ( errrr ) => {
@@ -207,3 +240,5 @@ const ____removeBootsrapFolder = () => {
     } );
   } );
 };
+
+// #endregion HELPER FUNCTIONS
