@@ -52,7 +52,7 @@ module.exports = ( newConfig, Callback ) => {
           }
         }
 
-      // TODO: Remove on v4, along with all other methods of not adding breaking changes (if there is one).
+      // TODO: Remove on v4 (if there is one), along with all other methods of not adding breaking changes.
       // This was add in order to not add breaking changes.
       } else {
         // Set to true by default.

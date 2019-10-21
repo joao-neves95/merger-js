@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ *
+ * MergerJS (merger-js) is licensed under the MIT license, located in
+ * the root of this project, under the name "LICENSE.md".
+ *
+ */
+
 const path = require( 'path' );
 const fs = require( 'fs' );
 const parseImports = require( '../../modules/buildModules/parseImports' );
-const { fileExists } = require( '../../modules/utils' );
-
+const Utils = require( '../../modules/utils' );
 const DATA_DIR_PATH = path.join( __dirname, path.normalize( '../data' ) );
 const HEADER_FILES_DIR_PATH = path.join( DATA_DIR_PATH, '/headerFiles' );
 const NODE_MODULES_PATH = path.join( DATA_DIR_PATH, '/node_modules' );
@@ -18,8 +25,6 @@ describe( 'ParseImports', () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 
   } );
-
-  // TODO: (Tests) Add the token tests on all the buildOrder files output (reuse between utils_spec.js).
 
   it( 'Should parse file path imports, relative to the header file.', () => {
 
@@ -76,28 +81,50 @@ describe( 'ParseImports', () => {
   } );
 
   it( 'Should parse a URL file import, download the file and cache it in the node_modules folder.', async () => {
-    await __parseImportsUrlsTest( 'specificUrlPaths.header.js', [path.join( NODE_MODULES_PATH, 'jquery.min.js' )] );
+    const filePath = path.join( NODE_MODULES_PATH, 'jquery.min.js' );
+    await __parseImportsUrlsTest( 'specificUrlPaths.header.js', [filePath] );
+    await Utils.deleteFile( filePath );
   } );
 
   it( 'Should parse a GitHub file path, download it and cache it into the node_modules folder.', async () => {
-    await __parseImportsUrlsTest( 'githubFilePath.header.js', [path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' )] );
-    await ____removeBootsrapFolder();
+    await ____removeBootsrapFolder( await __parseImportsUrlsTest(
+      'githubFilePath.header.js',
+      [path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' )]
+    ) );
   } );
 
-  it( 'Should parse an entire GitHub directory path, download it and cache it into the node_modules folder.', async () => {
-    await __parseImportsUrlsTest( 'githubDirPath.header.js',
-      [
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.min.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.js' ),
-        path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.min.js' )
-      ]
-    );
+  it( 'Should parse an entire GitHub directory path, download it and cache it into the node_modules folder.\n' +
+      'After that, it should parse an existing GitHub directory path cached in the node_modules folder, not downloading it.',
+    async () => {
+      const headerFilePath = 'githubDirPath.header.js';
+      const cacheFolderPath = path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/' );
 
-    await ____removeBootsrapFolder();
-  } );
+      await __parseImportsUrlsTest( headerFilePath,
+        [
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.min.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.esm.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.js' ),
+          path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.bundle.min.js' )
+        ]
+      );
+
+      const buildOrder = await parseImports( path.join( HEADER_FILES_DIR_PATH, headerFilePath ) );
+
+      const stats = await Utils.fileStat( buildOrder[1] );
+
+      expect( stats.mtime ).toEqual( stats.ctime );
+      expect( stats.mtimeMs ).toEqual( stats.ctimeMs );
+      
+      const allFileNames = await Utils.readDir( cacheFolderPath );
+      allFileNames.forEach( ( item, i ) => {
+        allFileNames[i] = cacheFolderPath + item;
+      } );
+      
+      await ____removeBootsrapFolder( allFileNames );
+    }
+  );
 
   afterAll( () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
@@ -105,10 +132,15 @@ describe( 'ParseImports', () => {
 
 } );
 
+// #region HELPER FUNCTIONS
+
 /**
+ * Checks if the files exists to confirm if it was successfull.
  * 
  * @param { string } headerFile The header file path, with all the imports.
  * @param { string[] } downloadedFilePaths The path location where the downloaded file should be.
+ * 
+ * @return { Promise<string[] | Error> }
  */
 const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
   return new Promise( ( _resolve, _reject ) => {
@@ -121,12 +153,16 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
 
       let downloadSuccessful = false;
       let downloadFileError = null;
+      let currentLink = '';
 
       try {
         for ( let i = 0; i < downloadedFilePaths.length; ++i ) {
-          downloadSuccessful = await fileExists( downloadedFilePaths[i] );
+          currentLink = downloadedFilePaths[i];
+          downloadSuccessful = await Utils.fileExists( downloadedFilePaths[i] );
 
-          if ( !downloadSuccessful ) break;
+          if ( !downloadSuccessful ) {
+            break;
+          }
         }
 
       } catch ( e ) {
@@ -134,32 +170,25 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
         downloadFileError = e;
       }
 
-      expect( downloadSuccessful ).toEqual( true, 'ParseImports > URL file import > Download file : FAILED, Error:\n' + downloadFileError );
+      expect( downloadSuccessful ).toEqual( true, `ParseImports > URL file import > URL: ${currentLink} ; Download file : FAILED, Error:\n ${downloadFileError}` );
 
       if ( downloadSuccessful ) {
 
-        const ____validateFileAsync = ( downloadedFilePath) => {
+        const ____validateFileAsync = ( downloadedFilePath ) => {
           return new Promise( ( _res, _rej ) => {
+
             fs.readFile( downloadedFilePath, 'utf8', ( err, data ) => {
               if ( err )
-                return _reject( err );
+                return _rej( err );
 
               expect( data ).not.toBeNull();
               expect( data ).toBeDefined();
               expect( data ).not.toEqual( '404: Not Found\n' );
               expect( data.length ).toBeGreaterThan( 50 );
 
-              // Delete the downloaded file.
-              fs.unlink( downloadedFilePath, ( err ) => {
-                if ( err ) {
-                  console.error( 'ParseImports > URL file import > (delete downloaded file) : FAILED, Error:' );
-                  console.error( err );
-                  return _rej( err );
-                }
-
-                return _res();
-              } );
+              return _res();
             } );
+
           } );
         };
 
@@ -167,7 +196,7 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
           await ____validateFileAsync( downloadedFilePaths[i] );
         }
 
-        return _resolve();
+        return _resolve( downloadedFilePaths );
       }
 
       return _reject( downloadFileError );
@@ -176,10 +205,15 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
   } );
 };
 
-const ____removeBootsrapFolder = () => {
-  return new Promise( ( _res, _rej ) => {
+const ____removeBootsrapFolder = ( allFiles ) => {
+  return new Promise( async ( _res, _rej ) => {
     // This is orrible and all hardcoded as #uck.
     // TODO: Redo this test data removal part.
+
+    for ( let i = 0; i < allFiles.length; ++i ) {
+      await Utils.deleteFile( allFiles[i] );
+    }
+
     fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js' ), ( err ) => {
       fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/' ), ( errr ) => {
         fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/' ), ( errrr ) => {
@@ -193,5 +227,8 @@ const ____removeBootsrapFolder = () => {
         } );
       } );
     } );
+
   } );
 };
+
+// #endregion HELPER FUNCTIONS

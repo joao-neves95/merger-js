@@ -11,270 +11,248 @@ const path = require('path');
 const lineByLine = require( 'line-by-line' );
 const fileDownloader = require( '../fileDownloader' );
 const Utils = require( '../utils' );
+const ImportLineParser = require( './importLineParser' );
 const addPropertyToConfig = require( '../CLIModules/editConfigFile' ).addProperty;
-const style = require( '../consoleStyling' );
+const ImportType = require( '../../enums/importType' );
 const ConfigKeysType = require( '../../enums/configKeysEnum' );
+const style = require( '../consoleStyling' );
 
 /**
  * 
  * @param { string } Path The path of the header file.
  * @param { Function } Callback ( buildOrder:string[] ) Receives the build order array of file paths inputed by the user.
+ * 
+ * @returns { Promise<string[]> }
  */
 module.exports = ( Path, Callback ) => {
-  let NODE_MODULES_PATH = global.config.nodeModulesPath;
-  let lineNum = 0;
-  let lastLineWasComment = false;
-  let buildOrder = [];
-  buildOrder.push( path.basename( Path ) );
+  return new Promise( async ( _res, _rej ) => {
 
-  const rl = new lineByLine( Path, {
-    encoding: 'utf8',
-    skipEmptyLines: true
-  } );
+    let NODE_MODULES_PATH = global.config.nodeModulesPath;
+    let lineNum = 0;
+    let lastLineWasComment = false;
+    let buildOrder = [];
+    buildOrder.push( path.basename( Path ) );
 
-  rl.on( 'line', async ( line ) => {
-    rl.pause();
-    let thisFile;
-    let treatedLine = line.replace( /\s/g, '' );
+    const rl = new lineByLine( Path, {
+      encoding: 'utf8',
+      skipEmptyLines: true
+    } );
 
-    lastLineWasComment = treatedLine.trimStart().startsWith( '//' );
+    rl.on( 'line', async ( line ) => {
+      rl.pause();
+      let thisFile = null;
+      /** @type { string } */
+      let directotyPath = '';
 
-    // #region IMPORT FROM RELATIVE PATH OR DIRECTORY
+      const parsedLine = ImportLineParser.parse( line );
 
-    if ( treatedLine.startsWith( '@import', 2 ) || treatedLine.startsWith( '@', 2 ) ) {
-      treatedLine = Utils.removeImportFromInput( treatedLine );
+      switch ( parsedLine.importType ) {
+        case ImportType.NodeModules:
+        case ImportType.SpecificURL:
+        case ImportType.GitHub:
 
-      // FROM A DIRECTORY.
-      const wasDir = await ____addAllDirectoryToBuildOrder( buildOrder, Path, treatedLine );
-      if ( wasDir )
-        thisFile = null;
-      else
-        // FROM A RELATIVE FILE PATH.
-        thisFile = Utils.cleanImportFileInput( treatedLine );
+          try {
+            const createdNodeModules = await Utils.createNodeModulesIfNeeded();
 
-      ++lineNum;
+            if ( createdNodeModules ) {
+              NODE_MODULES_PATH = global.config.nodeModulesPath;
+              await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
+            }
 
-    // #endregion
-
-    // #region IMPORT FROM node_modules
-
-    } else if ( treatedLine.startsWith( '$import', 2 ) || treatedLine.startsWith( '$', 2 ) ) {
-      treatedLine = Utils.removeImportFromInput( treatedLine );
-
-      try {
-        const createdNodeModules = await Utils.createNodeModulesIfNeeded();
-        if ( createdNodeModules ) {
-          NODE_MODULES_PATH = global.config.nodeModulesPath;
-          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
-        }
-
-        // AN ENTIRE DIRECTORY.
-        const wasDir = await ____addAllDirectoryToBuildOrder( buildOrder, NODE_MODULES_PATH, treatedLine );
-        if ( wasDir )
-          thisFile = null;
-        else {
-          // A FILE.
-          thisFile = Utils.cleanImportFileInput( treatedLine );
-          thisFile = path.join( NODE_MODULES_PATH, thisFile );
-        }
-
-      } catch ( e ) {
-        return ____nodeModulesCreationError( thisFile );
-      }
-
-      ++lineNum;
-
-    // #endregion
-
-    // #region IMPORT FROM AN URL
-
-    } else if ( treatedLine.startsWith( '%import', 2 ) || treatedLine.startsWith( '%', 2 ) || treatedLine.startsWith( '%%', 2 ) ) {
-      const forceInstall = treatedLine.startsWith( '%%', 2 );
-      treatedLine = Utils.removeImportFromInput( treatedLine );
-
-      try {
-        const createdNodeModules = await Utils.createNodeModulesIfNeeded();
-        if ( createdNodeModules ) {
-          NODE_MODULES_PATH = global.config.nodeModulesPath;
-          await addPropertyToConfig( ConfigKeysType.nodeModulesPath, NODE_MODULES_PATH );
-        }
-
-      } catch ( e ) {
-        return ____nodeModulesCreationError( line );
-      }
-
-      //#region FROM GITHUB
-      // // %import<<GH::{branch} '{user}/{repo}/{pathToFile}.js'
-      // // %import<<GH::{branch}<<DIR '{user}/{repo}/{pathToFile}.js'
-      // // %import<<GH::master<<DIR '{user}/{repo}/{pathToFile}.js'
-      // DEPRECATED syntax: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
-      if ( treatedLine.startsWith( '<<gh' ) ||
-           treatedLine.startsWith( '<<GH' ) ||
-           treatedLine.startsWith( '<<github' ) ||
-           treatedLine.startsWith( '<<GITHUB' ) )
-      {
-        treatedLine = Utils.removeGithubTokenFromImport( treatedLine );
-        let isNewSyntax = false;
-        let branch = '';
-        if ( treatedLine.startsWith( '::' ) ) {
-          treatedLine = treatedLine.replace( /::/g, '' );
-
-          for ( let i = 0; i < treatedLine.length; ++i ) {
-            if ( treatedLine[i] === '<' || treatedLine[i] === "'" || treatedLine[i] === ' ' )
-              break;
-
-            branch += treatedLine[i];
+          } catch ( e ) {
+            return ____nodeModulesCreationError( line );
           }
 
-          isNewSyntax = true;
-          treatedLine = treatedLine.substring( branch.length );
-        }
+          break;
 
-        const isDir = ____pathIsDir( treatedLine );
-        treatedLine = Utils.removeDirTokenFromImport( treatedLine );
+        default:
+          break;
+      }
 
-        if ( treatedLine.startsWith( '::' ) )
-          console.error( style.styledError, `Unexpected token "::" on the line: "${line}" \n` );
+      switch ( parsedLine.importType ) {
 
-        // "treatedLine" now contains only the GitHub path imputed by the user.
-        treatedLine = Utils.cleanImportFileInput( treatedLine );
-        /** The path inputed by the user. 
-         * @type { string[] } */
-        const githubPath = treatedLine.split( '/' );
-        /** The inputed GitHub path to the file or directory, without the user 
-         *  and repository name, inputed by the user. */
-        const inputedPathToFile = githubPath.slice( 2 ).join( '/' );
-        /** The name of this repository on node_modules. */
-        const thisRepoDirName = Utils.buildGithubRepoDirName( githubPath[0], githubPath[1] );
-        /** The directory path from node_modules, including. */
-        const thisRepoDirPath = path.join( NODE_MODULES_PATH, thisRepoDirName );
+        case ImportType.RelativePath:
+          directotyPath = Path;
+          break;
 
-        //#region FROM A GITHUB DIRECTORY.
-        // (using exclusively the new syntax)
-        if ( isDir ) {
-          const thisRepoDirDirPath = path.join( thisRepoDirPath, inputedPathToFile );
-          let alreadyDownloaded = false;
+        case ImportType.NodeModules:
+          directotyPath = NODE_MODULES_PATH;
+          break;
 
-          if ( !forceInstall )
-            alreadyDownloaded = await Utils.dirExists( thisRepoDirDirPath );
+        case ImportType.SpecificURL:
+          directotyPath = NODE_MODULES_PATH;
+          const fileName = Utils.getFileNameFromUrl( parsedLine.path );
 
-          if ( !alreadyDownloaded || forceInstall ) {
-            const allFiles = await fileDownloader.fromGithub(
-              githubPath[0],
-              githubPath[1],
-              inputedPathToFile,
-              branch === '' ? 'master' : branch
-            );
+          let fileExists = true;
+          if ( !parsedLine.forceInstall ) {
+            fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+          }
 
-            buildOrder = buildOrder.concat( allFiles );
+          if ( !fileExists || parsedLine.forceInstall ) {
+            try {
+              await fileDownloader.fromUrl( parsedLine.path );
 
-          } else {
-            const allFilesFromRepoDir = await Utils.readDir( thisRepoDirDirPath );
-
-            for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
-              if ( path.extname( allFilesFromRepoDir[i] ) !== '.js' )
-                continue;
-
-              buildOrder.push( path.join( thisRepoDirDirPath, allFilesFromRepoDir[i] ) );
+            } catch ( e ) {
+              console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
             }
           }
 
-          thisFile = null;
-        //#endregion
+          parsedLine.path = fileName;
+          break;
 
-        //#region FROM A GIRHUB FILE.
-        // (using the new syntax, but supporting the deprecated syntax)
-        // TODO: Remove support for the deprecated syntax on v4, if there is one.
-        } else {
-          const fileName = path.basename( treatedLine );
-          let alreadyDownloadedPreviousSyntax = false;
-          let alreadyDownloadedNewSyntax = false;
+        case ImportType.GitHub:
+          const splitedPath = parsedLine.path.split( '/' );
+          const pathToFile = splitedPath.slice( 2 ).join( '/' );
 
-          if ( !forceInstall && !isNewSyntax ) {
-            // No need to check with the previous syntax.
-            alreadyDownloadedPreviousSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+          /** 
+           *  The name of the folder where the file(s) will be stored on node_modules.
+           *  @type { string }
+           */
+          const repoDirName = path.join( Utils.buildGithubRepoDirName( splitedPath[0], splitedPath[1] ) );
+          directotyPath = path.join( NODE_MODULES_PATH, repoDirName );
 
-          } else if ( !forceInstall && isNewSyntax ) {
-            alreadyDownloadedNewSyntax = await Utils.fileExists( path.join( thisRepoDirPath, inputedPathToFile ) );
+          // #region GITHUB FILES
+
+          if ( !parsedLine.isDir ) {
+            const fileName = path.basename( parsedLine.path );
+            let alreadyDowloadedDeprecatedSyntax = false;
+            let alreadyDowloadedNewSyntax = false;
+
+            if ( !parsedLine.forceInstall && parsedLine.isGithubNewSyntax ) {
+              alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( directotyPath, pathToFile ) );
+
+              // We need to check with the deprecated syntax, to avoid breaking changes.
+            } else if ( !parsedLine.forceInstall && !parsedLine.isGithubNewSyntax ) {
+              alreadyDowloadedDeprecatedSyntax = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
+            }
+
+            if (
+              ( parsedLine.isGithubNewSyntax && !alreadyDowloadedNewSyntax ) ||
+              ( parsedLine.forceInstall || parsedLine.isGithubNewSyntax )
+            ) {
+              await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
+
+              // We need to use the deprecated method to avoid breaking changes.
+            } else if (
+              ( !parsedLine.isGithubNewSyntax && !alreadyDowloadedDeprecatedSyntax ) ||
+              ( parsedLine.forceInstall && !parsedLine.isGithubNewSyntax )
+            ) {
+              await fileDownloader.fromGitHub_deprecated( parsedLine.path );
+            }
+
+            if ( parsedLine.isGithubNewSyntax ) {
+              parsedLine.path = pathToFile;
+
+            } else {
+              directotyPath = NODE_MODULES_PATH;
+              parsedLine.path = fileName;
+            }
+
+            // #endregion GITHUB FILES
+
+            // #region GITHUB DIRECTORIES
+
+            // For directories it is used exclusively the new syntax.
+          } else {
+            let alreadyDownloaded = false;
+
+            if ( !parsedLine.forceInstall ) {
+              alreadyDownloaded = await Utils.dirExists( path.join( directotyPath, pathToFile ) );
+            }
+
+            if ( !alreadyDownloaded || parsedLine.forceInstall ) {
+              const allFiles = await fileDownloader.fromGithub( splitedPath[0], splitedPath[1], pathToFile, parsedLine.branchName );
+              buildOrder = buildOrder.concat( allFiles );
+
+              // This is to block adding any files to build order,
+              // bellow this switch.
+              parsedLine.isDir = false;
+              thisFile = '';
+
+            } else {
+              const allFilesFromRepoDir = await Utils.readDir( path.join( directotyPath, pathToFile ) );
+
+              for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
+                if ( path.extname( allFilesFromRepoDir[i] ) !== '.js' ) {
+                  continue;
+                }
+
+                buildOrder.push( path.join( directotyPath, pathToFile, allFilesFromRepoDir[i] ) );
+              }
+
+              // This is to block adding any files to build order,
+              // bellow this switch.
+              parsedLine.isDir = false;
+              thisFile = '';
+            }
+
+            // #endregion GITHUB DIRECTORIES
+
           }
+          break;
 
-          if ( ( isNewSyntax && !alreadyDownloadedNewSyntax ) || ( isNewSyntax && forceInstall ) ) {
-            await fileDownloader.fromGithub( githubPath[0], githubPath[1], inputedPathToFile, branch === '' ? 'master' : branch );
-
-          } else if ( ( !isNewSyntax && !alreadyDownloadedPreviousSyntax ) || ( !isNewSyntax && forceInstall ) ) {
-            // use the deprecated method. 
-            await fileDownloader.fromGitHub_deprecated( treatedLine, branch );
-          }
-
-          thisFile = isNewSyntax ? path.join( thisRepoDirPath, inputedPathToFile ) :
-            path.join( NODE_MODULES_PATH, fileName );
-        }
-        //#endregion
-
-      //#endregion
-
-      //#region FROM A SPECIFIC URL
-      } else {
-        let url = Utils.cleanImportFileInput( treatedLine );
-        const fileName = Utils.getFileNameFromUrl( url );
-        let fileExists = true;
-        if ( !forceInstall )
-          fileExists = await Utils.fileExists( path.join( NODE_MODULES_PATH, fileName ) );
-
-        if ( !fileExists || forceInstall ) {
-          try {
-            await fileDownloader.fromUrl( url );
-
-          } catch ( e ) {
-            console.error( style.styledError, `There was an error while downloading a file from url ("${url}")\n`, e );
-          }
-        }
-
-        thisFile = path.join( NODE_MODULES_PATH, fileName );
+        default:
+          parsedLine.path = null;
+          break;
       }
 
-      ++lineNum;
-      //#endregion
+      if ( parsedLine.isDir ) {
+        await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, parsedLine.path );
 
-      // #endregion
-    }
+      } else if ( thisFile === null && parsedLine.path !== null ) {
 
-    try {
-      if ( path.extname( thisFile ) !== '.js' )
-        thisFile += '.js';
+        if ( parsedLine.importType === ImportType.RelativePath ) {
+          directotyPath = '';
+        }
 
-      if ( !buildOrder.includes( thisFile ) && thisFile !== undefined && thisFile !== null )
-        buildOrder.push( path.normalize( thisFile ) );
+        thisFile = path.join( directotyPath, parsedLine.path );
 
-    } catch ( e ) {
-      // Invalid import statement.
-    }
+        try {
+          if ( path.extname( thisFile ) !== '.js' ) {
+            thisFile += '.js';
+          }
 
-    rl.resume();
+          if ( !buildOrder.includes( thisFile ) ) {
+            buildOrder.push( path.normalize( thisFile ) );
+          }
 
-    if ( lineNum >= 20 && !lastLineWasComment )
-      rl.close();
+        } catch ( e ) {
+          // Invalid import statement.
+        }
+      }
 
-  } );
+      ++line;
+      rl.resume();
 
-  rl.on( 'end', () => {
-    return Callback( buildOrder );
+      if ( lineNum >= 20 && !lastLineWasComment ) {
+        rl.close();
+      }
+
+    } );
+
+    rl.on( 'end', () => {
+      if ( Callback ) {
+        return Callback( buildOrder );
+      }
+
+      return _res( buildOrder );
+    } );
+
   } );
 };
 
-const ____pathIsDir = ( treatedLine ) => {
-  return treatedLine.startsWith( '<<dir' ) ||
-         treatedLine.startsWith( '<<DIR' ) ||
-         treatedLine.startsWith( '<<directory' ) ||
-         treatedLine.startsWith( '<<DIRECTORY' );
-};
+// #region HELPER FUNCTIONS
 
+/**
+ * 
+ * @param { string[] } buildOrder An array that contains all the build paths.
+ * @param { string } thePath The path of the header file directory.
+ * @param { string } treatedLine The path inputed by the user.
+ * 
+ * @return { boolean } Returns false in cae it's not a directory.
+ * In case of exception, it kill the process and logs the error message.
+ */
 const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine ) => {
-  if ( !____pathIsDir( treatedLine ) )
-    return false;
-
-  treatedLine = Utils.removeDirTokenFromImport( treatedLine );
-  treatedLine = Utils.cleanImportFileInput( treatedLine );
   // treatedLine now holds the directory inputed by the user.
   const thisDir = path.join( path.dirname( thePath ), treatedLine );
 
@@ -282,18 +260,30 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
     const files = await Utils.readDir( thisDir );
 
     for ( let i = 0; i < files.length; ++i ) {
-      if ( path.extname( files[i] ) === '.js' )
+      if ( path.extname( files[i] ) === '.js' ) {
         buildOrder.push( path.join( treatedLine, files[i] ) );
+      }
     }
 
   } catch ( e ) {
-    console.error( style.styledError, `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`, e );
-    killProcess();
+    console.error(
+      style.styledError,
+      `There was an error while reading the file names from the directory: "${thisDir}". Probably it does not exist.\n\n`,
+      e
+    );
+
+    return killProcess();
   }
 
   return true;
 };
 
+/**
+ * Prinsts the node_modules file creation error.
+ * @param { string } fileName The file name where the error occured.
+ * 
+ * @returns { void } Logs the error to the console.
+ */
 const ____nodeModulesCreationError = ( fileName ) => {
   return console.error(
     style.styledError,
@@ -307,5 +297,10 @@ const killProcess = () => {
   process.kill( process.pid, 'SIGINT' );
   setTimeout( () => {
     process.kill( process.pid, 'SIGKILL' );
+    return false;
   }, 5000 );
+
+  return false;
 };
+
+// #endregion HELPER FUNCTIONS

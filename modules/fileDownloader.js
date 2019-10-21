@@ -57,16 +57,11 @@ class FileDownloader {
    * @returns { Promise<string | Error> }
    * @deprecated
    */
-  static fromGitHub_deprecated( path, branch, Callback ) {
+  static fromGitHub_deprecated( path, Callback ) {
     return new Promise( async ( resolve, reject ) => {
 
-      if ( path.startsWith( '/' ) )
+      if ( path.startsWith( '/' ) ) {
         path = path.substring( 1 );
-
-      if ( branch !== '' ) {
-        path = path.split( '/' );
-        path.splice( 2, 0, branch );
-        path = path.join( '/' );
       }
 
       let url = HOST_RAW_GITHUB + path;
@@ -78,16 +73,19 @@ class FileDownloader {
 
         if ( fileContent.statusCode === 404 ) {
           path = path.split( '/' );
+          // If the download was not successfull, try to add the master branch.
           path.splice( 2, 0, 'master' );
           url = HOST_RAW_GITHUB + path.join( '/' );
 
           try {
             fileContent = await httpClient.getAsync( url, false );
 
-            if ( fileContent.statusCode === 404 )
+            if ( fileContent.statusCode === 404 ) {
               FileDownloader.githubDownloadError( new URL( url ).pathname, 'The file was not found (404).' );
-            else if ( fileContent.statusCode !== 200 )
+
+            } else if ( fileContent.statusCode !== 200 ) {
               FileDownloader.githubDownloadError( new URL( url ).pathname );
+            }
 
           } catch ( e ) {
             FileDownloader.githubDownloadError( new URL( url ).pathname, e );
@@ -121,6 +119,7 @@ class FileDownloader {
   // https://api.github.com/repos/{user}/{repoName}/contents{pathToFile}?ref={branch}
   /**
    * Downloads a file or directory of files from github and save it/them to node_modules.
+   * Returns all the files with a complete directory relative to node_modules.
    * 
    * @param { string[] } buildOrder
    * @param { string } user
@@ -157,6 +156,7 @@ class FileDownloader {
 
           currentFilePath = path_join( thisRepoDirName, jsonApiResponse[i].path );
           currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
+
           await Utils.saveFileInNodeModules( currentFilePath, currentFileContent.body );
           currentFilePath = path_join( NODE_MODULES_PATH, currentFilePath );
           allFilePaths.push( currentFilePath );

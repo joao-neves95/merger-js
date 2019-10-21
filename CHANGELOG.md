@@ -2,7 +2,15 @@
 
 &nbsp;
 
-#### *v3.8.4 - 07/10/2019
+#### *v3.8.5 - 21/10/2019
+
+  - Refactored the import parser and made multiple optimisations.
+  - Updated dependencies.
+  - Added more testing.
+
+&nbsp;
+
+#### v3.8.4 - 07/10/2019
 
   - The output of `merger update` is now printed on the console.
   
