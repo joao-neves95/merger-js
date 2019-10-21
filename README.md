@@ -81,7 +81,7 @@ npm install merger-js -g
    Example:
    ```
    // $import 'sweetalert2/dist/sweetalert2.all.min.js'
-   // %import 'https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/cjs/react.development.js'
+   // %import 'https://code.jquery.com/jquery-3.4.1.min.js'
    // %<<github::v4-dev '/twbs/bootstrap/dist/js/bootstrap.min.js'
    // @'externalLibs'
    // @import<<dir '/enums/'
@@ -136,7 +136,7 @@ npm install merger-js -g
   Using a ```%``` token imports a file from a specific URL. The file is downloaded and stored in node_modules in the first time and later fetch from there in order to not download the file in each build.<br/>
 
   * Adding a double ```%%``` token forces the download on every build (good for updates). Valid for specific URLs and GitHub.<br/>
-    E.g.: ```// %%'/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'```<br/>
+    E.g.: `// %%'https://code.jquery.com/jquery-3.4.1.min.js'`<br/>
 
   * Pushing (`<<`) `GH`, `gh`, `github` or `GITHUB` into `%import`, imports a file from a GitHub repository.<br/>
   If the branch name is not provided, it is defaulted to the "master" branch.<br/>
