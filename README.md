@@ -12,7 +12,7 @@
  
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
  **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)<br/>
- **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
+ **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE.md)<br/>
  **Changelog:** [LINK](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md)<br/>
  **Dependencies:**<br/>
  ├── [uglify-es](https://www.npmjs.com/package/uglify-es)<br/>
