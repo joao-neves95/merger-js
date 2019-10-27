@@ -242,7 +242,7 @@ Merger uses [SemVer](https://semver.org/) for versioning. You can read the chang
 
 ## Code Style
 
-**JavaScript Standard Style, *with semicolons*.**
+See the style guide here: [merger-js/STYLE-GUIDE.md](https://github.com/joao-neves95/merger-js/blob/master/STYLE-GUIDE.md)
 
 Since version 3.6.5, every asynchronous function should make exclusive use of promises and the async/await syntax,
 avoiding multiple callback chaining (I.e.: "callback hell"), unless using a callback instead of a promise does make 
