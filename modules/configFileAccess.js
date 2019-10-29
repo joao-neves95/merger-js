@@ -9,33 +9,93 @@
 'use strict';
 const fs = require( 'fs' );
 const path = require( 'path' );
-const writeConfigFile = require( '../utils' ).writeJSONFile;
-const findFileOrDir = require( '../utils' ).findFileOrDir;
+const writeConfigFile = require( './utils' ).writeJSONFile;
+const findFileOrDir = require( './utils' ).findFileOrDir;
+const StaticClass = require( '../models/staticClassBase' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
-const style = require( '../consoleStyling' );
-const newTimestamp = require( '../newTimestamp' ).small;
+const style = require( './consoleStyling' );
+const newTimestamp = require( './newTimestamp' ).small;
+const ConfigFileModel = require( '../models/userConfigModel' );
+const SourceFileModel = require( '../models/sourceFileModel' );
 
 /** (static) */
-class EditConfigFile {
+class ConfigFileAccess extends StaticClass {
+
   constructor() {
-    throw new Error( 'Can not instantiate the static class EditConfigFile.' );
+    super();
   }
 
   /**
+   * Searches for the config file and returns [ configFilePath, data ]
+   * 
    * @param { Function } Callback Callback return arguments: ( error, configFilePath, data )
+   * 
+   * @returns { Promise<string[] | Error> }
    */
   static readConfigFile( Callback ) {
-    findFileOrDir( 'merger-config.json', ( err, configFilePath ) => {
-      fs.readFile( configFilePath, 'utf8', ( err, data ) => {
-        if ( err ) return Callback( err, null, null );
+    return new Promise( ( _res, _rej ) => {
 
-        return Callback( null, configFilePath, data );
+      findFileOrDir( 'merger-config.json', ( err, configFilePath ) => {
+        fs.readFile( configFilePath, 'utf8', ( err, data ) => {
+          if ( err ) {
+            if ( Callback ) {
+              return Callback( err, null, null );
+            }
+
+            return _rej( err );
+          }
+
+          if ( Callback ) {
+            return Callback( null, configFilePath, data );
+          }
+
+          return _res( [configFilePath, data] );
+
+        } );
       } );
+
     } );
   }
 
+  /**
+   * Returns an array with all the source files, or throws an exception.
+   * @return { SourceFileModel[] | Error }
+   */
+  static async getAllSourceFiles() {
+
+    try {
+      const readConfigFileRes = await ConfigFileAccess.readConfigFile();
+      /** @type { ConfigFileModel } */
+      const configFile = JSON.parse( readConfigFileRes[1] );
+      return configFile.sourceFiles;
+
+    } catch ( e ) {
+      throw e;
+    }
+  }
+
+  /**
+   * Finds the config file and returns a SourceFileModel instance, or <null> in case in does not finds it.
+   * 
+   * @param { string } sourceFilePath
+   * 
+   * @returns { SourceFileModel | null }
+   */
+  static async getSourceFile( sourceFilePath ) {
+  /** @type { SourceFileModel[] } */
+    const allSourceFiles = await ConfigFileAccess.getAllSourceFiles();
+
+    for ( let i = 0; i < allSourceFiles.length; ++i ) {
+      if ( allSourceFiles[i].source === sourceFilePath ) {
+        return allSourceFiles[i];
+      }
+    }
+
+    return null;
+  }
+
   static editConfigKey( key, value, Callback ) {
-    EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
+    ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
       if ( err )
         return console.error( err );
 
@@ -72,7 +132,7 @@ class EditConfigFile {
   static addFileToConfig( newSourceFile, Callback ) {
     return new Promise( ( _resolve, _reject ) => {
 
-      EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
+      ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
         if ( err )
           return console.error( style.styledError, err );
 
@@ -104,7 +164,7 @@ class EditConfigFile {
   }
 
   static removeSourceFile( sourceFileObject, Callback ) {
-    EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
+    ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
       if ( err )
         return console.error( style.styledError, err );
 
@@ -155,7 +215,7 @@ class EditConfigFile {
   static addProperty( key, value, Callback ) {
     return new Promise( ( _resolve, _reject ) => {
       try {
-        EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
+        ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
           if ( err ) {
             console.error( err );
             return _reject( err );
@@ -190,6 +250,7 @@ class EditConfigFile {
       }
     } );
   }
+
 }
 
-module.exports = EditConfigFile;
+module.exports = ConfigFileAccess;

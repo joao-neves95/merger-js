@@ -10,12 +10,12 @@
 const CLI = require('../node_modules/commander');
 const init = require('./CLIModules/init');
 const update = require('./updateMerger');
-const editConfigKey = require('./CLIModules/editConfigFile').editConfigKey;
-const addFileToConfig = require('./CLIModules/editConfigFile').addFileToConfig;
-const removeFileFromConfig = require('./CLIModules/editConfigFile').removeSourceFile;
+const editConfigKey = require('./configFileAccess').editConfigKey;
+const addFileToConfig = require('./configFileAccess').addFileToConfig;
+const removeFileFromConfig = require('./configFileAccess').removeSourceFile;
 const addFilesPrompt = require('./CLIModules/addFilesPrompt');
 const selectSourceFile = require( './CLIModules/selectSourceFilePrompt' );
-const EditConfigFile = require( './CLIModules/editConfigFile' );
+const configFileAccess = require( './configFileAccess' );
 const style = require('./consoleStyling');
 const ConfigKeysType = require('../enums/configKeysEnum');
 
@@ -148,7 +148,7 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'log' )
     .action( () => {
-      EditConfigFile.readConfigFile( ( err, configFilePath, data ) => {
+      configFileAccess.readConfigFile( ( err, configFilePath, data ) => {
         console.log( `\n ${style.successText( 'Merger config file path:' )}`, configFilePath );
         console.log( `\n ${style.successText( 'Configuration File:\n' )}`, data );
       } );
