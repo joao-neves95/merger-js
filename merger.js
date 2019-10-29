@@ -13,7 +13,7 @@
 const path = require('path');
 const chokidar = require('chokidar');
 const mergerCLI = require('./modules/mergerCLI');
-const config = require('./modules/config');
+const Config = require('./modules/config');
 const async = require( './node_modules/neo-async' );
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseImports = require( './modules/buildModules/parseImports' );
@@ -23,7 +23,7 @@ const sourceFileModel = require( './models/sourceFileModel' );
 // #region PROGRAM
 
 mergerCLI( ( newConfig ) => {
-  config( newConfig, () => {
+  Config.init( newConfig, () => {
 
     selectSourceFile( ( sourceFile ) => {
       /** @type { sourceFileModel[] } */

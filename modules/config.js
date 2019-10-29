@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
@@ -7,78 +7,107 @@
  */
 
 'use strict';
-const checkForUpdates = require('./checkForUpdates');
+const checkForUpdates = require( './checkForUpdates' );
 const findFile = require( './utils' ).findFileOrDir;
-const editConfigFile = require( './CLIModules/editConfigFile' );
+const configFileAccess = require( './configFileAccess' );
+const StaticClass = require( '../models/staticClassBase' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const newTimestamp = require( './newTimestamp' );
 const ConfigKeysType = require( '../enums/configKeysEnum' );
-const style = require('./consoleStyling');
+const style = require( './consoleStyling' );
 
-module.exports = ( newConfig, Callback ) => {
-  const propertiesToAdd = new Dictionary();
+class Config extends StaticClass {
 
-  try {
-    findFile( 'merger-config.json', async ( err, configPath ) => {
-      // Get the contents from the correct config file and store its content on a global:
-      global.config = require( configPath );
-      global.config.mergerConfigPath = configPath;
+  constructor() {
+    super();
+  }
 
-      // If the node_modules's path is not present on the config, try to find it and save it.
-      if ( global.config.nodeModulesPath === null ||
-           global.config.nodeModulesPath === undefined ||
-           global.config.nodeModulesPath === "" )
-      {
-        findFile( 'node_modules', async ( err, npmModulesPath ) => {
-          if ( npmModulesPath !== false ) {
-            global.config.nodeModulesPath = npmModulesPath;
-            propertiesToAdd.add( ConfigKeysType.nodeModulesPath, npmModulesPath );
-          }
-        } );
-      }
+  static init( newConfig, Callback ) {
+    const propertiesToAdd = new Dictionary();
 
-      // #region INITIAL UPDATE SYSTEM
+    try {
+      findFile( 'merger-config.json', async ( err, configPath ) => {
+        // Get the contents from the correct config file and store its content on a global:
+        global.config = require( configPath );
+        global.config.mergerConfigPath = configPath;
 
-      if ( global.config.updateOnLaunch !== null && global.config.updateOnLaunch !== undefined && global.config.lastUpdateCheck !== "" ) {
-        // CHECK FOR UPDATES ON LAUNCH, IF NEEDED.
-        if ( global.config.updateOnLaunch )
-          await ____checkForUpdatesAsync( propertiesToAdd );
+        // If the node_modules's path is not present on the config, try to find it and save it.
+        if ( global.config.nodeModulesPath === null ||
+             global.config.nodeModulesPath === undefined ||
+             global.config.nodeModulesPath === ""
+        ) {
 
-        // CHECK FOR UPDATES ONCE A WEEK.
-        else {
-          if ( global.config.lastUpdateCheck !== null && global.config.lastUpdateCheck !== undefined && global.config.lastUpdateCheck !== "" ) {
-            if ( new Date( global.config.lastUpdateCheck ) >= newTimestamp.addDaysToDate( global.config.lastUpdateCheck, 7 ) )
-              await ____checkForUpdatesAsync( propertiesToAdd );
-          }
+          findFile( 'node_modules', async ( err, npmModulesPath ) => {
+            if ( npmModulesPath !== false ) {
+              global.config.nodeModulesPath = npmModulesPath;
+              propertiesToAdd.add( ConfigKeysType.nodeModulesPath, npmModulesPath );
+            }
+          } );
+
         }
 
-      // TODO: Remove on v4 (if there is one), along with all other methods of not adding breaking changes.
-      // This was add in order to not add breaking changes.
-      } else {
-        // Set to true by default.
-        global.config.updateOnLaunch = true;
-        propertiesToAdd.add( ConfigKeysType.updateOnLaunch, true );
-        await ____checkForUpdatesAsync( propertiesToAdd );
-      }
+        // #region INITIAL UPDATE SYSTEM
 
-      // #endregion
+        if ( global.config.updateOnLaunch !== null && global.config.updateOnLaunch !== undefined && global.config.lastUpdateCheck !== "" ) {
+          // CHECK FOR UPDATES ON LAUNCH, IF NEEDED.
+          if ( global.config.updateOnLaunch ) {
+            await ____checkForUpdatesAsync( propertiesToAdd );
+          }
 
-      // Update glabal configurations set during the CLI launch.
-      if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined )
-        global.config.autoBuild = newConfig.autoBuild;
+          // CHECK FOR UPDATES ONCE A WEEK.
+          else {
+            if ( global.config.lastUpdateCheck !== null && global.config.lastUpdateCheck !== undefined && global.config.lastUpdateCheck !== "" ) {
+              if ( new Date( global.config.lastUpdateCheck ) >= newTimestamp.addDaysToDate( global.config.lastUpdateCheck, 7 ) ) {
+                await ____checkForUpdatesAsync( propertiesToAdd );
+              }
+            }
+          }
 
-      global.minifyOptions = {
-        warnings: true
-      };
+          // TODO: Remove on v4 (if there is one), along with all other methods of not adding breaking changes.
+          // This was add in order to not add breaking changes.
+        } else {
+          // Set to true by default.
+          global.config.updateOnLaunch = true;
+          propertiesToAdd.add( ConfigKeysType.updateOnLaunch, true );
+          await ____checkForUpdatesAsync( propertiesToAdd );
+        }
 
-      await editConfigFile.addProperty( propertiesToAdd );
-      return Callback();
-    } );
+        // #endregion
 
-  } catch ( e ) {
-    return ____returnError( e );
+        // Update glabal configurations set during the CLI launch.
+        if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined ) {
+          global.config.autoBuild = newConfig.autoBuild;
+        }
+
+        global.minifyOptions = {
+          warnings: true
+        };
+
+        await configFileAccess.addProperty( propertiesToAdd );
+        return Callback();
+      } );
+
+    } catch ( e ) {
+      return ____returnError( e );
+    }
   }
-};
+
+  /**
+   * @param { string } headerFilePath
+   * 
+   * @returns {  }
+   */
+  static async getCustomConfig( headerFilePath ) {
+    const sourceFile = await configFileAccess.getSourceFile( headerFilePath );
+
+    if ( !sourceFile ) {
+      return null;
+    }
+
+    return sourceFile.config;
+  }
+
+}
 
 const ____checkForUpdatesAsync = async ( propertiesToAdd ) => {
   try {
@@ -101,3 +130,5 @@ const ____returnError = ( e ) => {
 
   return console.error( style.styledError, e );
 };
+
+module.exports = Config;
