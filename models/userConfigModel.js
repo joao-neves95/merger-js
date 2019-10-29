@@ -7,10 +7,13 @@
  */
 
 'use strict';
+const SourceFileConfigBase = require( './sourceFileConfigBase' );
 const newTimestamp = require( '../modules/newTimestamp' ).completeLocale;
 
-class UserConfig {
+class UserConfig extends SourceFileConfigBase {
   constructor (uglify, autoBuild, notifications) {
+    super( uglify );
+
     this.mergerJsLinks = {
       npm: 'https://www.npmjs.com/package/merger-js',
       github: 'https://github.com/joao-neves95/merger-js',
@@ -18,12 +21,13 @@ class UserConfig {
       changelog: 'https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md'
     };
 
-    this.uglify = uglify === undefined || uglify === null ? true : uglify;
     this.autoBuild = autoBuild === undefined || autoBuild === null ? false : autoBuild;
     this.notifications = notifications === undefined || notifications === null ? true : notifications;
+
     this.updateOnLaunch = true;
     this.lastUpdateCheck = newTimestamp();
     this.nodeModulesPath = "";
+
     this.sourceFiles = [];
   }
 }
