@@ -7,10 +7,10 @@
  */
 
 'use strict';
-const checkForUpdates = require( './checkForUpdates' );
-const findFile = require( './utils' ).findFileOrDir;
-const configFileAccess = require( './configFileAccess' );
 const StaticClass = require( '../models/staticClassBase' );
+const findFile = require( './utils' ).findFileOrDir;
+const checkForUpdates = require( './checkForUpdates' );
+const configFileAccess = require( './configFileAccess' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const newTimestamp = require( './newTimestamp' );
 const ConfigKeysType = require( '../enums/configKeysEnum' );
@@ -95,7 +95,6 @@ class Config extends StaticClass {
   /**
    * @param { string } headerFilePath
    * 
-   * @returns {  }
    */
   static async getCustomConfig( headerFilePath ) {
     const sourceFile = await configFileAccess.getSourceFile( headerFilePath );
@@ -107,7 +106,7 @@ class Config extends StaticClass {
     return sourceFile.config;
   }
 
-}
+} // End of Config
 
 const ____checkForUpdatesAsync = async ( propertiesToAdd ) => {
   try {
