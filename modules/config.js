@@ -93,10 +93,14 @@ class Config extends StaticClass {
   }
 
   /**
+   * Called only after Config.init()
+   * 
    * @param { string } headerFilePath
    * 
    */
   static async getCustomConfig( headerFilePath ) {
+    // At this point the config file is already on global.config.
+    // TODO: Get the source file config from global.config
     const sourceFile = await configFileAccess.getSourceFile( headerFilePath );
 
     if ( !sourceFile ) {
