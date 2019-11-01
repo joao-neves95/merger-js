@@ -118,6 +118,10 @@ class Utils extends StaticClass {
     } );
   }
 
+  static isNullOrUndefined( val ) {
+    return val === null || val === undefined;
+  }
+
   static isNullOrEmptyStr( str ) {
     return str === null || str === undefined || str === '';
   }
