@@ -57,43 +57,6 @@ class ConfigFileAccess extends StaticClass {
     } );
   }
 
-  /**
-   * Returns an array with all the source files, or throws an exception.
-   * @return { SourceFileModel[] | Error }
-   */
-  static async getAllSourceFiles() {
-
-    try {
-      const readConfigFileRes = await ConfigFileAccess.readConfigFile();
-      /** @type { ConfigFileModel } */
-      const configFile = JSON.parse( readConfigFileRes[1] );
-      return configFile.sourceFiles;
-
-    } catch ( e ) {
-      throw e;
-    }
-  }
-
-  /**
-   * Finds the config file and returns a SourceFileModel instance, or <null> in case in does not finds it.
-   * 
-   * @param { string } sourceFilePath
-   * 
-   * @returns { SourceFileModel | null }
-   */
-  static async getSourceFile( sourceFilePath ) {
-  /** @type { SourceFileModel[] } */
-    const allSourceFiles = await ConfigFileAccess.getAllSourceFiles();
-
-    for ( let i = 0; i < allSourceFiles.length; ++i ) {
-      if ( allSourceFiles[i].source === sourceFilePath ) {
-        return allSourceFiles[i];
-      }
-    }
-
-    return null;
-  }
-
   static editConfigKey( key, value, Callback ) {
     ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
       if ( err )

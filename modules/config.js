@@ -8,11 +8,12 @@
 
 'use strict';
 const StaticClass = require( '../models/staticClassBase' );
-const findFile = require( './utils' ).findFileOrDir;
+const Utils = require( './utils' );
 const checkForUpdates = require( './checkForUpdates' );
 const configFileAccess = require( './configFileAccess' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const newTimestamp = require( './newTimestamp' );
+const SourceFileModel = require( '../models/sourceFileModel' );
 const ConfigKeysType = require( '../enums/configKeysEnum' );
 const style = require( './consoleStyling' );
 
@@ -26,7 +27,7 @@ class Config extends StaticClass {
     const propertiesToAdd = new Dictionary();
 
     try {
-      findFile( 'merger-config.json', async ( err, configPath ) => {
+      Utils.findFile( 'merger-config.json', async ( err, configPath ) => {
         // Get the contents from the correct config file and store its content on a global:
         global.config = require( configPath );
         global.config.mergerConfigPath = configPath;
@@ -37,7 +38,7 @@ class Config extends StaticClass {
              global.config.nodeModulesPath === ""
         ) {
 
-          findFile( 'node_modules', async ( err, npmModulesPath ) => {
+          Utils.findFile( 'node_modules', async ( err, npmModulesPath ) => {
             if ( npmModulesPath !== false ) {
               global.config.nodeModulesPath = npmModulesPath;
               propertiesToAdd.add( ConfigKeysType.nodeModulesPath, npmModulesPath );
@@ -94,20 +95,27 @@ class Config extends StaticClass {
 
   /**
    * Called only after Config.init()
+   * It sets custom configurations set by the user on the merger-config.json file.
    * 
-   * @param { string } headerFilePath
+   * @param { string } headerFilePath The complete header file path.
    * 
    */
-  static async getCustomConfig( headerFilePath ) {
-    // At this point the config file is already on global.config.
-    // TODO: Get the source file config from global.config
-    const sourceFile = await configFileAccess.getSourceFile( headerFilePath );
+  static setCustomConfig( headerFilePath ) {
+    // At this point the config file is already in global.config.
+    /** @type { SourceFileModel[] } */
+    let allSourceFiles = global.config.sourceFiles;
 
-    if ( !sourceFile ) {
-      return null;
+    for ( let i = 0; i < allSourceFiles.length; ++i ) {
+      if ( allSourceFiles[i].source === headerFilePath ) {
+        // To save memory and execution time, allSourceFiles is reutilized and now holds the correct source file.
+        allSourceFiles = allSourceFiles[i];
+        if ( !Utils.isNullOrUndefined( allSourceFiles.config.uglify ) ) {
+          global.config.uglify = allSourceFiles.config.uglify;
+        }
+
+        break;
+      }
     }
-
-    return sourceFile.config;
   }
 
 } // End of Config

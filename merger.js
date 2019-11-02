@@ -19,8 +19,6 @@ const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseImports = require( './modules/buildModules/parseImports' );
 const build = require( './modules/buildModules/build' );
 const SourceFileModel = require( './models/SourceFileModel' );
-const SourceFileConfigBase = require( './models/sourceFileConfigBase' );
-const Utils_isNullOrUndefined = require( './modules/utils' ).isNullOrUndefined;
 
 // #region PROGRAM
 
@@ -30,24 +28,21 @@ mergerCLI( ( newConfig ) => {
 
     selectSourceFile( ( sourceFile ) => {
       /** @type { SourceFileModel[] } */
-      let files = [sourceFile];
+      let sourceFiles;
 
-      // If "sourceFile" is Array it means that the user chose the "All" (files) option in selectSourceFile().
+      // If "sourceFile" is Array it means that the user chose the "All" (sourceFiles) option in selectSourceFile().
       if ( Array.isArray( sourceFile ) ) {
-        files = sourceFile;
+        sourceFiles = sourceFile;
         // Execute a one time build only.
         global.config.autoBuild = false;
+
+      } else {
+        sourceFiles = [sourceFile];
       }
 
-      async.eachSeries( files, async ( sourceFile, Callback ) => {
+      async.eachSeries( sourceFiles, async ( sourceFile, Callback ) => {
+        await Config.setCustomConfig( sourceFile.source );
         const buildOrder = await parseImports( sourceFile.source );
-
-        const customConfig = await Config.getCustomConfig( sourceFile[0] );
-        if ( customConfig ) {
-          if ( !Utils_isNullOrUndefined( customConfig.uglify ) ) {
-            global.config.uglify = customConfig.uglify;
-          }
-        }
 
         // Execute one time builds:
         if ( !global.config.autoBuild ) {
