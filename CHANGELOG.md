@@ -2,7 +2,11 @@
 
 &nbsp;
 
-#### *v3.8.5 - 21/10/2019
+#### *v3.9.0 - /11/2019
+
+&nbsp;
+
+#### v3.8.5 - 21/10/2019
 
   - Refactored the import parser and made multiple optimisations.
   - Updated dependencies.
