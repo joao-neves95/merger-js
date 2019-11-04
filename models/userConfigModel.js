@@ -7,8 +7,8 @@
  */
 
 'use strict';
-const SourceFileConfigBase = require( './sourceFileConfigBase' );
 const newTimestamp = require( '../modules/newTimestamp' ).completeLocale;
+const SourceFileConfigBase = require( './sourceFileConfigBase' );
 
 class UserConfig extends SourceFileConfigBase {
   constructor (uglify, autoBuild, notifications) {
