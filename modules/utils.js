@@ -22,23 +22,17 @@ class Utils extends StaticClass {
   /**
    * Reads the requested directory and returns an array of all its file names.
    * @param { string } path The directory path.
-   * @param { Function } Callback Optional. (err, files[])
    * 
    * @returns { Promise<string[] | Error> }
    */
-  static readDir( path, Callback ) {
+  static readDir( path ) {
     return new Promise( ( resolve, reject ) => {
 
       fs.readdir( path, 'utf8', ( err, files ) => {
         if ( err ) {
-          if ( Callback )
-            return Callback( err, null );
-
           return reject( err );
 
         } else {
-          if (Callback)
-            return Callback( null, files );
 
           return resolve( files );
         }
@@ -71,15 +65,25 @@ class Utils extends StaticClass {
     } );
   }
 
-  static writeJSONFile( dir, fileName, data, callback ) {
-    let jsonData = JSON.stringify( data, null, '\t' );
+  ///////////////////////////////////////////////////////
+  /**
+   * 
+   * @param { string } dir
+   * @param { string } fileName
+   * @param { object } data
+   * 
+   * @returns { void | Error }
+   */
+  static writeJSONFile( dir, fileName, data ) {
+    try {
 
-    fs.writeFile( path.join( dir, fileName + '.json' ), jsonData, 'utf8', ( err ) => {
-      if ( err )
-        callback( err, null );
-      else
-        callback( null, jsonData );
-    } );
+      let jsonData = JSON.stringify( data, null, '\t' );
+      fs.writeFileSync( path.join( dir, fileName + '.json' ), jsonData, 'utf8' );
+
+    } catch ( e ) {
+      throw e;
+    }
+
   }
 
   /**
@@ -88,7 +92,7 @@ class Utils extends StaticClass {
    * 
    * @returns { Promise<fs.Stats | Error> }
    */
-  static fileStat( filePath ) {
+  static fsStat( filePath ) {
     return new Promise( ( _res, _rej ) => {
       fs.stat( filePath, async ( err, stats ) => {
         if ( err ) {
@@ -216,8 +220,9 @@ class Utils extends StaticClass {
       },
         ( whilstAgain ) => {
           fs.readdir( currentDir, 'utf8', ( err, files ) => {
-            if ( err )
+            if ( err ) {
               return returnError( err, reject, Callback );
+            }
 
             each( files, ( file, eachAgain ) => {
 
@@ -245,14 +250,17 @@ class Utils extends StaticClass {
           } );
         },
         ( err, n ) => {
-          if ( err )
+          if ( err ) {
             return returnError( err, reject, Callback );
+          }
 
-          if ( fileOrDir === 'merger-config.json' )
+          if ( fileOrDir === 'merger-config.json' ) {
             return console.error( style.styledError, ' merger-config file not found. Please run "merger init".' );
+          }
 
-          if ( Callback )
+          if ( Callback ) {
             return Callback( null, false );
+          }
 
           resolve( false );
         }
