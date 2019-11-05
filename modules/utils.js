@@ -65,7 +65,6 @@ class Utils extends StaticClass {
     } );
   }
 
-  ///////////////////////////////////////////////////////
   /**
    * 
    * @param { string } dir
