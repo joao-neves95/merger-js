@@ -15,7 +15,6 @@ const StaticClass = require( '../models/staticClassBase' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const style = require( './consoleStyling' );
 const newTimestamp = require( './newTimestamp' ).small;
-const ConfigFileModel = require( '../models/userConfigModel' );
 const SourceFileModel = require( '../models/sourceFileModel' );
 
 /** (static) */
@@ -48,7 +47,7 @@ class ConfigFileAccess extends StaticClass {
   static editConfigKey( key, value ) {
     try {
       const configFileData = ConfigFileAccess.readConfigFile();
-      let userConfig = JSON.parse( configFileData[1] );
+      const userConfig = JSON.parse( configFileData[1] );
       userConfig[key] = value;
 
       writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
@@ -72,7 +71,7 @@ class ConfigFileAccess extends StaticClass {
       try {
         const configFileData = ConfigFileAccess.readConfigFile();
 
-        let userConfig = JSON.parse( configFileData[1] );
+        const userConfig = JSON.parse( configFileData[1] );
         userConfig.sourceFiles.push( newSourceFile );
 
         writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
@@ -88,7 +87,7 @@ class ConfigFileAccess extends StaticClass {
     try {
       const configFileData = ConfigFileAccess.readConfigFile();
 
-      let userConfig = JSON.parse( configFileData[1] );
+      const userConfig = JSON.parse( configFileData[1] );
 
       const searchFileIndex = ( userConfig ) => {
         for ( let i = 0; i < userConfig.sourceFiles.length; ++i ) {
@@ -117,47 +116,28 @@ class ConfigFileAccess extends StaticClass {
    * 
    * @param { string | Dictionary } key Config property. < string | Dictionary<string, any> >
    * @param { any } value  Config property value. (Optional if the "key" property is a dictionary)
-   * @param { Function } Callback (Optional) Called when the config file editing ends.
    * 
-   * @returns { Promise<void|Error> } void
+   * @returns { <void|Error> } void or logs the exception
    */
-  static addProperty( key, value, Callback ) {
-    return new Promise( ( _resolve, _reject ) => {
-      try {
-        ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
-          if ( err ) {
-            console.error( err );
-            return _reject( err );
-          }
+  static addProperty( key, value ) {
+    try {
+      const configFileData = ConfigFileAccess.readConfigFile();
+      const userConfig = JSON.parse( configFileData[1] );
 
-          const userConfig = JSON.parse( data );
-
-          if ( key instanceof Dictionary ) {
-            key.__forEach( ( keyValueObj ) => {
-              userConfig[Object.keys( keyValueObj )[0]] = Object.values( keyValueObj )[0];
-            } );
-
-          } else {
-            userConfig[key] = value;
-          }
-
-          writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
-            if ( err ) {
-              console.error( err );
-              return _reject( err );
-            }
-
-            if ( Callback )
-              return Callback();
-
-            return _resolve();
-          } );
+      if ( key instanceof Dictionary ) {
+        key.__forEach( ( keyValueObj ) => {
+          userConfig[Object.keys( keyValueObj )[0]] = Object.values( keyValueObj )[0];
         } );
 
-      } catch ( e ) {
-        return _reject( e );
+      } else {
+        userConfig[key] = value;
       }
-    } );
+
+      writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
+
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
 }

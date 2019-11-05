@@ -89,21 +89,23 @@ module.exports = () => {
 
     try {
       const nodeModulesFilePath = await findFileOrDir( 'node_modules' );
-      if ( nodeModulesFilePath !== false )
+      if ( nodeModulesFilePath !== false ) {
         config.nodeModulesPath = nodeModulesFilePath;
+      }
 
     } catch ( e ) {
       // continue;
     }
 
-    writeJSONFile( process.cwd(), 'merger-config', config, ( err, data ) => {
-      if ( err )
-        return console.error( err );
+    try {
+      const configFileData = writeJSONFile( process.cwd(), 'merger-config', config );
+      console.info( `\n ${newTimestamp()} - Init successful.\n`, configFileData[0], `\n ${finalInitMessage}` );
 
-      else {
-        console.info( `\n ${newTimestamp()} - Init successful.\n`, data, `\n ${finalInitMessage}` );
-      }
-    } );
+    } catch ( e ) {
+      console.error( 'ERROR:', e );
+    }
+
   } );
+
 };
 
