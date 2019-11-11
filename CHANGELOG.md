@@ -12,6 +12,8 @@
     stated on the docs: [README.md](https://github.com/joao-neves95/merger-js/blob/master/README.md#use)).<br>
     With this fix, MergerJS can now merge any text files, for example HTML files.
 
+  - Performance improvements.
+
   - Big internal refactoring: Slowly migrating to the Node.js sync API and removed a lot of callbacks.
 
 &nbsp;
