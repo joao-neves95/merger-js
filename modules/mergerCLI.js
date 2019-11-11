@@ -76,14 +76,16 @@ module.exports = ( Callback ) => {
     .command( 'set <key>' )
     .option( '-t, --true' )
     .option( '-f, --false' )
-    .action( ( key, cmd ) => {
+    .action( async ( key, cmd ) => {
       let Key = key.toUpperCase();
       let value;
 
       if ( cmd.true ) {
         value = true;
+
       } else if ( cmd.false ) {
         value = false;
+
       } else {
         console.error( ` ${style.styledError}${style.errorText( `Unknown option - ${cmd}.` )}` );
         process.exit( 1 );
@@ -115,7 +117,7 @@ module.exports = ( Callback ) => {
           break;
       }
 
-      ConfigFileAccess.editConfigKey( Key, value );
+      await ConfigFileAccess.editConfigKey( Key, value );
       process.exit( 0 );
     } );
 
@@ -123,8 +125,8 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'add' )
     .action( () => {
-      addFilesPrompt( ( newBuildFile ) => {
-        ConfigFileAccess.addFileToConfig( newBuildFile );
+      addFilesPrompt( async ( newBuildFile ) => {
+        await ConfigFileAccess.addFileToConfig( newBuildFile );
         process.exit( 0 );
       } );
     } );
@@ -133,16 +135,16 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'rm' )
     .action( () => {
-      selectSourceFile( sourceFileObject => {
-        ConfigFileAccess.removeFileFromConfig( sourceFileObject );
+      selectSourceFile( async sourceFileObject => {
+        await ConfigFileAccess.removeFileFromConfig( sourceFileObject );
         process.exit( 0 );
       } );
     } );
 
   CLI
     .command( 'log' )
-    .action( () => {
-      const configFileData = ConfigFileAccess.readConfigFile();
+    .action( async () => {
+      const configFileData = await ConfigFileAccess.readConfigFile();
       console.log( `\n ${style.successText( 'Merger config file path:' )}`, configFileData[0] );
       console.log( `\n ${style.successText( 'Configuration File:\n' )}`, configFileData[1] );
     } );

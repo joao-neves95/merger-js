@@ -69,15 +69,18 @@ class Utils extends StaticClass {
    * 
    * @param { string } dir
    * @param { string } fileName
-   * @param { object } data
+   * @param { object } data <object>
    * 
    * @returns { void | Error }
    */
   static writeJSONFile( dir, fileName, data ) {
     try {
 
-      let jsonData = JSON.stringify( data, null, '\t' );
-      fs.writeFileSync( path.join( dir, fileName + '.json' ), jsonData, 'utf8' );
+      fs.writeFileSync(
+        path.join( dir, fileName + '.json' ),
+        JSON.stringify( data, null, '\t' ),
+        'utf8'
+      );
 
     } catch ( e ) {
       throw e;
@@ -186,6 +189,7 @@ class Utils extends StaticClass {
     return `${user}@${repo}`;
   }
 
+  // TODO: (findFileOrDir) Big refactoring.
   /**
    * From the current directory ( process.cwd() ), it searches for and returns the path of the requested file or directory, false if the file was not found or an error.
    * 

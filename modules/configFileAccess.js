@@ -30,12 +30,12 @@ class ConfigFileAccess extends StaticClass {
    * 
    * @returns { Promise<string[] | Error> }
    */
-  static readConfigFile() {
+  static async readConfigFile() {
     return new Promise( async ( _res, _rej ) => {
 
       try {
         const configFilePath = await findFileOrDir( 'merger-config.json' );
-        return _res( [configFilePath, fs.readdirSync( configFilePath, 'utf8' )] );
+        return _res( [configFilePath, fs.readFileSync( configFilePath, 'utf8' )] );
 
       } catch ( e ) {
         return _rej( e );
@@ -44,14 +44,14 @@ class ConfigFileAccess extends StaticClass {
     } );
   }
 
-  static editConfigKey( key, value ) {
+  static async editConfigKey( key, value ) {
     try {
-      const configFileData = ConfigFileAccess.readConfigFile();
+      const configFileData = await ConfigFileAccess.readConfigFile();
       const userConfig = JSON.parse( configFileData[1] );
       userConfig[key] = value;
 
       writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
-      return console.info( `\n ${newTimestamp()} - ${style.successText( 'Update to the merger-config file successful.' )}\n`, configFileData[1] );
+      return console.info( `\n ${newTimestamp()} - ${style.successText( 'Update to the merger-config file successful.' )}\n`, JSON.stringify( userConfig, null, '\t' ) );
 
     } catch ( e ) {
       return console.error( style.styledError, e );
@@ -69,13 +69,16 @@ class ConfigFileAccess extends StaticClass {
     return new Promise( async ( _resolve, _reject ) => {
 
       try {
-        const configFileData = ConfigFileAccess.readConfigFile();
+        const configFileData = await ConfigFileAccess.readConfigFile();
 
         const userConfig = JSON.parse( configFileData[1] );
         userConfig.sourceFiles.push( newSourceFile );
 
         writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
-        console.info( `\n ${newTimestamp()} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`, configFileData[1] );
+        console.info(
+          `\n ${newTimestamp()} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`,
+          JSON.stringify( userConfig, null, '\t' )
+        );
 
       } catch ( e ) {
         return console.error( style.styledError, e );
@@ -83,9 +86,9 @@ class ConfigFileAccess extends StaticClass {
     } );
   }
 
-  static removeSourceFile( sourceFileObject ) {
+  static async removeSourceFile( sourceFileObject ) {
     try {
-      const configFileData = ConfigFileAccess.readConfigFile();
+      const configFileData = await ConfigFileAccess.readConfigFile();
 
       const userConfig = JSON.parse( configFileData[1] );
 
@@ -103,7 +106,7 @@ class ConfigFileAccess extends StaticClass {
       userConfig.sourceFiles.splice( fileIndex, 1 );
       
       writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig );
-      console.info( `\n ${newTimestamp()} - ${style.successText( 'Successsfuly removed the source file from the MergerJS configuration file.' )}\n`, configFileData[1] );
+      console.info( `\n ${newTimestamp()} - ${style.successText( 'Successsfuly removed the source file from the MergerJS configuration file.' )}\n`, JSON.stringify( userConfig, null, '\t' ) );
 
     } catch ( e ) {
       return console.error( style.styledError, e );
@@ -119,9 +122,9 @@ class ConfigFileAccess extends StaticClass {
    * 
    * @returns { <void|Error> } void or logs the exception
    */
-  static addProperty( key, value ) {
+  static async addProperty( key, value ) {
     try {
-      const configFileData = ConfigFileAccess.readConfigFile();
+      const configFileData = await ConfigFileAccess.readConfigFile();
       const userConfig = JSON.parse( configFileData[1] );
 
       if ( key instanceof Dictionary ) {
