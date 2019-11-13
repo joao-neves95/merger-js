@@ -189,7 +189,39 @@ class Utils extends StaticClass {
     return `${user}@${repo}`;
   }
 
-  // TODO: (findFileOrDir) Big refactoring.
+  /**
+   * 
+   * @param { string } fileOrDirName the name of the file or directory to search for.
+   */
+  static findFileByName_INPROGRESS( fileOrDirName ) {
+    let currentDir = fileOrDirName;
+    let lastDir = '';
+    /** @type { string[] } */
+    let currentDirFiles;
+    /** @type { string } */
+    let currentFile;
+
+    let i;
+    // When the loop hits the root dir.
+    while ( currentDir !== lastDir ) {
+      // Find a method that returns an ordered array of files to use binary search, 
+      // or other algo, to search for the file and reduce time space complexity.
+      currentDirFiles = fs.readdirSync( currentDir, 'utf8' );
+
+      for ( i = 0; i < currentDirFiles.length; ++i ) {
+        currentFile = currentDirFiles[i];
+
+        if ( currentFile === fileOrDirName ) {
+          return path.join( currentDir, currentFile );
+        }
+      }
+
+      lastDir = currentDir;
+      currentDir = path.join( currentDir, '../' );
+    }
+  }
+
+  // TODO: Change all references to this method to ".findFileByName()", when it's ready.
   /**
    * From the current directory ( process.cwd() ), it searches for and returns the path of the requested file or directory, false if the file was not found or an error.
    * 
