@@ -31,70 +31,69 @@ class Config extends StaticClass {
    * @returns { Promise<void> }
    */
   static init( newConfig ) {
-    return new Promise( (_res, _rej ) => {
+    return new Promise( async ( _res, _rej ) => {
       const propertiesToAdd = new Dictionary();
 
       try {
-        Utils.findFileOrDir( 'merger-config.json', async ( err, configPath ) => {
-          // Get the contents from the correct config file and store its content on a global:
-          global.config = require( configPath );
-          global.config.mergerConfigPath = configPath;
+        const configPath = Utils.findFileOrDir( 'merger-config.json' );
+        // Get the contents from the correct config file and store its content on a global:
+        global.config = require( configPath );
+        global.config.mergerConfigPath = configPath;
 
-          // If the node_modules's path is not present on the config, try to find it and save it.
-          if ( Utils.isNullOrEmptyStr( global.config.nodeModulesPath ) ) {
-            Utils.findFileOrDir( 'node_modules', async ( err, npmModulesPath ) => {
-              if ( npmModulesPath !== false ) {
-                global.config.nodeModulesPath = npmModulesPath;
-                propertiesToAdd.add( ConfigKeysType.nodeModulesPath, npmModulesPath );
-              }
-            } );
+        // If the node_modules's path is not present on the config, try to find it and save it.
+        if ( Utils.isNullOrEmptyStr( global.config.nodeModulesPath ) ) {
+          const nodeModulesPath = Utils.findFileOrDir( 'node_modules' );
+
+          if ( nodeModulesPath !== false ) {
+            global.config.nodeModulesPath = nodeModulesPath;
+            propertiesToAdd.add( ConfigKeysType.nodeModulesPath, nodeModulesPath );
           }
+        }
 
-          // #region INITIAL UPDATE SYSTEM
+        // #region INITIAL UPDATE SYSTEM
 
-          if ( !Utils.isNullOrEmptyStr( global.config.updateOnLaunch ) ) {
-            // CHECK FOR UPDATES ON LAUNCH, IF NEEDED.
-            if ( global.config.updateOnLaunch ) {
-              await ____checkForUpdatesAsync( propertiesToAdd );
-            }
-
-            // CHECK FOR UPDATES ONCE A WEEK.
-            else {
-              if ( !Utils.isNullOrEmptyStr( global.config.lastUpdateCheck ) ) {
-                if ( new Date( global.config.lastUpdateCheck ) >= newTimestamp.addDaysToDate( global.config.lastUpdateCheck, 7 ) ) {
-                  await ____checkForUpdatesAsync( propertiesToAdd );
-                }
-              }
-            }
-
-            // TODO: Remove on v4 (if there is one), along with all other methods of not adding breaking changes.
-            // This was add in order to not add breaking changes.
-          } else {
-            // Set to true by default.
-            global.config.updateOnLaunch = true;
-            propertiesToAdd.add( ConfigKeysType.updateOnLaunch, true );
+        if ( !Utils.isNullOrEmptyStr( global.config.updateOnLaunch ) ) {
+          // CHECK FOR UPDATES ON LAUNCH, IF NEEDED.
+          if ( global.config.updateOnLaunch ) {
             await ____checkForUpdatesAsync( propertiesToAdd );
           }
 
-          // #endregion
-
-          // Update glabal configurations set during the CLI launch.
-          if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined ) {
-            global.config.autoBuild = newConfig.autoBuild;
+          // CHECK FOR UPDATES ONCE A WEEK.
+          else {
+            if ( !Utils.isNullOrEmptyStr( global.config.lastUpdateCheck ) ) {
+              if ( new Date( global.config.lastUpdateCheck ) >= newTimestamp.addDaysToDate( global.config.lastUpdateCheck, 7 ) ) {
+                await ____checkForUpdatesAsync( propertiesToAdd );
+              }
+            }
           }
 
-          global.minifyOptions = {
-            warnings: true
-          };
+          // TODO: Remove on v4 (if there is one), along with all other methods of not adding breaking changes.
+          // This was add in order to not add breaking changes.
+        } else {
+          // Set to true by default.
+          global.config.updateOnLaunch = true;
+          propertiesToAdd.add( ConfigKeysType.updateOnLaunch, true );
+          await ____checkForUpdatesAsync( propertiesToAdd );
+        }
 
-          await configFileAccess.addProperty( propertiesToAdd );
-          return _res();
-        } );
+        // #endregion
 
-    } catch ( e ) {
-      return ____returnError( e );
-    }
-    }); 
+        // Update glabal configurations set during the CLI launch.
+        if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined ) {
+          global.config.autoBuild = newConfig.autoBuild;
+        }
+
+        global.minifyOptions = {
+          warnings: true
+        };
+
+        configFileAccess.addProperty( propertiesToAdd );
+        return _res();
+
+      } catch ( e ) {
+        return ____returnError( e );
+      }
+    } );
   }
 
   /**

@@ -18,7 +18,6 @@ const async = require( './node_modules/neo-async' );
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseImports = require( './modules/buildModules/parseImports' );
 const build = require( './modules/buildModules/build' );
-const SourceFileModel = require( './models/SourceFileModel' );
 
 // #region PROGRAM
 

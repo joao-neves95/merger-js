@@ -19,7 +19,7 @@ const ConfigKeysType = require('../enums/configKeysEnum');
 module.exports = ( Callback ) => {
   global.version = require('../package.json').version;
   global.config = {};
-  let newConfig = {};
+  const newConfig = {};
 
   // merger -v / --version
   CLI
@@ -65,8 +65,9 @@ module.exports = ( Callback ) => {
     .command( 'build' )
     .option( '-a, --auto' )
     .action( ( cmd ) => {
-      if ( cmd.auto )
+      if ( cmd.auto ) {
         newConfig.autoBuild = true;
+      }
 
       return Callback( newConfig );
     } );
@@ -76,7 +77,7 @@ module.exports = ( Callback ) => {
     .command( 'set <key>' )
     .option( '-t, --true' )
     .option( '-f, --false' )
-    .action( async ( key, cmd ) => {
+    .action( ( key, cmd ) => {
       let Key = key.toUpperCase();
       let value;
 
@@ -117,7 +118,7 @@ module.exports = ( Callback ) => {
           break;
       }
 
-      await ConfigFileAccess.editConfigKey( Key, value );
+      ConfigFileAccess.editConfigKey( Key, value );
       process.exit( 0 );
     } );
 
@@ -125,8 +126,8 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'add' )
     .action( () => {
-      addFilesPrompt( async ( newBuildFile ) => {
-        await ConfigFileAccess.addFileToConfig( newBuildFile );
+      addFilesPrompt( ( newBuildFile ) => {
+        ConfigFileAccess.addFileToConfig( newBuildFile );
         process.exit( 0 );
       } );
     } );
@@ -135,16 +136,16 @@ module.exports = ( Callback ) => {
   CLI
     .command( 'rm' )
     .action( () => {
-      selectSourceFile( async sourceFileObject => {
-        await ConfigFileAccess.removeFileFromConfig( sourceFileObject );
+      selectSourceFile( sourceFileObject => {
+        ConfigFileAccess.removeFileFromConfig( sourceFileObject );
         process.exit( 0 );
       } );
     } );
 
   CLI
     .command( 'log' )
-    .action( async () => {
-      const configFileData = await ConfigFileAccess.readConfigFile();
+    .action( () => {
+      const configFileData = ConfigFileAccess.readConfigFile();
       console.log( `\n ${style.successText( 'Merger config file path:' )}`, configFileData[0] );
       console.log( `\n ${style.successText( 'Configuration File:\n' )}`, configFileData[1] );
     } );
