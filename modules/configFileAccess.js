@@ -9,6 +9,7 @@
 'use strict';
 const fs = require( 'fs' );
 const path = require( 'path' );
+const Utils = require( './utils' );
 const writeConfigFile = require( './utils' ).writeJSONFile;
 const findFileOrDir = require( './utils' ).findFileOrDir;
 const StaticClass = require( '../models/staticClassBase' );
@@ -28,25 +29,44 @@ class ConfigFileAccess extends StaticClass {
    * Searches for the config file from the current directory and returns
    * a promise with [ configFilePath, data ] or an exception.
    * 
-   * @returns { Promise<string[] | Error> }
+   * @returns { string[] | null }
    */
-  static async readConfigFile() {
-    return new Promise( async ( _res, _rej ) => {
+  static readConfigFile() {
+    try {
+      let configFilePath;
 
-      try {
-        const configFilePath = await findFileOrDir( 'merger-config.json' );
-        return _res( [configFilePath, fs.readFileSync( configFilePath, 'utf8' )] );
+      if ( !Utils.isNullOrEmptyStr( global.config ) && !Utils.isNullOrEmptyStr( global.config.mergerConfigPath ) ) {
+        configFilePath = global.config.mergerConfigPath;
 
-      } catch ( e ) {
-        return _rej( e );
+      } else {
+        configFilePath = findFileOrDir( 'merger-config.json' );
       }
 
-    } );
+      return [configFilePath, fs.readFileSync( configFilePath, 'utf8' )];
+
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
-  static async editConfigKey( key, value ) {
+  static getNodeModulesPath() {
+      try {
+
+        if ( !Utils.isNullOrEmptyStr( global.config ) && !Utils.isNullOrEmptyStr( global.config.nodeModulesPath ) ) {
+          return global.config.mergerConfigPath;
+
+        } else {
+          return findFileOrDir( 'node_modules' );
+        }
+
+      } catch ( e ) {
+        return console.error( style.styledError, e );
+      }
+  }
+
+  static editConfigKey( key, value ) {
     try {
-      const configFileData = await ConfigFileAccess.readConfigFile();
+      const configFileData = ConfigFileAccess.readConfigFile();
       const userConfig = JSON.parse( configFileData[1] );
       userConfig[key] = value;
 
@@ -63,32 +83,28 @@ class ConfigFileAccess extends StaticClass {
    * 
    * @param { SourceFileModel } newSourceFile SourceFile model.
    * 
-   * @returns { Promise<void> } void
+   * @returns { void } void
    */
   static addFileToConfig( newSourceFile ) {
-    return new Promise( async ( _resolve, _reject ) => {
+    try {
+      const configFileData = ConfigFileAccess.readConfigFile();
+      const userConfig = JSON.parse( configFileData[1] );
+      userConfig.sourceFiles.push( newSourceFile );
 
-      try {
-        const configFileData = await ConfigFileAccess.readConfigFile();
+      writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
+      console.info(
+        `\n ${newTimestamp()} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`,
+        JSON.stringify( userConfig, null, '\t' )
+      );
 
-        const userConfig = JSON.parse( configFileData[1] );
-        userConfig.sourceFiles.push( newSourceFile );
-
-        writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
-        console.info(
-          `\n ${newTimestamp()} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`,
-          JSON.stringify( userConfig, null, '\t' )
-        );
-
-      } catch ( e ) {
-        return console.error( style.styledError, e );
-      }
-    } );
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
-  static async removeSourceFile( sourceFileObject ) {
+  static removeSourceFile( sourceFileObject ) {
     try {
-      const configFileData = await ConfigFileAccess.readConfigFile();
+      const configFileData = ConfigFileAccess.readConfigFile();
 
       const userConfig = JSON.parse( configFileData[1] );
 
@@ -122,9 +138,9 @@ class ConfigFileAccess extends StaticClass {
    * 
    * @returns { <void|Error> } void or logs the exception
    */
-  static async addProperty( key, value ) {
+  static addProperty( key, value ) {
     try {
-      const configFileData = await ConfigFileAccess.readConfigFile();
+      const configFileData = ConfigFileAccess.readConfigFile();
       const userConfig = JSON.parse( configFileData[1] );
 
       if ( key instanceof Dictionary ) {

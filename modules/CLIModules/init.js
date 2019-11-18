@@ -8,9 +8,10 @@
 
 'use strict';
 const prompt = require('../../node_modules/inquirer').createPromptModule();
-const UserConfig = require('../../models/userConfigModel');
-const { writeJSONFile, findFileOrDir } = require('../utils');
+const { writeJSONFile } = require( '../utils' );
+const getNodeModulesPath = require( '../configFileAccess' ).getNodeModulesPath;
 const newTimestamp = require( '../newTimestamp' ).small;
+const UserConfig = require('../../models/userConfigModel');
 const promptResonseType = require( '../../enums/promptResponseType' );
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
@@ -88,7 +89,7 @@ module.exports = () => {
       await __customizationPrompt( config );
 
     try {
-      const nodeModulesFilePath = await findFileOrDir( 'node_modules' );
+      const nodeModulesFilePath = getNodeModulesPath();
       if ( nodeModulesFilePath !== false ) {
         config.nodeModulesPath = nodeModulesFilePath;
       }
