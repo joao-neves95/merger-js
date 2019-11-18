@@ -9,6 +9,7 @@
 'use strict';
 const newTimestamp = require( '../modules/newTimestamp' ).completeLocale;
 const SourceFileConfigBase = require( './sourceFileConfigBase' );
+const SourceFileModel = require( './sourceFileModel' );
 
 class UserConfig extends SourceFileConfigBase {
   constructor (uglify, autoBuild, notifications) {
@@ -28,6 +29,7 @@ class UserConfig extends SourceFileConfigBase {
     this.lastUpdateCheck = newTimestamp();
     this.nodeModulesPath = "";
 
+    /** @type { SourceFileModel[] } */
     this.sourceFiles = [];
   }
 }
