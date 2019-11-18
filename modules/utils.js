@@ -9,9 +9,6 @@
 'use strict';
 const fs = require('fs');
 const path = require( 'path' );
-const whilst = require( '../node_modules/neo-async' ).whilst;
-const each = require( '../node_modules/neo-async' ).each;
-const style = require( './consoleStyling' );
 const StaticClass = require( '../models/staticClassBase' );
 
 class Utils extends StaticClass {
@@ -190,11 +187,12 @@ class Utils extends StaticClass {
   }
 
   /**
+   * Returns the complete path of the requested file or directory.
    * 
-   * @param { string } fileOrDirName the name of the file or directory to search for.
+   * @param { string } fileOrDirName The name of the file or directory to search for.
    */
-  static findFileByName_INPROGRESS( fileOrDirName ) {
-    let currentDir = fileOrDirName;
+  static findFileOrDir( fileOrDirName ) {
+    let currentDir = process.cwd();
     let lastDir = '';
     /** @type { string[] } */
     let currentDirFiles;
@@ -203,9 +201,7 @@ class Utils extends StaticClass {
 
     let i;
     // When the loop hits the root dir.
-    while ( currentDir !== lastDir ) {
-      // Find a method that returns an ordered array of files to use binary search, 
-      // or other algo, to search for the file and reduce time space complexity.
+    while ( currentDir !== lastDir && currentDir !== null ) {
       currentDirFiles = fs.readdirSync( currentDir, 'utf8' );
 
       for ( i = 0; i < currentDirFiles.length; ++i ) {
@@ -219,89 +215,6 @@ class Utils extends StaticClass {
       lastDir = currentDir;
       currentDir = path.join( currentDir, '../' );
     }
-  }
-
-  // TODO: Change all references to this method to ".findFileByName()", when it's ready.
-  /**
-   * From the current directory ( process.cwd() ), it searches for and returns the path of the requested file or directory, false if the file was not found or an error.
-   * 
-   * @param { string } fileOrDir The name of the file or directory to find.
-   * @param { Function } Callback Optional. Callback (error, <string | false>) that receives the complete file/directory path or false if not found.
-   * 
-   * @returns { Promise<string | false | Error> }
-   */
-  static findFileOrDir( fileOrDir, Callback ) {
-
-    const returnError = ( err, reject, Callback ) => {
-      console.error( style.styledError, err );
-
-      if ( Callback )
-        return Callback( err, false );
-
-      return reject( err );
-    };
-
-    return new Promise( ( resolve, reject ) => {
-
-      let currentDir = process.cwd();
-      let foundFile = false;
-      let lastDir;
-
-      whilst( () => {
-        return !currentDir ? false :
-                 lastDir === currentDir ? false :
-                   foundFile ? false :
-                     true;
-      },
-        ( whilstAgain ) => {
-          fs.readdir( currentDir, 'utf8', ( err, files ) => {
-            if ( err ) {
-              return returnError( err, reject, Callback );
-            }
-
-            each( files, ( file, eachAgain ) => {
-
-              if ( file === fileOrDir ) {
-                foundFile = true;
-                const filePath = path.join( currentDir, file );
-
-                if ( Callback )
-                  return Callback( null, filePath );
-
-                return resolve( filePath );
-
-              } else {
-                eachAgain();
-              }
-
-            }, ( err ) => {
-              if ( err )
-                return returnError( err, reject, Callback );
-
-              lastDir = currentDir;
-              currentDir = path.join( currentDir, '../' );
-              whilstAgain( null, null );
-            } );
-          } );
-        },
-        ( err, n ) => {
-          if ( err ) {
-            return returnError( err, reject, Callback );
-          }
-
-          if ( fileOrDir === 'merger-config.json' ) {
-            return console.error( style.styledError, ' merger-config file not found. Please run "merger init".' );
-          }
-
-          if ( Callback ) {
-            return Callback( null, false );
-          }
-
-          resolve( false );
-        }
-      );
-
-    } );
   }
 
   /**
