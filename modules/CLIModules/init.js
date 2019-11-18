@@ -8,9 +8,10 @@
 
 'use strict';
 const prompt = require('../../node_modules/inquirer').createPromptModule();
-const UserConfig = require('../../models/userConfigModel');
-const { writeJSONFile, findFileOrDir } = require('../utils');
+const { writeJSONFile } = require( '../utils' );
+const getNodeModulesPath = require( '../configFileAccess' ).getNodeModulesPath;
 const newTimestamp = require( '../newTimestamp' ).small;
+const UserConfig = require('../../models/userConfigModel');
 const promptResonseType = require( '../../enums/promptResponseType' );
 const finalInitMessage = 'Run "merger" or "merger build" to start building.';
 
@@ -88,22 +89,24 @@ module.exports = () => {
       await __customizationPrompt( config );
 
     try {
-      const nodeModulesFilePath = await findFileOrDir( 'node_modules' );
-      if ( nodeModulesFilePath !== false )
+      const nodeModulesFilePath = getNodeModulesPath();
+      if ( nodeModulesFilePath !== false ) {
         config.nodeModulesPath = nodeModulesFilePath;
+      }
 
     } catch ( e ) {
       // continue;
     }
 
-    writeJSONFile( process.cwd(), 'merger-config', config, ( err, data ) => {
-      if ( err )
-        return console.error( err );
+    try {
+      const configFileData = writeJSONFile( process.cwd(), 'merger-config', config );
+      console.info( `\n ${newTimestamp()} - Init successful.\n`, configFileData[0], `\n ${finalInitMessage}` );
 
-      else {
-        console.info( `\n ${newTimestamp()} - Init successful.\n`, data, `\n ${finalInitMessage}` );
-      }
-    } );
+    } catch ( e ) {
+      console.error( 'ERROR:', e );
+    }
+
   } );
+
 };
 

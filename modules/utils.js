@@ -9,9 +9,6 @@
 'use strict';
 const fs = require('fs');
 const path = require( 'path' );
-const whilst = require( '../node_modules/neo-async' ).whilst;
-const each = require( '../node_modules/neo-async' ).each;
-const style = require( './consoleStyling' );
 const StaticClass = require( '../models/staticClassBase' );
 
 class Utils extends StaticClass {
@@ -22,23 +19,17 @@ class Utils extends StaticClass {
   /**
    * Reads the requested directory and returns an array of all its file names.
    * @param { string } path The directory path.
-   * @param { Function } Callback Optional. (err, files[])
    * 
    * @returns { Promise<string[] | Error> }
    */
-  static readDir( path, Callback ) {
+  static readDir( path ) {
     return new Promise( ( resolve, reject ) => {
 
       fs.readdir( path, 'utf8', ( err, files ) => {
         if ( err ) {
-          if ( Callback )
-            return Callback( err, null );
-
           return reject( err );
 
         } else {
-          if (Callback)
-            return Callback( null, files );
 
           return resolve( files );
         }
@@ -71,15 +62,27 @@ class Utils extends StaticClass {
     } );
   }
 
-  static writeJSONFile( dir, fileName, data, callback ) {
-    let jsonData = JSON.stringify( data, null, '\t' );
+  /**
+   * 
+   * @param { string } dir
+   * @param { string } fileName
+   * @param { object } data <object>
+   * 
+   * @returns { void | Error }
+   */
+  static writeJSONFile( dir, fileName, data ) {
+    try {
 
-    fs.writeFile( path.join( dir, fileName + '.json' ), jsonData, 'utf8', ( err ) => {
-      if ( err )
-        callback( err, null );
-      else
-        callback( null, jsonData );
-    } );
+      fs.writeFileSync(
+        path.join( dir, fileName + '.json' ),
+        JSON.stringify( data, null, '\t' ),
+        'utf8'
+      );
+
+    } catch ( e ) {
+      throw e;
+    }
+
   }
 
   /**
@@ -88,7 +91,7 @@ class Utils extends StaticClass {
    * 
    * @returns { Promise<fs.Stats | Error> }
    */
-  static fileStat( filePath ) {
+  static fsStat( filePath ) {
     return new Promise( ( _res, _rej ) => {
       fs.stat( filePath, async ( err, stats ) => {
         if ( err ) {
@@ -184,81 +187,34 @@ class Utils extends StaticClass {
   }
 
   /**
-   * From the current directory ( process.cwd() ), it searches for and returns the path of the requested file or directory, false if the file was not found or an error.
+   * Returns the complete path of the requested file or directory.
    * 
-   * @param { string } fileOrDir The name of the file or directory to find.
-   * @param { Function } Callback Optional. Callback (error, <string | false>) that receives the complete file/directory path or false if not found.
-   * 
-   * @returns { Promise<string | false | Error> }
+   * @param { string } fileOrDirName The name of the file or directory to search for.
    */
-  static findFileOrDir( fileOrDir, Callback ) {
+  static findFileOrDir( fileOrDirName ) {
+    let currentDir = process.cwd();
+    let lastDir = '';
+    /** @type { string[] } */
+    let currentDirFiles;
+    /** @type { string } */
+    let currentFile;
 
-    const returnError = ( err, reject, Callback ) => {
-      console.error( style.styledError, err );
+    let i;
+    // When the loop hits the root dir.
+    while ( currentDir !== lastDir && currentDir !== null ) {
+      currentDirFiles = fs.readdirSync( currentDir, 'utf8' );
 
-      if ( Callback )
-        return Callback( err, false );
+      for ( i = 0; i < currentDirFiles.length; ++i ) {
+        currentFile = currentDirFiles[i];
 
-      return reject( err );
-    };
-
-    return new Promise( ( resolve, reject ) => {
-
-      let currentDir = process.cwd();
-      let foundFile = false;
-      let lastDir;
-
-      whilst( () => {
-        return !currentDir ? false :
-                 lastDir === currentDir ? false :
-                   foundFile ? false :
-                     true;
-      },
-        ( whilstAgain ) => {
-          fs.readdir( currentDir, 'utf8', ( err, files ) => {
-            if ( err )
-              return returnError( err, reject, Callback );
-
-            each( files, ( file, eachAgain ) => {
-
-              if ( file === fileOrDir ) {
-                foundFile = true;
-                const filePath = path.join( currentDir, file );
-
-                if ( Callback )
-                  return Callback( null, filePath );
-
-                return resolve( filePath );
-
-              } else {
-                eachAgain();
-              }
-
-            }, ( err ) => {
-              if ( err )
-                return returnError( err, reject, Callback );
-
-              lastDir = currentDir;
-              currentDir = path.join( currentDir, '../' );
-              whilstAgain( null, null );
-            } );
-          } );
-        },
-        ( err, n ) => {
-          if ( err )
-            return returnError( err, reject, Callback );
-
-          if ( fileOrDir === 'merger-config.json' )
-            return console.error( style.styledError, ' merger-config file not found. Please run "merger init".' );
-
-          if ( Callback )
-            return Callback( null, false );
-
-          resolve( false );
+        if ( currentFile === fileOrDirName ) {
+          return path.join( currentDir, currentFile );
         }
-      );
+      }
 
-    } );
+      lastDir = currentDir;
+      currentDir = path.join( currentDir, '../' );
+    }
   }
 
   /**

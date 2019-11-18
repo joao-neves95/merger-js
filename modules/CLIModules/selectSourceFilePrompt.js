@@ -8,8 +8,8 @@
 
 'use strict';
 const path = require('path');
-const prompt = require('../../node_modules/inquirer').createPromptModule();
-const findFile = require( '../utils' ).findFileOrDir;
+const prompt = require( '../../node_modules/inquirer' ).createPromptModule();
+const readConfigFile = require( '../configFileAccess' ).readConfigFile;
 const sourceFileModel = require( '../../models/sourceFileModel' );
 const style = require('../consoleStyling');
 
@@ -27,24 +27,27 @@ const question = [
  * Returns the chosen sourceFileModel || sourceFileModel[].
  * 
  * @param { Function } Callback A callback that receives a sourceFileModel object or array, depending on the user's choice.
- * @returns { sourceFileModel | sourceFileModel[] }
+ * 
+ * @returns { Promise<sourceFileModel | sourceFileModel[]> }
  */
-module.exports = ( Callback ) => {
-
-  findFile( 'merger-config.json', ( err, configFilePath ) => {
+module.exports = () => {
+  return new Promise( async ( _res, rej ) => {
+    const configFileData = await readConfigFile();
     // All the source file objects (sourceFileModel[]) from the user's merger-config.json file. No need for a try-catch because it was already done in config.js.
-    const CONFIG = require( configFilePath );
-    const sourceFiles = CONFIG.sourceFiles;
+    const sourceFiles = JSON.parse( configFileData[1] ).sourceFiles;
 
-    if ( !sourceFiles )
+    if ( !sourceFiles ) {
       return console.error( style.styledError, style.errorText( 'There is no "sourceFiles" property on the merger-config file.' ), '\nPlease run "merger init".' );
-    else if ( sourceFiles.length <= 0 )
+
+    } else if ( sourceFiles.length <= 0 ) {
       return console.error( style.styledError, style.errorText( 'There are no source files on the merger-config file.' ), '\nPlease run "merger add" to add a file.' );
-    else if ( sourceFiles.length === 1 )
+
+    } else if ( sourceFiles.length === 1 ) {
       return Callback( sourceFiles[0] );
+    }
 
     for ( let i = 0; i < sourceFiles.length; ++i ) {
-      question[0].choices.push( path.relative( configFilePath, sourceFiles[i].source ) );
+      question[0].choices.push( path.relative( configFileData[0], sourceFiles[i].source ) );
     }
     question[0].choices.push( 'All' );
 
@@ -53,11 +56,12 @@ module.exports = ( Callback ) => {
       /** @type { sourceFileModel | sourceFileModel[] } */
       let sourceFile = null;
 
-      if ( answer.sourceFile === 'All' )
+      if ( answer.sourceFile === 'All' ) {
         sourceFile = sourceFiles;
-      else {
+
+      } else {
         for ( let i = 0; i < sourceFiles.length; ++i ) {
-          if ( path.relative( configFilePath, sourceFiles[i].source ) === answer.sourceFile ) {
+          if ( path.relative( configFileData[0], sourceFiles[i].source ) === answer.sourceFile ) {
             sourceFile = sourceFiles[i];
             break;
           }
@@ -65,7 +69,8 @@ module.exports = ( Callback ) => {
         }
       }
 
-      Callback( sourceFile );
+      return _res( sourceFile );
     } );
+
   } );
 };

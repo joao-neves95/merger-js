@@ -18,59 +18,50 @@ const async = require( './node_modules/neo-async' );
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseImports = require( './modules/buildModules/parseImports' );
 const build = require( './modules/buildModules/build' );
-const SourceFileModel = require( './models/SourceFileModel' );
 
 // #region PROGRAM
 
-mergerCLI( ( newConfig ) => {
+mergerCLI( async ( newConfig ) => {
+  await Config.init( newConfig );
+  let sourceFiles = await selectSourceFile();
 
-  Config.init( newConfig, () => {
+  // If "sourceFiles" is Array it means that the user chose the "All" (sourceFiles) option in selectSourceFile().
+  if ( Array.isArray( sourceFiles ) ) {
+    // Execute a one time build only.
+    global.config.autoBuild = false;
 
-    selectSourceFile( ( sourceFile ) => {
-      /** @type { SourceFileModel[] } */
-      let sourceFiles;
+  } else {
+    sourceFiles = [sourceFiles];
+  }
 
-      // If "sourceFile" is Array it means that the user chose the "All" (sourceFiles) option in selectSourceFile().
-      if ( Array.isArray( sourceFile ) ) {
-        sourceFiles = sourceFile;
-        // Execute a one time build only.
-        global.config.autoBuild = false;
+  async.eachSeries( sourceFiles, async ( sourceFile, Callback ) => {
+    await Config.setCustomConfig( sourceFile.source );
+    const buildOrder = await parseImports( sourceFile.source );
 
-      } else {
-        sourceFiles = [sourceFile];
-      }
+    // Execute one time builds:
+    if ( !global.config.autoBuild ) {
+      await build( sourceFile, buildOrder );
+      return Callback();
 
-      async.eachSeries( sourceFiles, async ( sourceFile, Callback ) => {
-        await Config.setCustomConfig( sourceFile.source );
-        const buildOrder = await parseImports( sourceFile.source );
-
-        // Execute one time builds:
-        if ( !global.config.autoBuild ) {
+      // Execute an auto build session (with file watcher):
+    } else {
+      const whatcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
+      whatcher
+        .on( 'ready', async () => {
+          console.info( ' Inicial scan complete. Ready to build on changes...' );
           await build( sourceFile, buildOrder );
           return Callback();
+        } )
+        .on( 'error', err => console.error( 'Auto build error: ', err ) )
+        .on( 'change', async ( path, stats ) => {
+          await build( sourceFile, null );
+        } );
+    }
 
-        // Execute an auto builds (with file watcher):
-        } else {
-          const whatcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
-
-          whatcher
-            .on( 'ready', async () => {
-              console.info( ' Inicial scan complete. Ready to build on changes...' );
-              await build( sourceFile, buildOrder );
-              return Callback();
-            } )
-            .on( 'error', err => console.error( 'Auto build error: ', err ) )
-            .on( 'change', async ( path, stats ) => {
-              await build( sourceFile, null );
-            } );
-        }
-
-      }, ( err ) => {
-        if ( err ) throw err;
-      } );
-
-    } );
+  }, ( err ) => {
+    if ( err ) throw err;
   } );
+
 } );
 
 // #endregion

@@ -10,19 +10,16 @@
 const CLI = require('../node_modules/commander');
 const init = require('./CLIModules/init');
 const update = require('./updateMerger');
-const editConfigKey = require('./configFileAccess').editConfigKey;
-const addFileToConfig = require('./configFileAccess').addFileToConfig;
-const removeFileFromConfig = require('./configFileAccess').removeSourceFile;
 const addFilesPrompt = require('./CLIModules/addFilesPrompt');
 const selectSourceFile = require( './CLIModules/selectSourceFilePrompt' );
-const configFileAccess = require( './configFileAccess' );
+const ConfigFileAccess = require( './configFileAccess' );
 const style = require('./consoleStyling');
 const ConfigKeysType = require('../enums/configKeysEnum');
 
 module.exports = ( Callback ) => {
   global.version = require('../package.json').version;
   global.config = {};
-  let newConfig = {};
+  const newConfig = {};
 
   // merger -v / --version
   CLI
@@ -68,8 +65,9 @@ module.exports = ( Callback ) => {
     .command( 'build' )
     .option( '-a, --auto' )
     .action( ( cmd ) => {
-      if ( cmd.auto )
+      if ( cmd.auto ) {
         newConfig.autoBuild = true;
+      }
 
       return Callback( newConfig );
     } );
@@ -85,8 +83,10 @@ module.exports = ( Callback ) => {
 
       if ( cmd.true ) {
         value = true;
+
       } else if ( cmd.false ) {
         value = false;
+
       } else {
         console.error( ` ${style.styledError}${style.errorText( `Unknown option - ${cmd}.` )}` );
         process.exit( 1 );
@@ -118,9 +118,8 @@ module.exports = ( Callback ) => {
           break;
       }
 
-      editConfigKey( Key, value, () => {
-        process.exit( 0 );
-      } );
+      ConfigFileAccess.editConfigKey( Key, value );
+      process.exit( 0 );
     } );
 
   // merger add
@@ -128,9 +127,8 @@ module.exports = ( Callback ) => {
     .command( 'add' )
     .action( () => {
       addFilesPrompt( ( newBuildFile ) => {
-        addFileToConfig( newBuildFile, () => {
-          process.exit( 0 );
-        } );
+        ConfigFileAccess.addFileToConfig( newBuildFile );
+        process.exit( 0 );
       } );
     } );
 
@@ -139,24 +137,23 @@ module.exports = ( Callback ) => {
     .command( 'rm' )
     .action( () => {
       selectSourceFile( sourceFileObject => {
-        removeFileFromConfig( sourceFileObject, () => {
-          process.exit( 0 );
-        } );
+        ConfigFileAccess.removeFileFromConfig( sourceFileObject );
+        process.exit( 0 );
       } );
     } );
 
   CLI
     .command( 'log' )
     .action( () => {
-      configFileAccess.readConfigFile( ( err, configFilePath, data ) => {
-        console.log( `\n ${style.successText( 'Merger config file path:' )}`, configFilePath );
-        console.log( `\n ${style.successText( 'Configuration File:\n' )}`, data );
-      } );
+      const configFileData = ConfigFileAccess.readConfigFile();
+      console.log( `\n ${style.successText( 'Merger config file path:' )}`, configFileData[0] );
+      console.log( `\n ${style.successText( 'Configuration File:\n' )}`, configFileData[1] );
     } );
 
   CLI.parse( process.argv );
   // If the user didn't use the CLI commands:
   // merger
-  if ( process.argv.length <= 2 )
+  if ( process.argv.length <= 2 ) {
     return Callback( newConfig );
+  }
 };

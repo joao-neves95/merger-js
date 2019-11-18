@@ -13,6 +13,7 @@ const fileDownloader = require( '../fileDownloader' );
 const Utils = require( '../utils' );
 const ImportLineParser = require( './importLineParser' );
 const addPropertyToConfig = require( '../configFileAccess' ).addProperty;
+const isTextPath = require( 'is-text-path' );
 const ImportType = require( '../../enums/importType' );
 const ConfigKeysType = require( '../../enums/configKeysEnum' );
 const style = require( '../consoleStyling' );
@@ -208,7 +209,7 @@ module.exports = ( Path, Callback ) => {
         thisFile = path.join( directotyPath, parsedLine.path );
 
         try {
-          if ( path.extname( thisFile ) !== '.js' ) {
+          if ( !isTextPath( thisFile ) ) {
             thisFile += '.js';
           }
 

@@ -23,33 +23,36 @@ class Config extends StaticClass {
     super();
   }
 
-  static init( newConfig, Callback ) {
-    const propertiesToAdd = new Dictionary();
+  /**
+   * It initializes the program configuration or exits the program with an error.
+   * 
+   * @param { object } newConfig merger config object
+   * 
+   * @returns { Promise<void> }
+   */
+  static init( newConfig ) {
+    return new Promise( async ( _res, _rej ) => {
+      const propertiesToAdd = new Dictionary();
 
-    try {
-      Utils.findFile( 'merger-config.json', async ( err, configPath ) => {
+      try {
+        const configPath = Utils.findFileOrDir( 'merger-config.json' );
         // Get the contents from the correct config file and store its content on a global:
         global.config = require( configPath );
         global.config.mergerConfigPath = configPath;
 
         // If the node_modules's path is not present on the config, try to find it and save it.
-        if ( global.config.nodeModulesPath === null ||
-             global.config.nodeModulesPath === undefined ||
-             global.config.nodeModulesPath === ""
-        ) {
+        if ( Utils.isNullOrEmptyStr( global.config.nodeModulesPath ) ) {
+          const nodeModulesPath = Utils.findFileOrDir( 'node_modules' );
 
-          Utils.findFile( 'node_modules', async ( err, npmModulesPath ) => {
-            if ( npmModulesPath !== false ) {
-              global.config.nodeModulesPath = npmModulesPath;
-              propertiesToAdd.add( ConfigKeysType.nodeModulesPath, npmModulesPath );
-            }
-          } );
-
+          if ( nodeModulesPath !== false ) {
+            global.config.nodeModulesPath = nodeModulesPath;
+            propertiesToAdd.add( ConfigKeysType.nodeModulesPath, nodeModulesPath );
+          }
         }
 
         // #region INITIAL UPDATE SYSTEM
 
-        if ( global.config.updateOnLaunch !== null && global.config.updateOnLaunch !== undefined && global.config.lastUpdateCheck !== "" ) {
+        if ( !Utils.isNullOrEmptyStr( global.config.updateOnLaunch ) ) {
           // CHECK FOR UPDATES ON LAUNCH, IF NEEDED.
           if ( global.config.updateOnLaunch ) {
             await ____checkForUpdatesAsync( propertiesToAdd );
@@ -57,7 +60,7 @@ class Config extends StaticClass {
 
           // CHECK FOR UPDATES ONCE A WEEK.
           else {
-            if ( global.config.lastUpdateCheck !== null && global.config.lastUpdateCheck !== undefined && global.config.lastUpdateCheck !== "" ) {
+            if ( !Utils.isNullOrEmptyStr( global.config.lastUpdateCheck ) ) {
               if ( new Date( global.config.lastUpdateCheck ) >= newTimestamp.addDaysToDate( global.config.lastUpdateCheck, 7 ) ) {
                 await ____checkForUpdatesAsync( propertiesToAdd );
               }
@@ -84,13 +87,13 @@ class Config extends StaticClass {
           warnings: true
         };
 
-        await configFileAccess.addProperty( propertiesToAdd );
-        return Callback();
-      } );
+        configFileAccess.addProperty( propertiesToAdd );
+        return _res();
 
-    } catch ( e ) {
-      return ____returnError( e );
-    }
+      } catch ( e ) {
+        return ____returnError( e );
+      }
+    } );
   }
 
   /**
@@ -109,8 +112,13 @@ class Config extends StaticClass {
       if ( allSourceFiles[i].source === headerFilePath ) {
         // To save memory and execution time, allSourceFiles is reutilized and now holds the correct source file.
         allSourceFiles = allSourceFiles[i];
-        if ( !Utils.isNullOrUndefined( allSourceFiles.config.uglify ) ) {
+
+        if ( !Utils.isNullOrUndefined( allSourceFiles.config ) && !Utils.isNullOrUndefined( allSourceFiles.config.uglify ) ) {
+          global.config.originalUglify = global.config.uglify;
           global.config.uglify = allSourceFiles.config.uglify;
+
+        } else {
+          global.config.uglify = global.config.originalUglify;
         }
 
         break;

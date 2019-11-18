@@ -9,13 +9,13 @@
 'use strict';
 const fs = require( 'fs' );
 const path = require( 'path' );
+const Utils = require( './utils' );
 const writeConfigFile = require( './utils' ).writeJSONFile;
 const findFileOrDir = require( './utils' ).findFileOrDir;
 const StaticClass = require( '../models/staticClassBase' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const style = require( './consoleStyling' );
 const newTimestamp = require( './newTimestamp' ).small;
-const ConfigFileModel = require( '../models/userConfigModel' );
 const SourceFileModel = require( '../models/sourceFileModel' );
 
 /** (static) */
@@ -26,143 +26,107 @@ class ConfigFileAccess extends StaticClass {
   }
 
   /**
-   * Searches for the config file and returns [ configFilePath, data ]
+   * Searches for the config file from the current directory and returns
+   * a promise with [ configFilePath, data ] or an exception.
    * 
-   * @param { Function } Callback Callback return arguments: ( error, configFilePath, data )
-   * 
-   * @returns { Promise<string[] | Error> }
+   * @returns { string[] | null }
    */
-  static readConfigFile( Callback ) {
-    return new Promise( ( _res, _rej ) => {
+  static readConfigFile() {
+    try {
+      let configFilePath;
 
-      findFileOrDir( 'merger-config.json', ( err, configFilePath ) => {
-        fs.readFile( configFilePath, 'utf8', ( err, data ) => {
-          if ( err ) {
-            if ( Callback ) {
-              return Callback( err, null, null );
-            }
+      if ( !Utils.isNullOrEmptyStr( global.config ) && !Utils.isNullOrEmptyStr( global.config.mergerConfigPath ) ) {
+        configFilePath = global.config.mergerConfigPath;
 
-            return _rej( err );
-          }
+      } else {
+        configFilePath = findFileOrDir( 'merger-config.json' );
+      }
 
-          if ( Callback ) {
-            return Callback( null, configFilePath, data );
-          }
+      return [configFilePath, fs.readFileSync( configFilePath, 'utf8' )];
 
-          return _res( [configFilePath, data] );
-
-        } );
-      } );
-
-    } );
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
-  static editConfigKey( key, value, Callback ) {
-    ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
-      if ( err )
-        return console.error( err );
-
-      let userConfig;
-
+  static getNodeModulesPath() {
       try {
-        userConfig = JSON.parse( data );
-        userConfig[key] = value;
+
+        if ( !Utils.isNullOrEmptyStr( global.config ) && !Utils.isNullOrEmptyStr( global.config.nodeModulesPath ) ) {
+          return global.config.mergerConfigPath;
+
+        } else {
+          return findFileOrDir( 'node_modules' );
+        }
+
       } catch ( e ) {
         return console.error( style.styledError, e );
       }
+  }
 
-      writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
-        if ( err )
-          return console.error( err );
+  static editConfigKey( key, value ) {
+    try {
+      const configFileData = ConfigFileAccess.readConfigFile();
+      const userConfig = JSON.parse( configFileData[1] );
+      userConfig[key] = value;
 
-        let timestamp = newTimestamp();
-        console.info( `\n ${timestamp} - ${style.successText( 'Update to the merger-config file successful.' )}\n`, data );
+      writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
+      return console.info( `\n ${newTimestamp()} - ${style.successText( 'Update to the merger-config file successful.' )}\n`, JSON.stringify( userConfig, null, '\t' ) );
 
-        if ( Callback )
-          Callback();
-      } );
-    } );
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
   /**
    * It adds the new SourceFile(Model) into the merger-config.json file.
    * 
    * @param { SourceFileModel } newSourceFile SourceFile model.
-   * @param { Function } Callback Optional.Called when the config file editing ends.
    * 
-   * @returns { Promise<void> } void
+   * @returns { void } void
    */
-  static addFileToConfig( newSourceFile, Callback ) {
-    return new Promise( ( _resolve, _reject ) => {
+  static addFileToConfig( newSourceFile ) {
+    try {
+      const configFileData = ConfigFileAccess.readConfigFile();
+      const userConfig = JSON.parse( configFileData[1] );
+      userConfig.sourceFiles.push( newSourceFile );
 
-      ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
-        if ( err )
-          return console.error( style.styledError, err );
+      writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
+      console.info(
+        `\n ${newTimestamp()} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`,
+        JSON.stringify( userConfig, null, '\t' )
+      );
 
-        let userConfig;
-
-        try {
-          userConfig = JSON.parse( data );
-          userConfig.sourceFiles.push( newSourceFile );
-
-        } catch ( e ) {
-          return console.error( style.styledError, e );
-        }
-
-        writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
-          if ( err )
-            return console.error( err );
-
-          let timestamp = newTimestamp();
-          console.info( `\n ${timestamp} - ${style.successText( 'Successsfuly added the new source file to the MergerJS configuration file.' )}\n`, data );
-
-          if ( Callback )
-            return Callback();
-
-          return _reject();
-        } );
-      } );
-
-    } );
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
-  static removeSourceFile( sourceFileObject, Callback ) {
-    ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
-      if ( err )
-        return console.error( style.styledError, err );
+  static removeSourceFile( sourceFileObject ) {
+    try {
+      const configFileData = ConfigFileAccess.readConfigFile();
 
-      let userConfig;
+      const userConfig = JSON.parse( configFileData[1] );
 
-      try {
-        userConfig = JSON.parse( data );
-        // const fileIndex = userConfig.sourceFiles.indexOf(sourceFileObject);
-
-        const searchFileIndex = ( userConfig ) => {
-          for ( let i = 0; i < userConfig.sourceFiles.length; ++i ) {
-            if ( JSON.stringify( userConfig.sourceFiles[i] ) === JSON.stringify( sourceFileObject ) ) {
-              return i;
-            }
+      const searchFileIndex = ( userConfig ) => {
+        for ( let i = 0; i < userConfig.sourceFiles.length; ++i ) {
+          if ( JSON.stringify( userConfig.sourceFiles[i] ) === JSON.stringify( sourceFileObject ) ) {
+            return i;
           }
-          return -1;
-        };
+        }
 
-        const fileIndex = searchFileIndex( userConfig );
+        return -1;
+      };
 
-        userConfig.sourceFiles.splice( fileIndex, 1 );
-      } catch ( e ) {
-        return console.error( style.styledError, e );
-      }
+      const fileIndex = searchFileIndex( userConfig );
+      userConfig.sourceFiles.splice( fileIndex, 1 );
+      
+      writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig );
+      console.info( `\n ${newTimestamp()} - ${style.successText( 'Successsfuly removed the source file from the MergerJS configuration file.' )}\n`, JSON.stringify( userConfig, null, '\t' ) );
 
-      writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
-        if ( err ) return console.error( err );
-
-        let timestamp = newTimestamp();
-        console.info( `\n ${timestamp} - ${style.successText( 'Successsfuly removed the source file from the MergerJS configuration file.' )}\n`, data );
-
-        if ( Callback )
-          Callback();
-      } );
-    } );
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
   /**
@@ -171,47 +135,28 @@ class ConfigFileAccess extends StaticClass {
    * 
    * @param { string | Dictionary } key Config property. < string | Dictionary<string, any> >
    * @param { any } value  Config property value. (Optional if the "key" property is a dictionary)
-   * @param { Function } Callback (Optional) Called when the config file editing ends.
    * 
-   * @returns { Promise<void|Error> } void
+   * @returns { <void|Error> } void or logs the exception
    */
-  static addProperty( key, value, Callback ) {
-    return new Promise( ( _resolve, _reject ) => {
-      try {
-        ConfigFileAccess.readConfigFile( ( err, configFilePath, data ) => {
-          if ( err ) {
-            console.error( err );
-            return _reject( err );
-          }
+  static addProperty( key, value ) {
+    try {
+      const configFileData = ConfigFileAccess.readConfigFile();
+      const userConfig = JSON.parse( configFileData[1] );
 
-          const userConfig = JSON.parse( data );
-
-          if ( key instanceof Dictionary ) {
-            key.__forEach( ( keyValueObj ) => {
-              userConfig[Object.keys( keyValueObj )[0]] = Object.values( keyValueObj )[0];
-            } );
-
-          } else {
-            userConfig[key] = value;
-          }
-
-          writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig, ( err, data ) => {
-            if ( err ) {
-              console.error( err );
-              return _reject( err );
-            }
-
-            if ( Callback )
-              return Callback();
-
-            return _resolve();
-          } );
+      if ( key instanceof Dictionary ) {
+        key.__forEach( ( keyValueObj ) => {
+          userConfig[Object.keys( keyValueObj )[0]] = Object.values( keyValueObj )[0];
         } );
 
-      } catch ( e ) {
-        return _reject( e );
+      } else {
+        userConfig[key] = value;
       }
-    } );
+
+      writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
+
+    } catch ( e ) {
+      return console.error( style.styledError, e );
+    }
   }
 
 }
