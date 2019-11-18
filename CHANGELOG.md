@@ -12,6 +12,9 @@
     stated on the docs: [README.md](https://github.com/joao-neves95/merger-js/blob/master/README.md#use)).<br>
     With this fix, MergerJS can now merge any text files, for example HTML files.
 
+  - Fixed a bug on the `merger rm` command, where it was only possible to remove one file
+    and the program crashed if the user selected the "All" option on the source file selection.
+
   - Significant performance improvements.
 
   - Big internal refactorings: Slowly migrating to the Node.js sync API and removed a lot of the "callback hell".
