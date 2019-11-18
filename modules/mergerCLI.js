@@ -135,11 +135,9 @@ module.exports = ( Callback ) => {
   // merger rm
   CLI
     .command( 'rm' )
-    .action( () => {
-      selectSourceFile( sourceFileObject => {
-        ConfigFileAccess.removeFileFromConfig( sourceFileObject );
-        process.exit( 0 );
-      } );
+    .action( async () => {
+      ConfigFileAccess.removeSourceFile( await selectSourceFile() );
+      process.exit( 0 );
     } );
 
   CLI

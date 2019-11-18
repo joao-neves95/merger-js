@@ -16,6 +16,7 @@ const StaticClass = require( '../models/staticClassBase' );
 const Dictionary = require( 'js.system.collections' ).Dictionary;
 const style = require( './consoleStyling' );
 const newTimestamp = require( './newTimestamp' ).small;
+const UserConfigModel = require( '../models/userConfigModel' );
 const SourceFileModel = require( '../models/sourceFileModel' );
 
 /** (static) */
@@ -102,27 +103,48 @@ class ConfigFileAccess extends StaticClass {
     }
   }
 
-  static removeSourceFile( sourceFileObject ) {
+  /**
+   * 
+   * @param { SourceFileModel[] } sourceFileObjects
+   */
+  static removeSourceFile( sourceFileObjects ) {
+
+    const searchFileIndex = ( userConfig, sourceFileObject ) => {
+      for ( let i = 0; i < userConfig.sourceFiles.length; ++i ) {
+        if ( JSON.stringify( userConfig.sourceFiles[i] ) === JSON.stringify( sourceFileObject ) ) {
+          return i;
+        }
+      }
+
+      return -1;
+    };
+
+    if ( !Array.isArray( sourceFileObjects ) ) {
+      sourceFileObjects = [sourceFileObjects];
+    }
+
     try {
       const configFileData = ConfigFileAccess.readConfigFile();
 
+      /** @type { UserConfigModel } */
       const userConfig = JSON.parse( configFileData[1] );
 
-      const searchFileIndex = ( userConfig ) => {
-        for ( let i = 0; i < userConfig.sourceFiles.length; ++i ) {
-          if ( JSON.stringify( userConfig.sourceFiles[i] ) === JSON.stringify( sourceFileObject ) ) {
-            return i;
-          }
+      let fileIndex;
+      for ( let i = 0; i < sourceFileObjects.length; ++i ) {
+        fileIndex = searchFileIndex( userConfig, sourceFileObjects[i] );
+
+        if ( fileIndex === -1 ) {
+          return console.error( style.styledError, `Soruce file "${sourceFileObjects[i].source}" not found.` );
         }
 
-        return -1;
-      };
+        userConfig.sourceFiles.splice( fileIndex, 1 );
+      }
 
-      const fileIndex = searchFileIndex( userConfig );
-      userConfig.sourceFiles.splice( fileIndex, 1 );
-      
-      writeConfigFile( path.dirname( configFilePath ), 'merger-config', userConfig );
-      console.info( `\n ${newTimestamp()} - ${style.successText( 'Successsfuly removed the source file from the MergerJS configuration file.' )}\n`, JSON.stringify( userConfig, null, '\t' ) );
+      writeConfigFile( path.dirname( configFileData[0] ), 'merger-config', userConfig );
+      console.info(
+        `\n ${newTimestamp()} - ${style.successText( 'Successsfuly removed the source file from the MergerJS configuration file.' )}\n`,
+        JSON.stringify( userConfig, null, '\t' )
+      );
 
     } catch ( e ) {
       return console.error( style.styledError, e );
