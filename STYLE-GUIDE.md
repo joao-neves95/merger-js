@@ -43,6 +43,7 @@ const PI = 3.14;
 
 - `const`
 Constant names **must** have the `PASCAL_ALL_CAPS` style.
+In case their are constant variables from function call values, they *must* have the `camelCase` style.
 
 - `let`
 Variables **must** have the `camelCase` style.
