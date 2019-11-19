@@ -6,7 +6,6 @@
  *
  */
 
-
 const ImportType = Object.freeze( {
   Unknown: -1,
   RelativePath: 1,

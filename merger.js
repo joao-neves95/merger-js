@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-
 /*
  * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
  *
