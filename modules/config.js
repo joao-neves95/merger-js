@@ -40,6 +40,10 @@ class Config extends StaticClass {
         global.config = require( configPath );
         global.config.mergerConfigPath = configPath;
 
+        if ( !Utils.isNullOrEmptyStr( global.config.uglify ) ) {
+          global.config.originalUglify = global.config.uglify;
+        }
+
         // If the node_modules's path is not present on the config, try to find it and save it.
         if ( Utils.isNullOrEmptyStr( global.config.nodeModulesPath ) ) {
           const nodeModulesPath = Utils.findFileOrDir( 'node_modules' );
@@ -79,7 +83,7 @@ class Config extends StaticClass {
         // #endregion
 
         // Update glabal configurations set during the CLI launch.
-        if ( newConfig.autoBuild !== null && newConfig.autoBuild !== undefined ) {
+        if ( !Utils.isNullOrEmptyStr( newConfig.autoBuild ) ) {
           global.config.autoBuild = newConfig.autoBuild;
         }
 
@@ -114,7 +118,6 @@ class Config extends StaticClass {
         allSourceFiles = allSourceFiles[i];
 
         if ( !Utils.isNullOrUndefined( allSourceFiles.config ) && !Utils.isNullOrUndefined( allSourceFiles.config.uglify ) ) {
-          global.config.originalUglify = global.config.uglify;
           global.config.uglify = allSourceFiles.config.uglify;
 
         } else {
