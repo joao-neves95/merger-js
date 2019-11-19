@@ -86,7 +86,7 @@ const build = ( sourceFile, buildOrder ) => {
 
           notify( 'Build Complete.', notifMessage );
           console.info( '\n', timestamp, '-', style.successText( 'Build complete.' ) );
-          console.info( ' File Path:', buildPath + buildName );
+          console.info( ' File Path:', path.join( buildPath, buildName ) );
           console.timeEnd( ' Build Time' );
           return resolve();
         } );

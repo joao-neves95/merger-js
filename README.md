@@ -23,6 +23,7 @@
  ├── [node-notifier](https://github.com/mikaelbr/node-notifier)<br/>
  ├── [chalk](https://github.com/chalk/chalk)<br/>
  ├── [line-by-line](https://github.com/Osterjour/line-by-line)<br/>
+ ├── [is-text-path](https://github.com/sindresorhus/is-text-path)<br/>
  ├── [js.system.collections](https://github.com/joao-neves95/js.system.collections)<br/>
 
 <br/>
@@ -199,32 +200,42 @@ npm install merger-js -g
 
 &nbsp;
 
-## Example of a File Structure
+## Custom Source File Configuration
+Since v3.9.0, it is possible to have custom source file configuration that overwrites the global
+configuration.</br>
+This is useful, for example, if you have multiple source files and want that only some file be
+minified or not.
 
-|-- root/</br>
+In the moment, there is no CLI command to edit custom source file configurations, so you will have
+to do it by hand. Just add a config object to your source file object.</br>
+In the moment there is only the minification (`uglify`) option.
 
->|-- **merger-config.json**</br>
->|-- package.json</br>
->|-- .env</br>
->|-- node_modules/</br>
->|-- (...)</br>
+Example (`merger-config.json`):
 
->|-- server/</br>
->>|-- (...)</br>
+```json
+(...)
+"sourceFiles": [
+    {
+        "source": "path-to\\js.system.collections\\js.system.collections.header.js",
+        "output": {
+            "path": "path-to\\js.system.collections\\dist",
+            "name": "js.system.collections.js"
+        }
+    },
+    {
+        "source": "path-to\\js.system.collections\\js.system.collections.header.js",
+        "output": {
+            "path": "path-to\\js.system.collections\\dist",
+            "name": "js.system.collections.min.js"
+        },
+        "config": {
+            "uglify": true
+        }
+    }
+]
+(...)
 
->|-- client/</br>
-
->>|-- css</br>
->>>|-- (...)</br>
-
->>|-- js</br>
->>>|-- mergerBuildFile.js</br>
->>>|-- src</br>
->>>>|-- sourceFile.header.js (the header file containing all the imports; the first file to be build)</br>
->>>>|-- utilities.js</br>
->>>>|-- someView.js</br>
->>>>|-- someModel.js</br>
->>>>|-- someController.js</br>
+```
 
 &nbsp;
 
@@ -243,10 +254,6 @@ Merger uses [SemVer](https://semver.org/) for versioning. You can read the chang
 ## Code Style
 
 See the style guide here: [merger-js/STYLE-GUIDE.md](https://github.com/joao-neves95/merger-js/blob/master/STYLE-GUIDE.md)
-
-Since version 3.6.5, every asynchronous function should make exclusive use of promises and the async/await syntax,
-avoiding multiple callback chaining (I.e.: "callback hell"), unless using a callback instead of a promise does make 
-sense and does not contribute to a more confusing code.
 
 &nbsp;
 

@@ -2,7 +2,35 @@
 
 &nbsp;
 
-#### *v3.8.5 - 21/10/2019
+#### *v3.9.0 - 19/11/2019
+
+  - Added support for optional custom source file configuration that overwrites the global merger configuration
+    (minfication for the moment).
+
+  - Fixed a bug on the imports parser, where the file extension had always to be `.js`.<br>
+    Now, it only defaults to `.js` in case there was no extension provided (like it is
+    stated on the docs: [README.md](https://github.com/joao-neves95/merger-js/blob/master/README.md#use)).<br>
+    With this fix, MergerJS can now merge any text files, for example HTML files.
+
+  - Fixed a bug on the `merger rm` command, where it was only possible to remove one file
+    and the program crashed if the user selected the "All" option on the source file selection.
+
+  - Fixed a bug on the `merger add` command, where if the user deleted its build file name input,
+    the name was set to ".js".
+
+  - Fixed a bug on the file path console output of the `merger build` command.<br/>
+    Example of the previous output: "path-to\js.system.collections\js.system.collections\distjs.system.collections.js"
+    Example of the fixed output: "path-to\js.system.collections\js.system.collections\dist\js.system.collections.js"
+
+  - Significant performance improvements.
+
+  - Big internal refactorings: Slowly migrating to the Node.js sync API and removed a lot of the "callback hell".
+
+  - Updated dependencies.
+
+&nbsp;
+
+#### v3.8.5 - 21/10/2019
 
   - Refactored the import parser and made multiple optimisations.
   - Updated dependencies.
@@ -13,7 +41,7 @@
 #### v3.8.4 - 07/10/2019
 
   - The output of `merger update` is now printed on the console.
-  
+
 &nbsp;
 
 #### v3.8.3 - 06/10/2019
@@ -55,7 +83,7 @@
 
 #### v3.7.1 - 04/05/2019
 
- - Fixed a bug when importing from directories. It was importing relative to the header file instead of the directory of the 
+ - Fixed a bug when importing from directories. It was importing relative to the header file instead of the directory of the
    header file, like it used to (bug from last update).
 
 &nbsp;
@@ -328,7 +356,7 @@
  It is advised to reinstall merger-js:<br/>
  1) "npm rm merger-js -g"<br/>
  2) "npm i merger-js -g"
- 
+
 &nbsp;
 
 #### v2.0.5/6/7 (Hotfixes) - 09/04/2018

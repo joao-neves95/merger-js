@@ -112,7 +112,7 @@ describe( 'ParseImports', () => {
 
       const buildOrder = await parseImports( path.join( HEADER_FILES_DIR_PATH, headerFilePath ) );
 
-      const stats = await Utils.fileStat( buildOrder[1] );
+      const stats = await Utils.fsStat( buildOrder[1] );
 
       expect( stats.mtime ).toEqual( stats.ctime );
       expect( stats.mtimeMs ).toEqual( stats.ctimeMs );

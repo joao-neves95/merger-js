@@ -7,6 +7,7 @@
  */
 
 'use strict';
+const SourceFileConfigBase = require( './sourceFileConfigBase' );
 
 class SourceFileModel {
   constructor() {
@@ -16,6 +17,13 @@ class SourceFileModel {
       path: '',
       name: ''
     };
+
+    /** 
+     *  type { SourceFileConfigBase | null }
+     *  
+     *  @type { SourceFileConfigBase | null } 
+     */
+    this.config = null;
   }
 }
 
