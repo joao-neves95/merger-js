@@ -2,7 +2,7 @@
 
 &nbsp;
 
-#### *v3.9.0 - /11/2019
+#### *v3.9.0 - 19/11/2019
 
   - Added support for optional custom source file configuration that overwrites the global merger configuration
     (minfication for the moment).
@@ -25,6 +25,8 @@
   - Significant performance improvements.
 
   - Big internal refactorings: Slowly migrating to the Node.js sync API and removed a lot of the "callback hell".
+
+  - Updated dependencies.
 
 &nbsp;
 
