@@ -15,6 +15,13 @@
   - Fixed a bug on the `merger rm` command, where it was only possible to remove one file
     and the program crashed if the user selected the "All" option on the source file selection.
 
+  - Fixed a bug on the `merger add` command, where if the user deleted its build file name input,
+    the name was set to ".js".
+
+  - Fixed a bug on the file path console output of the `merger build` command.<br/>
+    Example of the previous output: "path-to\js.system.collections\js.system.collections\distjs.system.collections.js"
+    Example of the fixed output: "path-to\js.system.collections\js.system.collections\dist\js.system.collections.js"
+
   - Significant performance improvements.
 
   - Big internal refactorings: Slowly migrating to the Node.js sync API and removed a lot of the "callback hell".
