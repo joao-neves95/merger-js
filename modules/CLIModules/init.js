@@ -100,7 +100,7 @@ module.exports = () => {
 
     try {
       writeJSONFile( process.cwd(), 'merger-config', config );
-      console.info( `\n ${newTimestamp()} - Init successful.\n`, JSON.stringify( data, null, '\t' ), `\n ${finalInitMessage}` );
+      console.info( `\n ${newTimestamp()} - Init successful.\n`, JSON.stringify( config, null, '\t' ), `\n ${finalInitMessage}` );
 
     } catch ( e ) {
       console.error( 'ERROR:', e );

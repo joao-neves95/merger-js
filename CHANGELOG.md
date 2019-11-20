@@ -2,7 +2,13 @@
 
 &nbsp;
 
-#### *v3.9.0 - 19/11/2019
+#### Hotfix v3.9.1 && *v3.9.2 - 20/11/2019
+
+  - Fixes on the `merger init` command.
+
+&nbsp;
+
+#### v3.9.0 - 19/11/2019
 
   - Added support for optional custom source file configuration that overwrites the global merger configuration
     (minfication for the moment).
