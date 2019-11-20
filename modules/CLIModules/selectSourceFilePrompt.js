@@ -43,7 +43,7 @@ module.exports = () => {
       return console.error( style.styledError, style.errorText( 'There are no source files on the merger-config file.' ), '\nPlease run "merger add" to add a file.' );
 
     } else if ( sourceFiles.length === 1 ) {
-      return __res( sourceFiles[0] );
+      return _res( sourceFiles[0] );
     }
 
     for ( let i = 0; i < sourceFiles.length; ++i ) {
