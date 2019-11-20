@@ -40,11 +40,11 @@ module.exports = ( cmd, Callback ) => {
 
     proc.on( 'error', ( err ) => {
       __handleError( err );
+      console.error( ' It was not possible to update MergerJS. Please, try again.' );
     } );
 
     proc.on( 'close', ( code ) => {
       if ( hasErrors ) {
-        console.error( ' It was not possible to update MergerJS. Please, try again.' );
         return _reject();
       }
 

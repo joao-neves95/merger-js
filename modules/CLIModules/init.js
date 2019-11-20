@@ -99,8 +99,8 @@ module.exports = () => {
     }
 
     try {
-      const configFileData = writeJSONFile( process.cwd(), 'merger-config', config );
-      console.info( `\n ${newTimestamp()} - Init successful.\n`, configFileData[0], `\n ${finalInitMessage}` );
+      writeJSONFile( process.cwd(), 'merger-config', config );
+      console.info( `\n ${newTimestamp()} - Init successful.\n`, JSON.stringify( data, null, '\t' ), `\n ${finalInitMessage}` );
 
     } catch ( e ) {
       console.error( 'ERROR:', e );
