@@ -43,6 +43,8 @@ module.exports = ( cmd, Callback ) => {
       console.error( ' It was not possible to update MergerJS. Please, try again.' );
     } );
 
+    // TODO: BUG: Solve issue with error handling.
+    // It's always displaying an error and never shows the success output.
     proc.on( 'close', ( code ) => {
       if ( hasErrors ) {
         return _reject();
