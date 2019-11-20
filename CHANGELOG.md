@@ -2,9 +2,10 @@
 
 &nbsp;
 
-#### Hotfix v3.9.1 && *v3.9.2 - 20/11/2019
+#### Hotfix v3.9.1 - *v3.9.3 - 20/11/2019
 
   - Fixes on the `merger init` command.
+  - Fix on the `merger rm` command. In case there was only one file, the program crashed.
 
 &nbsp;
 
