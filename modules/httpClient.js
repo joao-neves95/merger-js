@@ -36,25 +36,28 @@ module.exports = {
           } );
 
           res.on( 'error', ( err ) => {
-            if ( Callback )
-              return Callback( err, null );
+            reject(err);
 
-            reject( err );
+            if (Callback) {
+              return Callback( err, null );
+            }
           } );
 
           res.on( 'end', () => {
-            if ( Callback )
-              return Callback( null, res );
-
             resolve( res );
+
+            if (Callback) {
+              return Callback( null, res );
+            }
           } );
         } );
 
       } catch ( e ) {
-        if ( Callback )
-          return Callback( e, null );
-
         reject( e );
+
+        if (Callback) {
+          return Callback( e, null );
+        }
       }
 
     } );
