@@ -51,7 +51,6 @@ CHANGELOG: https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md \n
   } catch (e) {
     // Fail.
     console.warn(UPDATE_ERROR);
-    console.debug(e)
     return false;
   }
 };
