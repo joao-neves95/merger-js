@@ -36,7 +36,7 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "chokidar": "^3.3.1",
-    "commander": "^3.0.2",
+    "commander": "^5.0.0",
     "inquirer": "^7.1.0",
     "is-text-path": "^2.0.0",
     "js.system.collections": "^1.3.0",
