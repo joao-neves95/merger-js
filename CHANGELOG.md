@@ -6,6 +6,7 @@
 
   - Added the "fix-config-paths" command, for use in case the location of the project changes
     (E.g.: different computer).
+  - Updated dependencies.
   - Internal improvements.
 
 &nbsp;
