@@ -190,6 +190,9 @@ npm install merger-js -g
 
 - ```merger update```: Update MergerJS. Same as ```npm install merger-js -g```
 
+- ```merger fix-config-paths```: Fixes the paths of the configuration file, in case the location of the project changes.<br/>
+  (E.g.: different computer)
+
 &nbsp;
 
 ## Header File Examples
