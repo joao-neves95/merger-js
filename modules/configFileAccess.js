@@ -192,21 +192,31 @@ class ConfigFileAccess extends StaticClass {
 
       const oldRootPath = path.dirname( configFileData.nodeModulesPath );
 
-      configFileData.nodeModulesPath = ConfigFileAccess.____private().fixPath( newRootPath, oldRootPath, configFileData.nodeModulesPath );
+      configFileData.nodeModulesPath = ConfigFileAccess.____private().fixPath(
+        newRootPath, oldRootPath, configFileData.nodeModulesPath
+      );
 
       if ( configFileData.sourceFiles.length === 0 ) {
         return;
       }
 
       for ( let i = 0; i < configFileData.sourceFiles.length; ++i ) {
-        configFileData.sourceFiles[i].output = ConfigFileAccess.____private().fixPath( newRootPath, oldRootPath, configFileData.sourceFiles[i].output );
-        configFileData.sourceFiles[i].source = ConfigFileAccess.____private().fixPath( newRootPath, oldRootPath, configFileData.sourceFiles[i].source );
+        configFileData.sourceFiles[i].source = ConfigFileAccess.____private().fixPath(
+          newRootPath, oldRootPath, configFileData.sourceFiles[i].source
+        );
+
+        configFileData.sourceFiles[i].output.path = ConfigFileAccess.____private().fixPath(
+          newRootPath, oldRootPath, configFileData.sourceFiles[i].output.path
+        );
       }
 
       writeConfigFile( newRootPath, 'merger-config', configFileData );
       return true;
 
     } catch ( e ) {
+
+      console.debug( e );
+
       return false;
     }
   }
@@ -220,6 +230,9 @@ class ConfigFileAccess extends StaticClass {
         *  @param { string } pathToFix
         */
       fixPath: ( newRootPath, oldRootPath, pathToFix ) => {
+        console.debug( newRootPath )
+        console.debug( oldRootPath )
+        console.debug( pathToFix )
         return pathToFix.replace( oldRootPath, newRootPath );
       }
     };
