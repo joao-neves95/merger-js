@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+/*
+ * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
  * the root of this project, under the name "LICENSE.md".
@@ -137,6 +137,21 @@ module.exports = ( Callback ) => {
     .command( 'rm' )
     .action( async () => {
       ConfigFileAccess.removeSourceFile( await selectSourceFile() );
+      process.exit( 0 );
+    } );
+
+  CLI
+    .command( 'fix-config-paths' )
+    .action( () => {
+      const success = ConfigFileAccess.fixPaths();
+
+      if ( success ) {
+        console.log( `\n ${style.successText( 'Config file paths fiexed successfully.' )}` );
+
+      } else {
+        console.error( ` ${style.styledError}${style.errorText( `There was an error while fixing the config file paths.` )}` );
+      }
+
       process.exit( 0 );
     } );
 

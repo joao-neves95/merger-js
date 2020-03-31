@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
  * the root of this project, under the name "LICENSE.md".
@@ -36,25 +36,28 @@ module.exports = {
           } );
 
           res.on( 'error', ( err ) => {
-            if ( Callback )
-              return Callback( err, null );
+            reject(err);
 
-            reject( err );
+            if (Callback) {
+              return Callback( err, null );
+            }
           } );
 
           res.on( 'end', () => {
-            if ( Callback )
-              return Callback( null, res );
-
             resolve( res );
+
+            if (Callback) {
+              return Callback( null, res );
+            }
           } );
         } );
 
       } catch ( e ) {
-        if ( Callback )
-          return Callback( e, null );
-
         reject( e );
+
+        if (Callback) {
+          return Callback( e, null );
+        }
       }
 
     } );

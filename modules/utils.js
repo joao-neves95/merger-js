@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
  * the root of this project, under the name "LICENSE.md".
@@ -71,18 +71,11 @@ class Utils extends StaticClass {
    * @returns { void | Error }
    */
   static writeJSONFile( dir, fileName, data ) {
-    try {
-
-      fs.writeFileSync(
-        path.join( dir, fileName + '.json' ),
-        JSON.stringify( data, null, '\t' ),
-        'utf8'
-      );
-
-    } catch ( e ) {
-      throw e;
-    }
-
+    fs.writeFileSync(
+      path.join( dir, fileName + '.json' ),
+      JSON.stringify( data, null, '\t' ),
+      'utf8'
+    );
   }
 
   /**

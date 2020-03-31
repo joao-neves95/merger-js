@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+/*
+ * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
  * the root of this project, under the name "LICENSE.md".
@@ -179,6 +179,57 @@ class ConfigFileAccess extends StaticClass {
     } catch ( e ) {
       return console.error( style.styledError, e );
     }
+  }
+
+  static fixPaths() {
+    try {
+      /** @type { UserConfigModel } */
+      const configFileData = JSON.parse( ConfigFileAccess.readConfigFile()[1] );
+
+      let newRootPath = findFileOrDir( 'merger-config.json' );
+      global.config.mergerConfigPath = newRootPath;
+      newRootPath = path.dirname( newRootPath );
+
+      const oldRootPath = path.dirname( configFileData.nodeModulesPath );
+
+      configFileData.nodeModulesPath = ConfigFileAccess.____private().fixPath(
+        newRootPath, oldRootPath, configFileData.nodeModulesPath
+      );
+
+      if ( configFileData.sourceFiles.length === 0 ) {
+        return;
+      }
+
+      for ( let i = 0; i < configFileData.sourceFiles.length; ++i ) {
+        configFileData.sourceFiles[i].source = ConfigFileAccess.____private().fixPath(
+          newRootPath, oldRootPath, configFileData.sourceFiles[i].source
+        );
+
+        configFileData.sourceFiles[i].output.path = ConfigFileAccess.____private().fixPath(
+          newRootPath, oldRootPath, configFileData.sourceFiles[i].output.path
+        );
+      }
+
+      writeConfigFile( newRootPath, 'merger-config', configFileData );
+      return true;
+
+    } catch ( e ) {
+      return false;
+    }
+  }
+
+  static ____private() {
+    return {
+
+      /**
+        *  @param { string } newRootPath
+        *  @param { string } oldRootPath
+        *  @param { string } pathToFix
+        */
+      fixPath: ( newRootPath, oldRootPath, pathToFix ) => {
+        return pathToFix.replace( oldRootPath, newRootPath );
+      }
+    };
   }
 
 }

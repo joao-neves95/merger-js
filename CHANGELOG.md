@@ -2,7 +2,16 @@
 
 &nbsp;
 
-#### Hotfix v3.9.1 - *v3.9.4 - 20/11/2019
+#### v3.9.5* - 31/03/2020
+
+  - Added the "fix-config-paths" command, for use in case the location of the project changes
+    (E.g.: different computer).
+  - Updated dependencies.
+  - Internal improvements.
+
+&nbsp;
+
+#### Hotfix v3.9.1 & v3.9.4 - 20/11/2019
 
   - Fixes on the `merger init` command.
   - Fix on the `merger rm` command. In case there was only one file, the program crashed.
