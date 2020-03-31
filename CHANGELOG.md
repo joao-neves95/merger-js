@@ -2,7 +2,12 @@
 
 &nbsp;
 
-#### v3.9.5* - //220
+#### v3.9.5* - //2020
+
+  - Added the "fix-config-paths" command, for use in case the location of the project changes
+    (E.g.: different computer).
+  - Updated dependencies.
+  - Internal improvements.
 
 &nbsp;
 

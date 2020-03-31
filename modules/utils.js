@@ -71,18 +71,11 @@ class Utils extends StaticClass {
    * @returns { void | Error }
    */
   static writeJSONFile( dir, fileName, data ) {
-    try {
-
-      fs.writeFileSync(
-        path.join( dir, fileName + '.json' ),
-        JSON.stringify( data, null, '\t' ),
-        'utf8'
-      );
-
-    } catch ( e ) {
-      throw e;
-    }
-
+    fs.writeFileSync(
+      path.join( dir, fileName + '.json' ),
+      JSON.stringify( data, null, '\t' ),
+      'utf8'
+    );
   }
 
   /**
