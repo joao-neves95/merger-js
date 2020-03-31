@@ -7,7 +7,6 @@
  */
 
 'use strict';
-const https = require('https');
 const HttpClient = require('./httpClient');
 const notify = require('./notifications').notif;
 const style = require('./consoleStyling');

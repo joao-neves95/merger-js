@@ -2,6 +2,10 @@
 
 &nbsp;
 
+#### v3.9.5* - //220
+
+&nbsp;
+
 #### Hotfix v3.9.1 - *v3.9.4 - 20/11/2019
 
   - Fixes on the `merger init` command.

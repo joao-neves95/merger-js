@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2018-2019 João Pedro Martins Neves - All Rights Reserved.
+ * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in
  * the root of this project, under the name "LICENSE.md".
@@ -35,11 +35,11 @@ module.exports = ( cmd, Callback ) => {
     } );
 
     proc.stderr.on( 'data', ( data ) => {
-      __handleError( data.toString() );
+      console.log( data.toString() );
     } );
 
     proc.on( 'error', ( err ) => {
-      __handleError( err );
+      hasErrors = true;
       console.error( ' It was not possible to update MergerJS. Please, try again.' );
     } );
 
@@ -59,11 +59,6 @@ module.exports = ( cmd, Callback ) => {
 
       return _resolve();
     } );
-
-    const __handleError = ( error ) => {
-      console.log( error );
-      hasErrors = true;
-    };
 
   } );
 };
