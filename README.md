@@ -4,12 +4,12 @@
 [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE)<br/>
 [![GitHub stars](https://img.shields.io/github/stars/joao-neves95/merger-js.svg?label=star&style=social)](https://github.com/joao-neves95/merger-js)
 
- Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES8+ minification, auto build capabilities, and native OS notifications. 
- 
+ Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES8+ minification, auto build capabilities, and native OS notifications.
+
  Because merger uses a modified version of uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES8+.
- 
+
  **MergerJS *is not* a module bundler, is a file bundler.**
- 
+
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
  **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)<br/>
  **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE.md)<br/>
@@ -44,13 +44,13 @@
  - [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
  - [x] **Import a file from an URL** (use ```%import 'url'```)
  - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github::{branch-name} '{userName}/{repositoryName}/{pathToFile}.js'```)
- 
+
 &nbsp;
 
 ## Getting Started
 
 For the latest version of the README, always refer to the MergerJS GitHub repository's master branch:<br/>
-https://github.com/joao-neves95/merger-js/blob/master/README.md 
+https://github.com/joao-neves95/merger-js/blob/master/README.md
 
 
 ### 1) Node.js
@@ -64,7 +64,7 @@ Install globally ```-g``` with NPM:
 ```
 npm i merger-js -g
 ```
-or 
+or
 
 
 ```
@@ -78,7 +78,7 @@ npm install merger-js -g
 1) Make a header file - the source file; the first file to be merged - containing, on the top,
    comments importing the files in the order you want them to be built, from the first to the
    last just like in a browser.<br/>
-   
+
    Example:
    ```
    // $import 'sweetalert2/dist/sweetalert2.all.min.js'
@@ -151,7 +151,7 @@ npm install merger-js -g
       E.g.: `// %<<github '/twbs/bootstrap/v4-dev/dist/js/bootstrap.min.js'`
 
     * Pushing (`<<`) `dir`, `DIR`, `directory` or `DIRECTORY` into `%import<<github`, imports an entire directory from GitHub.<br/>
-      Note that using this method, the files are not compiled in any specific order.<br/> 
+      Note that using this method, the files are not compiled in any specific order.<br/>
       E.g.: `// %%import<<GH::master<<dir 'twbs/bootstrap/dist/js'`
 
 
@@ -165,7 +165,7 @@ npm install merger-js -g
 
 - ```merger add```: Add a new source file to the merger config file.<br/>
   You should run this command on the directory where the source file you want to add is located.<br/>
-  MergerJS will give you the directory path, you input the source file name (the extension names are 
+  MergerJS will give you the directory path, you input the source file name (the extension names are
   optional), or a relative path to that directory, and MergerJS will locate the configuration file in
   the hierarchy before the one you are located and update it.
 
@@ -185,7 +185,7 @@ npm install merger-js -g
   - The \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
   - The \<configuration\> ```ntfs```, ```notifs```, ```notify```, or ```notifications``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the native OS notifications to true or false (on/off);
   - The \<configuration\> ```updateonlaunch``` or ```updtonlnch``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the update on lauch time to true or false (on/off). MergerJS will check for updates once per week.
-  
+
   Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
 
 - ```merger update```: Update MergerJS. Same as ```npm install merger-js -g```
@@ -264,7 +264,7 @@ I felt the need for a build tool to merge all my
 JS files into one, cleaning the HTML pages and
 optimizing my workflow.
 I wanted something simple and fast.
-My schoolmates couldn't get around with other 
+My schoolmates couldn't get around with other
 projects like WebPack and similar tools,
 so I decided to build MergerJS in order to use
 a file bundler in a very simple and fast way.
