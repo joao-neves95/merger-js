@@ -214,9 +214,6 @@ class ConfigFileAccess extends StaticClass {
       return true;
 
     } catch ( e ) {
-
-      console.debug( e );
-
       return false;
     }
   }
@@ -230,9 +227,6 @@ class ConfigFileAccess extends StaticClass {
         *  @param { string } pathToFix
         */
       fixPath: ( newRootPath, oldRootPath, pathToFix ) => {
-        console.debug( newRootPath )
-        console.debug( oldRootPath )
-        console.debug( pathToFix )
         return pathToFix.replace( oldRootPath, newRootPath );
       }
     };
