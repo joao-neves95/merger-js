@@ -11,8 +11,7 @@ If you identify a bug, before creating a new issue, check if a similiar one alre
 
 If you find it, use comments and reactions (upvote/downvote) to convey your stand on the matter.
 
-If you do not find an existing one, [create a new issue](https://github.com/joao-neves95/merger-js/issues/new) using the
-[issue template](https://github.com/joao-neves95/merger-js/blob/master/issue_template.md).
+If you do not find an existing one, [create a new issue](https://github.com/joao-neves95/merger-js/issues/new) using one of the templates.
 
 ## Pull Requests
 
