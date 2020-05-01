@@ -17,7 +17,9 @@
   "scripts": {
     "start": "merger init",
     "test": "npm audit && node tests/test.js",
-    "update": "merger update"
+    "update": "merger update",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": {
     "name": "shivayl",
@@ -43,7 +45,8 @@
     "line-by-line": "^0.1.6",
     "neo-async": "^2.5.1",
     "node-notifier": "^6.0.0",
-    "uglify-es": "^3.3.10"
+    "uglify-es": "^3.3.10",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "jasmine": "^3.4.0"
@@ -63,5 +66,6 @@
     "front-end",
     "frontend",
     "cli"
-  ]
+  ],
+  "snyk": true
 }
