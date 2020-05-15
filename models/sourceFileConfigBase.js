@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
  * MergerJS (merger-js) is licensed under the MIT license, located in

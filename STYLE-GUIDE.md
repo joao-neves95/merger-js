@@ -5,7 +5,7 @@
 ## Files
 
 All files **must** start with the **MergerJS** copyright information as a comment,
-with the exception of the ***merger.js*** file which must start with 
+with the exception of the ***merger.js*** file which must start with
 `#!/usr/bin/env node` before the copyrigth information.
 
 ### Naming:
@@ -50,7 +50,7 @@ Variables **must** have the `camelCase` style.
 
 - Variables and constants **should** have JSDoc
   ([Official specification](https://jsdoc.app/index.html),
-  [Wikipedia](https://en.wikipedia.org/wiki/JSDoc)) documentation, when suited, 
+  [Wikipedia](https://en.wikipedia.org/wiki/JSDoc)) documentation, when suited,
   or if you this it will improve the readability of the code (I.e: type).
 
 ### String:
@@ -71,18 +71,18 @@ even if the body contains only a single statement.
 
 Example:
 
-```
+```js
 if ( something ) {
   doThis( 'now' );
 }
 ```
 
 ### Conditionals:
-The `else` statement should be separated by an extra line break.
+The `else` statement **must** be separated by an extra line break.
 
 Example:
 
-```
+```js
 if ( isNight ) {
   console.log( 'Good night!' );
 
@@ -114,7 +114,7 @@ if ( isNight ) {
 
 Example:
 
-```
+```js
 /**
  * Description of the function and what it returns.
  *
@@ -125,6 +125,17 @@ Example:
 const doThis = ( withThis ) => {
   console.log( withThis );
 };
+```
+
+### Don't do things like this:
+
+```js
+// No:
+listArray[listSize++] = it;
+
+// Yes:
+listArray[listSize + 1] = it;
+++listsSize;
 ```
 
 ---
