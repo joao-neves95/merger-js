@@ -8,9 +8,14 @@
 
 'use strict';
 
+const StaticClass = require( '../models/staticClassBase' );
+
 /** (static) class for getting timestamp. */
-class NewTimestamp {
-  constructor() { }
+class NewTimestamp extends StaticClass {
+
+  constructor() {
+    super( NewTimestamp.name );
+  }
 
   /** No milliseconds. */
   static small() {

@@ -12,8 +12,9 @@ const path = require( 'path' );
 const StaticClass = require( '../models/staticClassBase' );
 
 class Utils extends StaticClass {
+
   constructor() {
-    super( 'Utils' );
+    super( Utils.name );
   }
 
   /**

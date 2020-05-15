@@ -23,7 +23,7 @@ const SourceFileModel = require( '../models/sourceFileModel' );
 class ConfigFileAccess extends StaticClass {
 
   constructor() {
-    super();
+    super( ConfigFileAccess.name );
   }
 
   /**

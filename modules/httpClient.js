@@ -9,11 +9,17 @@
 'use strict';
 const https = require( 'https' );
 const { IncomingMessage } = require( 'http' );
+const StaticClass = require( '../models/staticClassBase' );
 
 /**
  * Allways HTTPS.
  */
-module.exports = {
+class HttpClient extends StaticClass {
+
+  constructor() {
+    super( HttpClient.name );
+  }
+
   /**
    * Get HTTPS async.
    * It returns a Response object with the data in Response.body.
@@ -23,7 +29,7 @@ module.exports = {
    * 
    * @returns { Promise<IncomingMessage | Error> }
    */
-  getAsync: ( url, Callback ) => {
+  static getAsync( url, Callback ) {
     return new Promise( ( resolve, reject ) => {
 
       try {
@@ -62,4 +68,6 @@ module.exports = {
 
     } );
   }
-};
+}
+
+module.exports = HttpClient;

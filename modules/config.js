@@ -20,7 +20,7 @@ const style = require( './consoleStyling' );
 class Config extends StaticClass {
 
   constructor() {
-    super();
+    super( Config.name );
   }
 
   /**
