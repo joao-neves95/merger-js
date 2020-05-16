@@ -1,3 +1,3 @@
 # Current Branch Version
 
-**v3.9.5**
+**v3.10.0**
