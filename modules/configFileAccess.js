@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
- * MergerJS (merger-js) is licensed under the MIT license, located in
- * the root of this project, under the name "LICENSE.md".
- *
+ * MergerJS (merger-js) is licensed under the
+ * GPLv3.0 license (GNU General Public License v3.0),
+ * located in the root of this project, under the name "LICENSE.md".
  */
 
 'use strict';
@@ -29,7 +29,7 @@ class ConfigFileAccess extends StaticClass {
   /**
    * Searches for the config file from the current directory and returns
    * a promise with [ configFilePath, data ] or an exception.
-   * 
+   *
    * @returns { string[] | null }
    */
   static readConfigFile() {
@@ -81,9 +81,9 @@ class ConfigFileAccess extends StaticClass {
 
   /**
    * It adds the new SourceFile(Model) into the merger-config.json file.
-   * 
+   *
    * @param { SourceFileModel } newSourceFile SourceFile model.
-   * 
+   *
    * @returns { void } void
    */
   static addFileToConfig( newSourceFile ) {
@@ -104,7 +104,7 @@ class ConfigFileAccess extends StaticClass {
   }
 
   /**
-   * 
+   *
    * @param { SourceFileModel[] } sourceFileObjects
    */
   static removeSourceFile( sourceFileObjects ) {
@@ -154,10 +154,10 @@ class ConfigFileAccess extends StaticClass {
   /**
    * It adds a new property and value to the merger-config.json file.
    * VALUE is optional if KEY is a Dictionary of key/value par dictionaries.
-   * 
+   *
    * @param { string | Dictionary } key Config property. < string | Dictionary<string, any> >
    * @param { any } value  Config property value. (Optional if the "key" property is a dictionary)
-   * 
+   *
    * @returns { <void|Error> } void or logs the exception
    */
   static addProperty( key, value ) {
