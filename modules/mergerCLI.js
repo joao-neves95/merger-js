@@ -72,6 +72,28 @@ module.exports = ( Callback ) => {
       return Callback( newConfig );
     } );
 
+  // merger set --list || merger set --help
+  CLI
+    .command( 'set' )
+    .option( '-l', '--list' )
+    .option( '-h', '--help' )
+    .action( ( cmd ) => {
+      if ( cmd.list || cmd.help ) {
+        console.info( '\n Set MergerJS configuration.\n' );
+        console.info( ' Configuration keys:' );
+        console.info( ' -------------------' );
+        console.info( '', Object.values( ConfigKeysType ).join( '\n ' ) );
+        console.info( '\n Possible values: "-t" and "--true" or "-f" and "--false"' );
+        console.info( ' --------------- \n\n' );
+
+        process.exit( 0 );
+        return;
+      }
+
+      process.exit( 1 );
+      return;
+    } );
+
   // merger set
   CLI
     .command( 'set <key>' )

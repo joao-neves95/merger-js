@@ -184,18 +184,24 @@ npm install merger-js -g
   optional), or a relative path to that directory, and MergerJS will locate the configuration file in
   the hierarchy before the one you are located and update it.
 
-- ```merger rm```: Remove a source file from the merger-config file.<br/>
+- ```merger rm```: <br/>
+  Remove a source file from the merger-config file.<br/>
   You can run this command anywhere within your project (after the configuration file).
   MergerJS will give you all your files within your configuration file and you remove one just by selecting it.
 
-- ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.<br>
+- ```merger``` or ```merger build```: <br/>
+  Execute the build with the configuration you gave it on the merger-config.json file.<br>
   You can run it anywhere within your project's folder.
-  - ```merger auto```, ```merger build -a``` or ```merger build --auto```: Execute an automatic build session.<br />
-  You can do this, for example, when you have auto builds turned off and you don't want to change that.
+  - ```merger auto```, ```merger build -a``` or ```merger build --auto```: <br/>
+    Execute an automatic build session. You can do this, for example, when you have auto builds turned off and
+    you don't want to change that.
   <!-- - [NOT FUNCTIONAL] ```merger build -o``` or ```merger build --once```: Perform a one time build session, regardless of the project's configuration file.) -->
 
-- ```merger set <configuration> <value>```: Edit a configuration key on the merger-config file.<br/>
-  You can run it anywhere within your project's folder.<br>
+- `merger set` or `merger set -h` or `merger set --list`: <br/>
+  List all the configuration keys (it does not list the possible aliases).
+
+- ```merger set <configuration> <value>```: <br/>
+  Edit a configuration key on the merger-config file. You can run it anywhere within your project's folder. <br>
   At the moment you can pass:
   - The \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
   - The \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
