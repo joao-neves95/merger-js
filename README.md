@@ -156,6 +156,7 @@ npm install merger-js -g
 
 &nbsp;
 
+<!--
 ## UMD Module Syntax:
 
 ### Namespaces
@@ -171,6 +172,7 @@ npm install merger-js -g
 - **MergerJS only supports exporting classes as modules.** Simply define a <u>class</u> on each file (i.e.: not an object, or a function).
 
 &nbsp;
+-->
 
 ## Commands
 
