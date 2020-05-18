@@ -127,7 +127,19 @@ const doThis = ( withThis ) => {
 };
 ```
 
-### Don't do things like this:
+&nbsp;
+
+## Don't do things like this:
+
+```js
+// No:
+let var1, var2, var3;
+
+// Yes:
+let var1;
+let var2;
+let var3;
+```
 
 ```js
 // No:
@@ -137,6 +149,8 @@ listArray[listSize++] = it;
 listArray[listSize + 1] = it;
 ++listsSize;
 ```
+
+&nbsp;
 
 ---
 
