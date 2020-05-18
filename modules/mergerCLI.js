@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
- * MergerJS (merger-js) is licensed under the MIT license, located in
- * the root of this project, under the name "LICENSE.md".
- *
+ * MergerJS (merger-js) is licensed under the
+ * GPLv3.0 license (GNU General Public License v3.0),
+ * located in the root of this project, under the name "LICENSE.md".
  */
 
 'use strict';
@@ -70,6 +70,28 @@ module.exports = ( Callback ) => {
       }
 
       return Callback( newConfig );
+    } );
+
+  // merger set --list || merger set --help
+  CLI
+    .command( 'set' )
+    .option( '-l', '--list' )
+    .option( '-h', '--help' )
+    .action( ( cmd ) => {
+      if ( cmd.list || cmd.help ) {
+        console.info( '\n Set MergerJS configuration.\n' );
+        console.info( ' Configuration keys:' );
+        console.info( ' -------------------' );
+        console.info( '', Object.values( ConfigKeysType ).join( '\n ' ) );
+        console.info( '\n Possible values: "-t" and "--true" or "-f" and "--false"' );
+        console.info( ' --------------- \n\n' );
+
+        process.exit( 0 );
+        return;
+      }
+
+      process.exit( 1 );
+      return;
     } );
 
   // merger set

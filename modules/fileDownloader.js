@@ -1,20 +1,27 @@
 /*
  * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
- * MergerJS (merger-js) is licensed under the MIT license, located in
- * the root of this project, under the name "LICENSE.md".
- *
+ * MergerJS (merger-js) is licensed under the
+ * GPLv3.0 license (GNU General Public License v3.0),
+ * located in the root of this project, under the name "LICENSE.md".
  */
 
 'use strict';
 const path_join = require( 'path' ).join;
-const httpClient = require( './httpClient' );
 const Utils = require( './utils' );
+const StaticClass = require( '../models/staticClassBase' );
 const style = require( './consoleStyling' );
+const HttpClient = require( './HttpClient' );
+
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 const GITHUB_API_BASE_URL = 'https://api.github.com/';
 
-class FileDownloader {
+class FileDownloader extends StaticClass {
+
+  constructor() {
+    super( FileDownloader.name );
+  }
+
   /**
    * Downloads a file from an URL and saves it to node_modules.
    * 
@@ -25,7 +32,7 @@ class FileDownloader {
 
       try {
         const fileName = Utils.getFileNameFromUrl( url );
-        const fileContentRes = await httpClient.getAsync( url );
+        const fileContentRes = await HttpClient.getAsync( url );
         await Utils.saveFileInNodeModules( fileName, fileContentRes.body );
 
         if ( Callback )
@@ -42,7 +49,6 @@ class FileDownloader {
 
     } );
   }
-
 
   // DEPRECATED syntax: // %import<<GH '{user}/{repo}/{branch}/{pathToFile}.js'
   // https://raw.githubusercontent.com/{user}/{repo}/{brach}/{pathToFle}.js
@@ -69,7 +75,7 @@ class FileDownloader {
       let fileContent = null;
 
       try {
-        fileContent = await httpClient.getAsync( url, false );
+        fileContent = await HttpClient.getAsync( url, false );
 
         if ( fileContent.statusCode === 404 ) {
           path = path.split( '/' );
@@ -78,7 +84,7 @@ class FileDownloader {
           url = HOST_RAW_GITHUB + path.join( '/' );
 
           try {
-            fileContent = await httpClient.getAsync( url, false );
+            fileContent = await HttpClient.getAsync( url, false );
 
             if ( fileContent.statusCode === 404 ) {
               FileDownloader.githubDownloadError( new URL( url ).pathname, 'The file was not found (404).' );
@@ -155,7 +161,7 @@ class FileDownloader {
             continue;
 
           currentFilePath = path_join( thisRepoDirName, jsonApiResponse[i].path );
-          currentFileContent = await httpClient.getAsync( jsonApiResponse[i].download_url );
+          currentFileContent = await HttpClient.getAsync( jsonApiResponse[i].download_url );
 
           await Utils.saveFileInNodeModules( currentFilePath, currentFileContent.body );
           currentFilePath = path_join( NODE_MODULES_PATH, currentFilePath );
@@ -172,7 +178,7 @@ class FileDownloader {
 
   static async getJsonFromGithubApi( user, repo, pathToFile, branch = 'master' ) {
     pathToFile = pathToFile.endsWith( '/' ) ? pathToFile.substring( 0, pathToFile.length - 1 ) : pathToFile;
-    return await httpClient.getAsync( FileDownloader.buildGithubAPIUrl( user, repo, pathToFile, branch ) );
+    return await HttpClient.getAsync( FileDownloader.buildGithubAPIUrl( user, repo, pathToFile, branch ) );
   }
 
   static buildGithubAPIUrl( user, repo, pathToFile, branch = 'master' ) {

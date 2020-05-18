@@ -1,20 +1,21 @@
-﻿/*
+/*
  * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
- * MergerJS (merger-js) is licensed under the MIT license, located in
- * the root of this project, under the name "LICENSE.md".
- *
+ * MergerJS (merger-js) is licensed under the
+ * GPLv3.0 license (GNU General Public License v3.0),
+ * located in the root of this project, under the name "LICENSE.md".
  */
 
 const Utils = require( '../utils' );
 const TokenType = require( '../../enums/tokenType' );
 const ImportType = require( '../../enums/importType' );
 const ParsedLine = require( '../../models/parsedLineModel' );
+const StaticClass = require( '../../models/staticClassBase' );
 
-class ImportLineParser {
+class ImportLineParser extends StaticClass {
 
   constructor() {
-    throw new Error( 'Can not intantiate a static class' );
+    super( ImportLineParser.name );
   }
 
   /**

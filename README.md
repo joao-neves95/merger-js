@@ -12,7 +12,7 @@
 
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)<br/>
  **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)<br/>
- **License:** [MIT](https://github.com/joao-neves95/merger-js/blob/master/LICENSE.md)<br/>
+ **License:** [GPLv3](https://github.com/joao-neves95/merger-js/blob/master/LICENSE.md)<br/>
  **Changelog:** [LINK](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md)<br/>
  **Dependencies:**<br/>
  ├── [uglify-es](https://www.npmjs.com/package/uglify-es)<br/>
@@ -154,8 +154,25 @@ npm install merger-js -g
       Note that using this method, the files are not compiled in any specific order.<br/>
       E.g.: `// %%import<<GH::master<<dir 'twbs/bootstrap/dist/js'`
 
+&nbsp;
+
+<!--
+## UMD Module Syntax:
+
+### Namespaces
+- ` // #module::UMD ` <br/>
+  - Add this to an header file to tell MergerJS that you want to create a UMD module namespace with all the inner files bundled into it as multiple sub-modules.
+
+### Modules
+- ` // #export 'myModuleName' ` (optional) <br/>
+  - Add this to override the module name of the class inside a file.<br />
+  - If you do not specify a module name, MergerJS will default it to the name of the file.
+- **Every inner file (module) must be comprised of a single <u>class</u>.**
+  MergerJS will automatically export it.
+- **MergerJS only supports exporting classes as modules.** Simply define a <u>class</u> on each file (i.e.: not an object, or a function).
 
 &nbsp;
+-->
 
 ## Commands
 
@@ -169,29 +186,39 @@ npm install merger-js -g
   optional), or a relative path to that directory, and MergerJS will locate the configuration file in
   the hierarchy before the one you are located and update it.
 
-- ```merger rm```: Remove a source file from the merger-config file.<br/>
+- ```merger rm```: <br/>
+  Remove a source file from the merger-config file.<br/>
   You can run this command anywhere within your project (after the configuration file).
   MergerJS will give you all your files within your configuration file and you remove one just by selecting it.
 
-- ```merger``` or ```merger build```: Execute the build with the configuration you gave it on the merger-config.json file.<br>
+- ```merger``` or ```merger build```: <br/>
+  Execute the build with the configuration you gave it on the merger-config.json file.<br>
   You can run it anywhere within your project's folder.
-  - ```merger auto```, ```merger build -a``` or ```merger build --auto```: Execute an automatic build session. You can do this, for example, when you have auto builds turned off and you don't want to change that.
+  - ```merger auto```, ```merger build -a``` or ```merger build --auto```: <br/>
+    Execute an automatic build session. You can do this, for example, when you have auto builds turned off and
+    you don't want to change that.
   <!-- - [NOT FUNCTIONAL] ```merger build -o``` or ```merger build --once```: Perform a one time build session, regardless of the project's configuration file.) -->
 
-- ```merger set <configuration> <value>```: Edit a configuration key on the merger-config file.<br/>
-  You can run it anywhere within your project's folder.<br>
+- `merger set` or `merger set -h` or `merger set --list`: <br/>
+  List all the configuration keys (it does not list the possible aliases).
+
+- ```merger set <configuration> <value>```: <br/>
+  Edit a configuration key on the merger-config file. You can run it anywhere within your project's folder. <br>
   At the moment you can pass:
   - The \<configuration\> ```mnfy```, ```minify``` or ```uglify``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set minification to true or false (on/off);
   - The \<configuration\> ```auto``` or ```autobuild``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set auto builds to true or false (on/off);
   - The \<configuration\> ```ntfs```, ```notifs```, ```notify```, or ```notifications``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the native OS notifications to true or false (on/off);
-  - The \<configuration\> ```updateonlaunch``` or ```updtonlnch``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the update on lauch time to true or false (on/off). MergerJS will check for updates once per week.
-
-  Examples: ```merger set minify -f```, ```merger set autobuild --true```, ```merger set notifs -t```
+  - The \<configuration\> ```updateonlaunch``` or ```updtonlnch``` and the \<value\> ```-t``` / ```--true``` or ```-f``` / ```--false``` to set the update on lauch time to true or false (on/off).
+    MergerJS will check for updates once per week. <br/>
+  Examples:
+    - ```merger set minify -f```
+    - ```merger set autobuild --true```
+    - ```merger set notifs -t```
 
 - ```merger update```: Update MergerJS. Same as ```npm install merger-js -g```
 
-- ```merger fix-config-paths```: Fixes the paths of the configuration file, in case the location of the project changes.<br/>
-  (E.g.: different computer)
+- ` merger fix-config-paths `: Fixes the paths of the configuration file, in case the location of the project changes (e.g.: different computer).<br/>
+  At this moment, this command only works on Windows.
 
 &nbsp;
 
@@ -239,12 +266,6 @@ Example (`merger-config.json`):
 (...)
 
 ```
-
-&nbsp;
-
-## Known Issues
-
-The auto build (the files watcher) does not work properly and all times on Visual Studio. It works very well on Visual Studio Code and other editors though.
 
 &nbsp;
 

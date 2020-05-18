@@ -1,19 +1,25 @@
-﻿/*
+/*
  * Copyright (c) 2018-2020 João Pedro Martins Neves - All Rights Reserved.
  *
- * MergerJS (merger-js) is licensed under the MIT license, located in
- * the root of this project, under the name "LICENSE.md".
- *
+ * MergerJS (merger-js) is licensed under the
+ * GPLv3.0 license (GNU General Public License v3.0),
+ * located in the root of this project, under the name "LICENSE.md".
  */
 
 'use strict';
 const https = require( 'https' );
 const { IncomingMessage } = require( 'http' );
+const StaticClass = require( '../models/staticClassBase' );
 
 /**
  * Allways HTTPS.
  */
-module.exports = {
+class HttpClient extends StaticClass {
+
+  constructor() {
+    super( HttpClient.name );
+  }
+
   /**
    * Get HTTPS async.
    * It returns a Response object with the data in Response.body.
@@ -23,7 +29,7 @@ module.exports = {
    * 
    * @returns { Promise<IncomingMessage | Error> }
    */
-  getAsync: ( url, Callback ) => {
+  static getAsync( url, Callback ) {
     return new Promise( ( resolve, reject ) => {
 
       try {
@@ -62,4 +68,6 @@ module.exports = {
 
     } );
   }
-};
+}
+
+module.exports = HttpClient;
