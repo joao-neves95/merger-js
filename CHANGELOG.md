@@ -2,11 +2,16 @@
 
 &nbsp;
 
-#### v3.10.0 - //2020
+#### *v3.10.0 - 18/05/2020
+
+  - Added the `merger set --list` command, to list all the possible
+    full configuration keys (no aliases).
+  - Internal improvements and refactorings.
+  - Updated dependencies (MINORs and PATCHs).
 
 &nbsp;
 
-#### v3.9.5* - 31/03/2020
+#### v3.9.5 - 31/03/2020
 
   - Added the "fix-config-paths" command, for use in case the location of the project changes
     (E.g.: different computer).
