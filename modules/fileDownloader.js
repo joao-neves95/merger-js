@@ -11,7 +11,7 @@ const path_join = require( 'path' ).join;
 const Utils = require( './utils' );
 const StaticClass = require( '../models/staticClassBase' );
 const style = require( './consoleStyling' );
-const HttpClient = require( './HttpClient' );
+const HttpClient = require( './httpClient' );
 
 const HOST_RAW_GITHUB = 'https://raw.githubusercontent.com/';
 const GITHUB_API_BASE_URL = 'https://api.github.com/';
@@ -24,7 +24,7 @@ class FileDownloader extends StaticClass {
 
   /**
    * Downloads a file from an URL and saves it to node_modules.
-   * 
+   *
    * @returns { Promise<string | Error> }
    */
   static fromUrl( url, Callback ) {
@@ -55,11 +55,11 @@ class FileDownloader extends StaticClass {
   /**
    * [DEPRECATED, used for the previous syntax]
    * Downloads a file from GitHub and saves it to node_modules. Returns the file name or an error.
-   * 
+   *
    * @param { string } path <userName>/<repositoryName>/(<branchName>)/<pathToFile>
    * @param { string } brach If it's an empty string, the deprecated solution will used.
    * @param { function } Callback (<string | Error>)
-   * 
+   *
    * @returns { Promise<string | Error> }
    * @deprecated
    */
@@ -126,13 +126,13 @@ class FileDownloader extends StaticClass {
   /**
    * Downloads a file or directory of files from github and save it/them to node_modules.
    * Returns all the files with a complete directory relative to node_modules.
-   * 
+   *
    * @param { string[] } buildOrder
    * @param { string } user
    * @param { string } repo
    * @param { string } pathToFile
    * @param { string } branch
-   * 
+   *
    * @returns { Promise<string[]> }
    */
   static async fromGithub( user, repo, pathToFile, branch = 'master' ) {
