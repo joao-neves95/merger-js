@@ -7,7 +7,7 @@
  */
 
 'use strict';
-const CLI = require('../node_modules/commander');
+const CLI = require('../node_modules/commander').program;
 const init = require('./CLIModules/init');
 const update = require('./updateMerger');
 const addFilesPrompt = require('./CLIModules/addFilesPrompt');
@@ -56,7 +56,6 @@ module.exports = ( Callback ) => {
       }
 
       process.exit( 0 );
-      
     } );
 
   // merger build
@@ -97,6 +96,7 @@ module.exports = ( Callback ) => {
   // merger set
   CLI
     .command( 'set <key>' )
+    .description( 'run "merger set -h" for details' )
     .option( '-t, --true' )
     .option( '-f, --false' )
     .action( ( key, cmd ) => {
@@ -185,10 +185,11 @@ module.exports = ( Callback ) => {
       console.log( `\n ${style.successText( 'Configuration File:\n' )}`, configFileData[1] );
     } );
 
-  CLI.parse( process.argv );
   // If the user didn't use the CLI commands:
   // merger
   if ( process.argv.length <= 2 ) {
     return Callback( newConfig );
   }
+
+  CLI.parse( process.argv );
 };
