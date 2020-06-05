@@ -2,7 +2,15 @@
 
 &nbsp;
 
-#### *v3.10.0 - 18/05/2020
+#### *v3.10.1 - 05/06/2020
+
+  - Fixed a typo on the fileDownloader module that caused the
+    program to crash in case the user had the updates enabled.
+  - Updated the package Commander from 3.0.2 to 5.1.0.
+
+&nbsp;
+
+#### v3.10.0 - 18/05/2020
 
   - Added the `merger set --list` command, to list all the possible
     full configuration keys (no aliases).
