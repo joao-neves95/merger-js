@@ -6,7 +6,7 @@
 
   - Fixed a typo on the fileDownloader module that caused the
     program to crash in case the user had the updates enabled.
-  - Updated the package Commander from 3.0.2 to 5.1.0.
+  - Updated the CLI package Commander from 3.0.2 to 5.1.0.
 
 &nbsp;
 
