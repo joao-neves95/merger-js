@@ -1,7 +1,7 @@
 {
   "name": "merger-js",
   "displayName": "MergerJS",
-  "version": "3.10.1",
+  "version": "3.11.0",
   "description": "Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES8+ minification, auto build capabilities, and native OS notifications.",
   "readme": "https://github.com/joao-neves95/merger-js/blob/master/README.md",
   "author": {
@@ -24,7 +24,7 @@
   "preferGlobal": true,
   "install": "npm install merger-js -g",
   "engines": {
-    "node": ">=10.0.0",
+    "node": ">=12.0.0",
     "npm": ">=6.4.0"
   },
   "scripts": {

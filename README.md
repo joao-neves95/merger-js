@@ -56,7 +56,7 @@ https://github.com/joao-neves95/merger-js/blob/master/README.md
 
 ### 1) Node.js
 
-You will need [Node.js](https://nodejs.org/en/) version 10+ installed to run merger.
+You will need [Node.js](https://nodejs.org/en/) version 12+ installed to run merger.
 
 ### 2) Install merger with NPM
 
