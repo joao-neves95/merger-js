@@ -5,16 +5,19 @@
 ## Files
 
 All files **must** start with the **MergerJS** copyright information as a comment,
-with the exception of the ***merger.js*** file which must start with
-`#!/usr/bin/env node` before the copyrigth information.
+with the exception of the ***merger.js*** file which must start with the shebang `#!/usr/bin/env node` before the copyright information.\
+The license headers **must** be followed by `'use strict'`;
 
-### Naming:
+### Naming
+
 Filenames must be [`camelCase`](https://en.wikipedia.org/wiki/Camel_case).
 
-### Encoding:
+### Encoding
+
 [UTF-8](https://en.wikipedia.org/wiki/UTF-8)
 
-### Whitespace:
+### Whitespace
+
 - Use **spaces**, not tabs.
 - Lines ([line breaks](https://en.wikipedia.org/wiki/Newline)) should end in `LF` characters (UNIX)
   and not `CRLF` (Windows).
@@ -23,10 +26,12 @@ Filenames must be [`camelCase`](https://en.wikipedia.org/wiki/Camel_case).
 
 ## Code Formating
 
-## Identation:
+## Identation
+
 Use two (2) spaces.
 
-## Semicollons:
+## Semicollons
+
 All expresions **must** end with a semicollon.
 
 Example:
@@ -39,24 +44,30 @@ doThis();
 const PI = 3.14;
 `
 
-### Variables and Contants:
+### Variables and Constants
 
-- `const`
-Constant names **must** have the `PASCAL_ALL_CAPS` style.
-In case their are constant variables from function call values, they *must* have the `camelCase` style.
+- `const`\
+Static constant values **must** have the `PASCAL_ALL_CAPS` style.\
+In case they are constant value variables from function calls, they **must** have the `camelCase` style.\
+If you don't expect the value to change, always opt to use `const`.
 
-- `let`
+- `let`\
 Variables **must** have the `camelCase` style.
 
-- Variables and constants **should** have JSDoc
+- `var`\
+**Never** use `var`.
+
+Variables and constants **should** have JSDoc type definitions
   ([Official specification](https://jsdoc.app/index.html),
-  [Wikipedia](https://en.wikipedia.org/wiki/JSDoc)) documentation, when suited,
-  or if you this it will improve the readability of the code (I.e: type).
+  [Wikipedia](https://en.wikipedia.org/wiki/JSDoc)) documentation when suited,
+  or if you think it will improve the readability or development of the code.
 
-### String:
-You **should** use single quotes ` const MESSAGE = 'Hello World!'; `.
+### String
 
-### Spacing:
+You **must** use single quotes ` const MESSAGE = 'Hello World!'; `.
+
+### Spacing
+
 You **must** insert a space after opening and before closing non-empty parenthesis.
 
 Example:
@@ -65,8 +76,9 @@ Example:
 doThis( 'with this string' );
 `
 
-### Braces:
-Braces **must** be used in all controll structures (i.e. if, else, for, do, while, as well as any others),
+### Braces
+
+Braces **must** be used in all control structures (i.e. if, else, for, do, while, as well as any others),
 even if the body contains only a single statement.
 
 Example:
@@ -77,7 +89,8 @@ if ( something ) {
 }
 ```
 
-### Conditionals:
+### Conditionals
+
 The `else` statement **must** be separated by an extra line break.
 
 Example:
@@ -91,15 +104,20 @@ if ( isNight ) {
 }
 ```
 
-### Classes:
+### Classes
+
 - Classes **must** have `PascalCase` as naming style.
-- Properties **must** have `camelCase` naming style.
-- Private properties (properties that will be used only by that class)
-  **must** start with four (4) undescores characters in their name
-  (see example in "Functions").
+- Methods and properties **must** have `camelCase` naming style.
+- Private methods and properties (methods and properties that will be used only by that class),
+  since v3.11.0, **must** start with with a `#` char at the start of their name.
+- Always prefer using classes instead of functions.
+- Most classes will be static, so those **must** inherit from `models/staticClassBase.js`.
 
 ### Functions
-- Functions **must** have the `camelCase` naming convention.
+
+- If it's a module, try to create a class instead, but, if it makes sense, do use a function.
+- Do **NOT** create constructor functions, use well structured classes instead.
+- Functions names **must** have the `camelCase` naming convention.
 - Private functions (internal functions in a class or module)
   **should** start with four (4) undescores characters in their name:
 
