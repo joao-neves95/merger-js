@@ -1,4 +1,4 @@
-﻿## MergerJS JavaScript Style Guide
+## MergerJS JavaScript Style Guide
 
 &nbsp;
 
@@ -112,6 +112,8 @@ if ( isNight ) {
   since v3.11.0, **must** start with with a `#` char at the start of their name.
 - Always prefer using classes instead of functions.
 - Most classes will be static, so those **must** inherit from `models/staticClassBase.js`.
+- Methods **must** have JSDoc
+  ([Official specification](https://jsdoc.app/index.html), [Wikipedia](https://en.wikipedia.org/wiki/JSDoc)) documentation.
 
 ### Functions
 
