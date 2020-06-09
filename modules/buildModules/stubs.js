@@ -12,7 +12,7 @@ const StaticClass = require( '../../models/staticClassBase' );
 class Stubs extends StaticClass {
 
   constructor() {
-    super( Stubs.name )
+    super( Stubs.name );
   }
 
   /**

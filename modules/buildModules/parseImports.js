@@ -11,7 +11,7 @@ const path = require('path');
 const lineByLine = require( 'line-by-line' );
 const fileDownloader = require( '../fileDownloader' );
 const Utils = require( '../utils' );
-const ImportLineParser = require( './importLineParser' );
+const SyntaxParser = require( './syntaxParser' );
 const addPropertyToConfig = require( '../configFileAccess' ).addProperty;
 const isTextPath = require( 'is-text-path' );
 const ImportType = require( '../../enums/importType' );
@@ -19,10 +19,10 @@ const ConfigKeysType = require( '../../enums/configKeysEnum' );
 const style = require( '../consoleStyling' );
 
 /**
- * 
+ *
  * @param { string } Path The path of the header file.
  * @param { Function } Callback ( buildOrder:string[] ) Receives the build order array of file paths inputed by the user.
- * 
+ *
  * @returns { Promise<string[]> }
  */
 module.exports = ( Path, Callback ) => {
@@ -43,9 +43,9 @@ module.exports = ( Path, Callback ) => {
       rl.pause();
       let thisFile = null;
       /** @type { string } */
-      let directotyPath = '';
+      let directoryPath = '';
 
-      const parsedLine = ImportLineParser.parse( line );
+      const parsedLine = SyntaxParser.parseLine( line );
 
       switch ( parsedLine.importType ) {
         case ImportType.NodeModules:
@@ -73,15 +73,15 @@ module.exports = ( Path, Callback ) => {
       switch ( parsedLine.importType ) {
 
         case ImportType.RelativePath:
-          directotyPath = Path;
+          directoryPath = Path;
           break;
 
         case ImportType.NodeModules:
-          directotyPath = NODE_MODULES_PATH;
+          directoryPath = NODE_MODULES_PATH;
           break;
 
         case ImportType.SpecificURL:
-          directotyPath = NODE_MODULES_PATH;
+          directoryPath = NODE_MODULES_PATH;
           const fileName = Utils.getFileNameFromUrl( parsedLine.path );
 
           let fileExists = true;
@@ -105,12 +105,12 @@ module.exports = ( Path, Callback ) => {
           const splitedPath = parsedLine.path.split( '/' );
           const pathToFile = splitedPath.slice( 2 ).join( '/' );
 
-          /** 
+          /**
            *  The name of the folder where the file(s) will be stored on node_modules.
            *  @type { string }
            */
           const repoDirName = path.join( Utils.buildGithubRepoDirName( splitedPath[0], splitedPath[1] ) );
-          directotyPath = path.join( NODE_MODULES_PATH, repoDirName );
+          directoryPath = path.join( NODE_MODULES_PATH, repoDirName );
 
           // #region GITHUB FILES
 
@@ -120,7 +120,7 @@ module.exports = ( Path, Callback ) => {
             let alreadyDowloadedNewSyntax = false;
 
             if ( !parsedLine.forceInstall && parsedLine.isGithubNewSyntax ) {
-              alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( directotyPath, pathToFile ) );
+              alreadyDowloadedNewSyntax = await Utils.fileExists( path.join( directoryPath, pathToFile ) );
 
               // We need to check with the deprecated syntax, to avoid breaking changes.
             } else if ( !parsedLine.forceInstall && !parsedLine.isGithubNewSyntax ) {
@@ -145,7 +145,7 @@ module.exports = ( Path, Callback ) => {
               parsedLine.path = pathToFile;
 
             } else {
-              directotyPath = NODE_MODULES_PATH;
+              directoryPath = NODE_MODULES_PATH;
               parsedLine.path = fileName;
             }
 
@@ -158,7 +158,7 @@ module.exports = ( Path, Callback ) => {
             let alreadyDownloaded = false;
 
             if ( !parsedLine.forceInstall ) {
-              alreadyDownloaded = await Utils.dirExists( path.join( directotyPath, pathToFile ) );
+              alreadyDownloaded = await Utils.dirExists( path.join( directoryPath, pathToFile ) );
             }
 
             if ( !alreadyDownloaded || parsedLine.forceInstall ) {
@@ -171,14 +171,14 @@ module.exports = ( Path, Callback ) => {
               thisFile = '';
 
             } else {
-              const allFilesFromRepoDir = await Utils.readDir( path.join( directotyPath, pathToFile ) );
+              const allFilesFromRepoDir = await Utils.readDir( path.join( directoryPath, pathToFile ) );
 
               for ( let i = 0; i < allFilesFromRepoDir.length; ++i ) {
                 if ( path.extname( allFilesFromRepoDir[i] ) !== '.js' ) {
                   continue;
                 }
 
-                buildOrder.push( path.join( directotyPath, pathToFile, allFilesFromRepoDir[i] ) );
+                buildOrder.push( path.join( directoryPath, pathToFile, allFilesFromRepoDir[i] ) );
               }
 
               // This is to block adding any files to build order,
@@ -198,15 +198,15 @@ module.exports = ( Path, Callback ) => {
       }
 
       if ( parsedLine.isDir ) {
-        await ____addAllDirectoryToBuildOrder( buildOrder, directotyPath, parsedLine.path );
+        await ____addAllDirectoryToBuildOrder( buildOrder, directoryPath, parsedLine.path );
 
       } else if ( thisFile === null && parsedLine.path !== null ) {
 
         if ( parsedLine.importType === ImportType.RelativePath ) {
-          directotyPath = '';
+          directoryPath = '';
         }
 
-        thisFile = path.join( directotyPath, parsedLine.path );
+        thisFile = path.join( directoryPath, parsedLine.path );
 
         try {
           if ( !isTextPath( thisFile ) ) {
@@ -245,11 +245,11 @@ module.exports = ( Path, Callback ) => {
 // #region HELPER FUNCTIONS
 
 /**
- * 
+ *
  * @param { string[] } buildOrder An array that contains all the build paths.
  * @param { string } thePath The path of the header file directory.
  * @param { string } treatedLine The path inputed by the user.
- * 
+ *
  * @return { boolean } Returns false in cae it's not a directory.
  * In case of exception, it kill the process and logs the error message.
  */
@@ -282,7 +282,7 @@ const ____addAllDirectoryToBuildOrder = async ( buildOrder, thePath, treatedLine
 /**
  * Prinsts the node_modules file creation error.
  * @param { string } fileName The file name where the error occured.
- * 
+ *
  * @returns { void } Logs the error to the console.
  */
 const ____nodeModulesCreationError = ( fileName ) => {
