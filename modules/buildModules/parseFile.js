@@ -19,6 +19,8 @@ const ConfigKeysType = require( '../../enums/configKeysEnum' );
 const style = require( '../consoleStyling' );
 
 /**
+ * Parses a file and executes the required actions for building it, like constructing the build order, normalize paths,
+ * download packages, save them on node_modules, etc.
  *
  * @param { string } Path The path of the header file.
  * @param { Function } Callback ( buildOrder:string[] ) Receives the build order array of file paths inputed by the user.
