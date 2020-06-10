@@ -15,7 +15,7 @@ const mergerCLI = require('./modules/mergerCLI');
 const Config = require('./modules/config');
 const async = require( './node_modules/neo-async' );
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
-const parseImports = require( './modules/buildModules/parseImports' );
+const parseFile = require( './modules/buildModules/parseFile' );
 const build = require( './modules/buildModules/build' );
 
 // #region PROGRAM
@@ -35,7 +35,7 @@ mergerCLI( async ( newConfig ) => {
 
   async.eachSeries( sourceFiles, async ( sourceFile, Callback ) => {
     await Config.setCustomConfig( sourceFile.source );
-    const buildOrder = await parseImports( sourceFile.source );
+    const buildOrder = await parseFile( sourceFile.source );
 
     // Execute one time builds:
     if ( !global.config.autoBuild ) {

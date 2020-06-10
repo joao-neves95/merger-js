@@ -10,7 +10,7 @@
 const fs = require('fs');
 const path = require( 'path' );
 const async = require( 'neo-async' );
-const parseImports = require('./parseImports');
+const parseFile = require('./parseFile');
 const minifyCode = require( './minifyCode' );
 const { removeBOM } = require( '../utils' );
 const notify = require('../notifications').notif;
@@ -102,9 +102,9 @@ module.exports = ( sourceFile, buildOrder ) => {
     console.info( ' Building...' );
 
     if ( !buildOrder ) {
-      parseImports( sourceFile.source, async ( redefinedBuldOrder ) => {
+      parseFile( sourceFile.source, async ( redefinedBuildOrder ) => {
         try {
-          await build( sourceFile, redefinedBuldOrder );
+          await build( sourceFile, redefinedBuildOrder );
           return resolve();
 
         } catch ( e ) {
