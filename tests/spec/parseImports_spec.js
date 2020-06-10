@@ -8,13 +8,13 @@
 
 const path = require( 'path' );
 const fs = require( 'fs' );
-const parseImports = require( '../../modules/buildModules/parseImports' );
+const parseFile = require( '../../modules/buildModules/parseFile' );
 const Utils = require( '../../modules/utils' );
 const DATA_DIR_PATH = path.join( __dirname, path.normalize( '../data' ) );
 const HEADER_FILES_DIR_PATH = path.join( DATA_DIR_PATH, '/headerFiles' );
 const NODE_MODULES_PATH = path.join( DATA_DIR_PATH, '/node_modules' );
 
-describe( 'ParseImports', () => {
+describe( 'parseFile', () => {
 
   let originalTimeout;
 
@@ -28,7 +28,7 @@ describe( 'ParseImports', () => {
 
   it( 'Should parse file path imports, relative to the header file.', () => {
 
-    parseImports( path.join( HEADER_FILES_DIR_PATH, 'relativeFilePaths.header.js' ), ( buildOrder ) => {
+    parseFile( path.join( HEADER_FILES_DIR_PATH, 'relativeFilePaths.header.js' ), ( buildOrder ) => {
       expect( buildOrder ).not.toBeNull();
       expect( buildOrder ).toBeDefined();
       expect( buildOrder ).toEqual( jasmine.arrayContaining(
@@ -44,7 +44,7 @@ describe( 'ParseImports', () => {
 
   it( 'Should parse relative directories path imports, relative to the header file', () => {
 
-    parseImports( path.join( HEADER_FILES_DIR_PATH, 'relativeDirPaths.header.js' ), ( buildOrder ) => {
+    parseFile( path.join( HEADER_FILES_DIR_PATH, 'relativeDirPaths.header.js' ), ( buildOrder ) => {
       expect( buildOrder ).not.toBeNull();
       expect( buildOrder ).toBeDefined();
       expect( buildOrder ).toEqual( jasmine.arrayContaining(
@@ -63,7 +63,7 @@ describe( 'ParseImports', () => {
 
   it( 'Should parse file paths relative to the node_modules folder.', () => {
 
-    parseImports( path.join( HEADER_FILES_DIR_PATH, 'nodeModulesFilePaths.header.js' ), ( buildOrder ) => {
+    parseFile( path.join( HEADER_FILES_DIR_PATH, 'nodeModulesFilePaths.header.js' ), ( buildOrder ) => {
       expect( buildOrder ).not.toBeNull();
       expect( buildOrder ).toBeDefined();
       expect( buildOrder ).toEqual( jasmine.arrayContaining(
@@ -82,12 +82,12 @@ describe( 'ParseImports', () => {
 
   it( 'Should parse a URL file import, download the file and cache it in the node_modules folder.', async () => {
     const filePath = path.join( NODE_MODULES_PATH, 'jquery.min.js' );
-    await __parseImportsUrlsTest( 'specificUrlPaths.header.js', [filePath] );
+    await __parseFileUrlsTest( 'specificUrlPaths.header.js', [filePath] );
     await Utils.deleteFile( filePath );
   } );
 
   it( 'Should parse a GitHub file path, download it and cache it into the node_modules folder.', async () => {
-    await ____removeBootsrapFolder( await __parseImportsUrlsTest(
+    await ____removeBootsrapFolder( await __parseFileUrlsTest(
       'githubFilePath.header.js',
       [path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' )]
     ) );
@@ -99,7 +99,7 @@ describe( 'ParseImports', () => {
       const headerFilePath = 'githubDirPath.header.js';
       const cacheFolderPath = path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/' );
 
-      await __parseImportsUrlsTest( headerFilePath,
+      await __parseFileUrlsTest( headerFilePath,
         [
           path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.js' ),
           path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/js/bootstrap.min.js' ),
@@ -110,18 +110,18 @@ describe( 'ParseImports', () => {
         ]
       );
 
-      const buildOrder = await parseImports( path.join( HEADER_FILES_DIR_PATH, headerFilePath ) );
+      const buildOrder = await parseFile( path.join( HEADER_FILES_DIR_PATH, headerFilePath ) );
 
       const stats = await Utils.fsStat( buildOrder[1] );
 
       expect( stats.mtime ).toEqual( stats.ctime );
       expect( stats.mtimeMs ).toEqual( stats.ctimeMs );
-      
+
       const allFileNames = await Utils.readDir( cacheFolderPath );
       allFileNames.forEach( ( item, i ) => {
         allFileNames[i] = cacheFolderPath + item;
       } );
-      
+
       await ____removeBootsrapFolder( allFileNames );
     }
   );
@@ -136,16 +136,16 @@ describe( 'ParseImports', () => {
 
 /**
  * Checks if the files exists to confirm if it was successfull.
- * 
+ *
  * @param { string } headerFile The header file path, with all the imports.
  * @param { string[] } downloadedFilePaths The path location where the downloaded file should be.
- * 
+ *
  * @return { Promise<string[] | Error> }
  */
-const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
+const __parseFileUrlsTest = ( headerFile, downloadedFilePaths ) => {
   return new Promise( ( _resolve, _reject ) => {
 
-    parseImports( path.join( HEADER_FILES_DIR_PATH, headerFile ), async ( buildOrder ) => {
+    parseFile( path.join( HEADER_FILES_DIR_PATH, headerFile ), async ( buildOrder ) => {
       const expectedOutput = [headerFile].concat( downloadedFilePaths );
       expect( buildOrder ).not.toBeNull();
       expect( buildOrder ).toBeDefined();
@@ -170,7 +170,7 @@ const __parseImportsUrlsTest = ( headerFile, downloadedFilePaths ) => {
         downloadFileError = e;
       }
 
-      expect( downloadSuccessful ).toEqual( true, `ParseImports > URL file import > URL: ${currentLink} ; Download file : FAILED, Error:\n ${downloadFileError}` );
+      expect( downloadSuccessful ).toEqual( true, `parseFile > URL file import > URL: ${currentLink} ; Download file : FAILED, Error:\n ${downloadFileError}` );
 
       if ( downloadSuccessful ) {
 
@@ -218,7 +218,7 @@ const ____removeBootsrapFolder = ( allFiles ) => {
       fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/dist/' ), ( errr ) => {
         fs.rmdir( path.join( NODE_MODULES_PATH, 'twbs@bootstrap/' ), ( errrr ) => {
           if ( err || errr || errrr ) {
-            console.error( 'ParseImports > URL file import > (delete downloaded file) : FAILED, Error:' );
+            console.error( 'parseFile > URL file import > (delete downloaded file) : FAILED, Error:' );
             console.error( err || errr || errrr );
             return _rej( err || errr || errrr );
           }

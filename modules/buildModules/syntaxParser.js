@@ -113,7 +113,7 @@ class SyntaxParser extends StaticClass {
       parsedLine.importType = ImportType.Unknown;
     }
 
-    parsedLine.isDir = ImportLineParser.__pathIsDir( line );
+    parsedLine.isDir = SyntaxParser.__pathIsDir( line );
 
     if ( parsedLine.isDir ) {
       line = Utils.removeDirTokenFromImport( line );
