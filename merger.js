@@ -16,7 +16,7 @@ const Config = require('./modules/config');
 const async = require( './node_modules/neo-async' );
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseFile = require( './modules/buildModules/parseFile' );
-const build = require( './modules/buildModules/build' );
+const Compiler = require( './modules/buildModules/build' );
 
 // #region PROGRAM
 
@@ -35,25 +35,27 @@ mergerCLI( async ( newConfig ) => {
 
   async.eachSeries( sourceFiles, async ( sourceFile, Callback ) => {
     await Config.setCustomConfig( sourceFile.source );
-    const buildOrder = await parseFile( sourceFile.source );
 
     // Execute one time builds:
     if ( !global.config.autoBuild ) {
-      await build( sourceFile, buildOrder );
+      await Compiler.Run( sourceFile );
       return Callback();
 
       // Execute an auto build session (with file watcher):
     } else {
-      const whatcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
-      whatcher
+      const buildOrder = await parseFile( sourceFile.source );
+      const watcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
+
+      watcher
         .on( 'ready', async () => {
           console.info( ' Inicial scan complete. Ready to build on changes...' );
-          await build( sourceFile, buildOrder );
+          await Compiler.Run( sourceFile, buildOrder );
+
           return Callback();
         } )
         .on( 'error', err => console.error( 'Auto build error: ', err ) )
         .on( 'change', async ( path, stats ) => {
-          await build( sourceFile, null );
+          await Compiler.Run( sourceFile );
         } );
     }
 
