@@ -93,7 +93,8 @@ module.exports = ( Callback ) => {
         console.info( '\n Set MergerJS configuration.\n' );
         console.info( ' Configuration keys:' );
         console.info( ' -------------------' );
-        console.info( '', Object.values( ConfigKeysType ).join( '\n ' ) );
+        const allConfigKeys = Object.values( ConfigKeysType );
+        console.info( '', allConfigKeys.slice( 0, allConfigKeys.length - 2 ).join( '\n ' ) );
         console.info( '\n Possible values: "-t" and "--true" or "-f" and "--false"' );
         console.info( ' --------------- \n\n' );
 
