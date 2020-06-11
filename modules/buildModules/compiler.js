@@ -9,6 +9,7 @@
 'use strict';
 const fs = require('fs');
 const path = require( 'path' );
+const chokidar = require('chokidar');
 const StaticClass = require( '../../models/staticClassBase' );
 const SourceFileModel = require( '../../models/sourceFileModel' );
 const parseFile = require('./parseFile');
@@ -33,26 +34,31 @@ class Compiler extends StaticClass {
    * @returns { Promise<void | Error> }
    * @memberof Compiler
    */
-  static async run( sourceFile, buildOrder = null ) {
+  static async run( sourceFile ) {
     return new Promise( async ( resolve, reject ) => {
-      console.time( ' Build Time' );
-      console.info( ' Building...' );
-
       try {
-        await Compiler.____compile( sourceFile, !buildOrder ? await parseFile( sourceFile.source ) : buildOrder );
+        const buildOrder = await parseFile( sourceFile.source );
 
-        let timestamp = newTimestamp();
-        let notifMessage = timestamp;
+        // Execute one time builds:
+        if ( !global.config.autoBuild ) {
+          await Compiler.____compile( sourceFile, buildOrder );
 
-        if ( global.config.autoBuild ) {
-          notifMessage += `\n${BUILD_ON_CHANGES_MESSAGE}`;
-          console.info( `\n ${BUILD_ON_CHANGES_MESSAGE}\n` );
+          // Execute an auto build session (with file watcher):
+        } else {
+          const watcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
+
+          watcher
+            .on( 'ready', async () => {
+              console.info( ' Initial scan complete. Ready to build on changes...' );
+              await Compiler.____compile( sourceFile, buildOrder );
+
+              return resolve();
+            } )
+            .on( 'error', err => console.error( 'Auto build error: ', err ) )
+            .on( 'change', async ( path, stats ) => {
+              await Compiler.____compile( sourceFile, await parseFile( sourceFile.source ) );
+            } );
         }
-
-        notify( 'Build Complete.', notifMessage );
-        console.info( '\n', timestamp, '-', style.successText( 'Build complete.' ) );
-        console.info( ' File Path:', path.join( sourceFile.output.path, sourceFile.output.name ) );
-        console.timeEnd( ' Build Time' );
 
         return resolve();
 
@@ -71,6 +77,8 @@ class Compiler extends StaticClass {
    */
   static ____compile( sourceFile, buildOrder ) {
     return new Promise( ( resolve, reject ) => {
+      console.time( ' Build Time' );
+      console.info( ' Building...' );
 
       let allData = {};
 
@@ -102,30 +110,42 @@ class Compiler extends StaticClass {
       fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
         if ( err ) {
           // If the dir does not exist, make a new dir.
-          if ( err.code === 'ENOENT' ) {
-            fs.mkdir( buildPath, ( err ) => {
+          if ( err.code !== 'ENOENT' ) {
+            console.error( style.ERROR, err );
+            return reject( err );
+          }
+
+          fs.mkdir( buildPath, ( err ) => {
+            if ( err ) {
+              console.error( style.ERROR, err );
+              return reject( err );
+            }
+
+            fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
               if ( err ) {
                 console.error( style.ERROR, err );
                 return reject( err );
               }
-
-              fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
-                if ( err ) {
-                  console.error( style.ERROR, err );
-                  return reject( err );
-                }
-
-              } );
             } );
+          } );
 
-          } else {
-            console.error( style.ERROR, err );
-            return reject( err );
-          }
         }
-
-        return resolve();
       } );
+
+      const timestamp = newTimestamp();
+      let notifMessage = timestamp;
+
+      if ( global.config.autoBuild ) {
+        notifMessage += `\n${BUILD_ON_CHANGES_MESSAGE}`;
+        console.info( `\n ${BUILD_ON_CHANGES_MESSAGE}\n` );
+      }
+
+      notify( 'Build Complete.', notifMessage );
+      console.info( '\n', timestamp, '-', style.successText( 'Build complete.' ) );
+      console.info( ' File Path:', path.join( sourceFile.output.path, sourceFile.output.name ) );
+      console.timeEnd( ' Build Time' );
+
+      return resolve();
     } );
   }
 

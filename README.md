@@ -16,7 +16,6 @@
  **Changelog:** [LINK](https://github.com/joao-neves95/merger-js/blob/master/CHANGELOG.md)\
  **Dependencies:**\
  ├── [uglify-es](https://www.npmjs.com/package/uglify-es)\
- ├── [neo-async](https://github.com/suguru03/neo-async)\
  ├── [chokidar](https://github.com/paulmillr/chokidar)\
  ├── [commander](https://github.com/tj/commander.js)\
  ├── [inquirer](https://github.com/SBoudrias/Inquirer.js)\
