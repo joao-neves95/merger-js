@@ -33,17 +33,19 @@
 <br/>
 
 ## Features
- - [x] **Command Line Interface (CLI)**
- - [x] **Merge multiple JS files into one**
- - [x] **Support for multiple source/header files**
- - [x] **Use @import comments on a source file to specify the build order**
- - [x] **Minification, supporting ES6+** (optional)
- - [x] **Auto builds on file changes** (optional)
- - [x] **Native OS build notifications** (optional)
- - [x] **Import an entire directory** (use ```@import<<DIR 'directoryName/'```)
- - [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
- - [x] **Import a file from an URL** (use ```%import 'url'```)
- - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github::{branch-name} '{userName}/{repositoryName}/{pathToFile}.js'```)
+
+- [x] **Command Line Interface (CLI)**
+- [x] **Merge multiple JS files into one**
+- [x] **Support for multiple source/header files**
+- [x] **Use @import comments on a source file to specify the build order**
+- [x] **Minification, supporting ES6+** (optional)
+- [x] **Auto builds on file changes** (optional)
+- [x] **Native OS build notifications** (optional)
+- [x] **Import an entire directory** (use ```@import<<DIR 'directoryName/'```)
+- [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
+- [x] **Import a file from an URL** (use ```%import 'url'```)
+- [x] **Import a file or directory from a GitHub repository** (use ```%import<<github::{branch-name} '{userName}/{repositoryName}/{pathToFile}.js'```)
+- [ ] **Create UMD modules**
 
 &nbsp;
 
