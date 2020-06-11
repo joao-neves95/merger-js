@@ -86,12 +86,13 @@ class Compiler extends StaticClass {
           thisFilePath = path.join( path.dirname( sourceFile.source ), file );
         }
 
-        fs.readFile( thisFilePath, 'utf-8', ( err, data ) => {
-          if ( err ) return Callback( err );
-
-          allData[file] = removeBOM( data ) + '\n';
+        try {
+          allData[file] = removeBOM( fs.readFileSync( thisFilePath, 'utf-8' ) ) + '\n';
           Callback();
-        } );
+
+        } catch (e) {
+          return Callback( e );
+        }
 
       }, ( err ) => {
         if ( err ) {
@@ -100,37 +101,36 @@ class Compiler extends StaticClass {
         }
 
         // Minify if necessary:
-        minifyCode( allData, ( data ) => {
-          const buildPath = sourceFile.output.path;
-          const buildName = sourceFile.output.name;
+        const data = minifyCode( allData );
+        const buildPath = sourceFile.output.path;
+        const buildName = sourceFile.output.name;
 
-          fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
-            if ( err ) {
-              // If the dir does not exist, make a new dir.
-              if ( err.code === 'ENOENT' ) {
-                fs.mkdir( buildPath, ( err ) => {
+        fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
+          if ( err ) {
+            // If the dir does not exist, make a new dir.
+            if ( err.code === 'ENOENT' ) {
+              fs.mkdir( buildPath, ( err ) => {
+                if ( err ) {
+                  console.error( style.ERROR, err );
+                  return reject( err );
+                }
+
+                fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
                   if ( err ) {
                     console.error( style.ERROR, err );
                     return reject( err );
                   }
 
-                  fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
-                    if ( err ) {
-                      console.error( style.ERROR, err );
-                      return reject( err );
-                    }
-
-                  } );
                 } );
+              } );
 
-              } else {
-                console.error( style.ERROR, err );
-                return reject( err );
-              }
+            } else {
+              console.error( style.ERROR, err );
+              return reject( err );
             }
+          }
 
-            return resolve();
-          } );
+          return resolve();
         } );
       } );
 
