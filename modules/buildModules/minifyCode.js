@@ -11,35 +11,28 @@ const uglify = require('uglify-es');
 const notify = require('../notifications').notif;
 
 /**
- * 
- * @param { string } allCode Code input.
- * 
- * @param { Function } callback (string)
+ * Minifies JavaScript code, if the minification setting is set.
+ *
+ * @param { object } allCode Code input.
+ * @returns { string }
  */
-module.exports = ( allCode, callback ) => {
-  if ( global.config.uglify ) {
-    let minifiedCode = uglify.minify( allCode, global.minifyOptions );
-
-    if ( minifiedCode.error ) {
-      let err = minifiedCode.error;
-      notify( `Build error on the file ${err.filename}, line ${err.line}, col ${err.col}.`, err.message );
-
-      return console.error( ' Error:\n ', err );
-    }
-
-    if ( global.minifyOptions.warnings && minifiedCode.warnings ) {
-      console.warn( '\n Warnings: \n ', minifiedCode.warnings );
-    }
-
-    return callback( minifiedCode.code );
-
-  } else {
-    let nonMinifiedCode = '';
-
-    for ( let fileName in allCode ) {
-      nonMinifiedCode += allCode[fileName];
-    }
-
-    return callback( nonMinifiedCode );
+module.exports = ( allCode ) => {
+  if ( !global.config.uglify ) {
+    return Object.values( allCode ).join( '' );
   }
+
+  const minifiedCode = uglify.minify( allCode, global.minifyOptions );
+
+  if ( minifiedCode.error ) {
+    const err = minifiedCode.error;
+    notify( `Build error on the file ${err.filename}, line ${err.line}, col ${err.col}.`, err.message );
+
+    return console.error( ' Error:\n ', err );
+  }
+
+  if ( global.minifyOptions.warnings && minifiedCode.warnings ) {
+    console.warn( '\n Warnings: \n ', minifiedCode.warnings );
+  }
+
+  return minifiedCode.code;
 };
