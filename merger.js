@@ -16,7 +16,7 @@ const Config = require('./modules/config');
 const async = require( './node_modules/neo-async' );
 const selectSourceFile = require('./modules/CLIModules/selectSourceFilePrompt');
 const parseFile = require( './modules/buildModules/parseFile' );
-const Compiler = require( './modules/buildModules/build' );
+const Compiler = require( './modules/buildModules/compiler' );
 
 // #region PROGRAM
 
