@@ -174,9 +174,25 @@ listArray[listSize + 1] = it;
 
 ---
 
+&nbsp;
+
 After following these style conventions, you should also follow the Airbnb style guide:
 https://github.com/airbnb/javascript
+
+&nbsp;
 
 ---
 
 ***This document may change in the future.***
+
+---
+
+## Disclaimer for other Developers
+
+Before starting to contribute to MergerJS, you must have in mind that this was my first
+software project, before any kind of personal or professional experience.\
+The first version was made in one weekend and, with time, it was added new features without
+really thinking about future maintainability and evolution.\
+Therefore, there are a lot of architectural problems and "spaghetti" code.\
+With each new release, the codebase gets small architectural refactorings and improvements,
+but **a lot** of work still needs to be done.
