@@ -9,7 +9,6 @@
 'use strict';
 const fs = require('fs');
 const path = require( 'path' );
-const async = require( 'neo-async' );
 const StaticClass = require( '../../models/staticClassBase' );
 const SourceFileModel = require( '../../models/sourceFileModel' );
 const parseFile = require('./parseFile');
@@ -76,64 +75,57 @@ class Compiler extends StaticClass {
       let allData = {};
 
       // Read all the data from each file (with file names):
-      async.eachSeries( buildOrder, ( file, Callback ) => {
+      for (let i = 0; i < buildOrder.length; ++i) {
         let thisFilePath;
 
-        if ( file.includes( '\\node_modules\\' ) || file.includes( '/node_modules/' ) ) {
-          thisFilePath = file;
+        if ( buildOrder[i].includes( '\\node_modules\\' ) || buildOrder[i].includes( '/node_modules/' ) ) {
+          thisFilePath = buildOrder[i];
 
         } else {
-          thisFilePath = path.join( path.dirname( sourceFile.source ), file );
+          thisFilePath = path.join( path.dirname( sourceFile.source ), buildOrder[i] );
         }
 
         try {
-          allData[file] = removeBOM( fs.readFileSync( thisFilePath, 'utf-8' ) ) + '\n';
-          Callback();
+          allData[buildOrder[i]] = removeBOM( fs.readFileSync( thisFilePath, 'utf-8' ) ) + '\n';
 
         } catch (e) {
-          return Callback( e );
+          console.error( style.styledError, e );
+          process.exit( 1 );
         }
+      }
 
-      }, ( err ) => {
+      // Minify if necessary:
+      const data = minifyCode( allData );
+      const buildPath = sourceFile.output.path;
+      const buildName = sourceFile.output.name;
+
+      fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
         if ( err ) {
-          console.error( style.styledError, err );
-          return reject( err );
-        }
+          // If the dir does not exist, make a new dir.
+          if ( err.code === 'ENOENT' ) {
+            fs.mkdir( buildPath, ( err ) => {
+              if ( err ) {
+                console.error( style.ERROR, err );
+                return reject( err );
+              }
 
-        // Minify if necessary:
-        const data = minifyCode( allData );
-        const buildPath = sourceFile.output.path;
-        const buildName = sourceFile.output.name;
-
-        fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
-          if ( err ) {
-            // If the dir does not exist, make a new dir.
-            if ( err.code === 'ENOENT' ) {
-              fs.mkdir( buildPath, ( err ) => {
+              fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
                 if ( err ) {
                   console.error( style.ERROR, err );
                   return reject( err );
                 }
 
-                fs.writeFile( path.join( buildPath, buildName ), data, 'utf-8', ( err ) => {
-                  if ( err ) {
-                    console.error( style.ERROR, err );
-                    return reject( err );
-                  }
-
-                } );
               } );
+            } );
 
-            } else {
-              console.error( style.ERROR, err );
-              return reject( err );
-            }
+          } else {
+            console.error( style.ERROR, err );
+            return reject( err );
           }
+        }
 
-          return resolve();
-        } );
+        return resolve();
       } );
-
     } );
   }
 
