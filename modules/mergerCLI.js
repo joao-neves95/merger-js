@@ -89,7 +89,7 @@ module.exports = ( Callback ) => {
       } else if ( cmd.false ) {
         value = false;
 
-      } else if ( Key === 'HELP' || cmd.list || cmd.help ) {
+      } else if ( Key === 'HELP' || Key === 'LIST' || cmd.list || cmd.help ) {
         console.info( '\n Set MergerJS configuration.\n' );
         console.info( ' Configuration keys:' );
         console.info( ' -------------------' );
