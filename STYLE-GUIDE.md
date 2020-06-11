@@ -109,7 +109,7 @@ if ( isNight ) {
 - Classes **must** have `PascalCase` as naming style.
 - Methods and properties **must** have `camelCase` naming style.
 - Private methods and properties (methods and properties that will be used only by that class),
-  since v3.11.0, **must** start with with a `#` char at the start of their name.
+  **must** start with four (4) undescores characters in their name.
 - Always prefer using classes instead of functions.
 - Most classes will be static, so those **must** inherit from `models/staticClassBase.js`.
 - Methods **must** have JSDoc
@@ -121,7 +121,7 @@ if ( isNight ) {
 - Do **NOT** create constructor functions, use well structured classes instead.
 - Functions names **must** have the `camelCase` naming convention.
 - Private functions (internal functions in a class or module)
-  **should** start with four (4) undescores characters in their name:
+  **must** start with four (4) undescores characters in their name:
 
   `const ____privateFunction = ...`
 

@@ -34,11 +34,11 @@ mergerCLI( async ( newConfig ) => {
   }
 
   async.eachSeries( sourceFiles, async ( sourceFile, Callback ) => {
-    await Config.setCustomConfig( sourceFile.source );
+    Config.setCustomConfig( sourceFile.source );
 
     // Execute one time builds:
     if ( !global.config.autoBuild ) {
-      await Compiler.Run( sourceFile );
+      await Compiler.run( sourceFile );
       return Callback();
 
       // Execute an auto build session (with file watcher):
@@ -49,13 +49,13 @@ mergerCLI( async ( newConfig ) => {
       watcher
         .on( 'ready', async () => {
           console.info( ' Inicial scan complete. Ready to build on changes...' );
-          await Compiler.Run( sourceFile, buildOrder );
+          await Compiler.run( sourceFile, buildOrder );
 
           return Callback();
         } )
         .on( 'error', err => console.error( 'Auto build error: ', err ) )
         .on( 'change', async ( path, stats ) => {
-          await Compiler.Run( sourceFile );
+          await Compiler.run( sourceFile );
         } );
     }
 

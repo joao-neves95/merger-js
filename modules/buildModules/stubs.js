@@ -37,7 +37,7 @@ class Stubs extends StaticClass {
   } else if ( typeof module === 'object' && module.exports ) {
     // CommonJS (Node.js).
     ${requires.length === 0 ? '' : `const lib = require( \'./${namespace}\' );` }
-    module.exports['${moduleName}'] = factory( ${Stubs.#renderRequires(requires, 'lib')} );
+    module.exports['${moduleName}'] = factory( ${Stubs.____renderRequires(requires, 'lib')} );
 
   } else {
     // Browser.
@@ -59,7 +59,7 @@ class Stubs extends StaticClass {
    * @param { string | null } namespaceObjName
    * @memberof Stubs
    */
-  static #renderRequires(requires, namespaceObjName = null) {
+  static ____renderRequires(requires, namespaceObjName = null) {
     js = '';
 
     for (let i = 0; i < requires.length; ++i) {

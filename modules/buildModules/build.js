@@ -34,13 +34,13 @@ class Compiler extends StaticClass {
    * @returns { Promise<void | Error> }
    * @memberof Compiler
    */
-  static async Run( sourceFile, buildOrder = null ) {
+  static async run( sourceFile, buildOrder = null ) {
     return new Promise( async ( resolve, reject ) => {
       console.time( ' Build Time' );
       console.info( ' Building...' );
 
       try {
-        await Compiler.#Compile( sourceFile, !buildOrder ? await parseFile( sourceFile.source ) : buildOrder );
+        await Compiler.____compile( sourceFile, !buildOrder ? await parseFile( sourceFile.source ) : buildOrder );
 
         let timestamp = newTimestamp();
         let notifMessage = timestamp;
@@ -70,7 +70,7 @@ class Compiler extends StaticClass {
    * @returns { Promise<void | Error> }
    * @memberof Compiler
    */
-  static #Compile( sourceFile, buildOrder ) {
+  static ____compile( sourceFile, buildOrder ) {
     return new Promise( ( resolve, reject ) => {
 
       let allData = {};
