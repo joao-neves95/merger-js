@@ -199,7 +199,7 @@ npm install merger-js -g
     you don't want to change that.
   <!-- - [NOT FUNCTIONAL] ```merger build -o``` or ```merger build --once```: Perform a one time build session, regardless of the project's configuration file.) -->
 
-- `merger set` or `merger set -h` or `merger set --list`: \
+- `merger set help` or `merger set list`: <br/>
   List all the configuration keys (it does not list the possible aliases).
 
 - ```merger set <configuration> <value>```: \
