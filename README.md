@@ -53,7 +53,6 @@
 For the latest version of the README, always refer to the MergerJS GitHub repository's master branch:\
 https://github.com/joao-neves95/merger-js/blob/master/README.md
 
-
 ### 1) Node.js
 
 You will need [Node.js](https://nodejs.org/en/) version 12+ installed to run merger.
@@ -155,11 +154,13 @@ npm install merger-js -g
 
 ## UMD Module Syntax
 
-### Namespaces
+### Namespace
 
 - ` // #module::UMD ` \
-  - Add this to an header file to tell MergerJS that you want to create a UMD module namespace and leter add inner files bundled into it as modules.
+  - Add this to an header file to tell MergerJS that you want to create a UMD module namespace and later add inner files bundled into it as modules.
   - The namespace will be called the same as your build file name.
+  - Keep in mind that compiling an header file into an UMD module will take more time than simply bundling multiple files together,
+    because every file will have to be parsed.
 
 ### Modules
 
