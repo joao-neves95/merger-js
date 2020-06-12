@@ -12,6 +12,7 @@ const path = require( 'path' );
 const chokidar = require('chokidar');
 const StaticClass = require( '../../models/staticClassBase' );
 const SourceFileModel = require( '../../models/sourceFileModel' );
+const FileParserParams = require( '../../models/fileParserParams' );
 const parseFile = require('./parseFile');
 const minifyCode = require( './minifyCode' );
 const { removeBOM } = require( '../utils' );
@@ -37,28 +38,29 @@ class Compiler extends StaticClass {
   static async run( sourceFile ) {
     return new Promise( async ( resolve, reject ) => {
       try {
-        const buildOrder = await parseFile( sourceFile.source );
+        const fileParserParams = new FileParserParams( sourceFile.source, true, true );
+        const buildOrder = await parseFile( fileParserParams );
 
         // Execute one time builds:
         if ( !global.config.autoBuild ) {
           await Compiler.____compile( sourceFile, buildOrder );
-
-          // Execute an auto build session (with file watcher):
-        } else {
-          const watcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
-
-          watcher
-            .on( 'ready', async () => {
-              console.info( ' Initial scan complete. Ready to build on changes...' );
-              await Compiler.____compile( sourceFile, buildOrder );
-
-              return resolve();
-            } )
-            .on( 'error', err => console.error( 'Auto build error: ', err ) )
-            .on( 'change', async ( path, stats ) => {
-              await Compiler.____compile( sourceFile, await parseFile( sourceFile.source ) );
-            } );
+          return resolve();
         }
+
+        // Execute an auto build session (with file watcher):
+        const watcher = chokidar.watch( buildOrder, { persistent: true, cwd: path.dirname( sourceFile.source ) } );
+
+        watcher
+          .on( 'ready', async () => {
+            console.info( ' Initial scan complete. Ready to build on changes...' );
+            await Compiler.____compile( sourceFile, buildOrder );
+
+          } )
+          .on( 'error', err => console.error( 'Auto build error: ', err ) )
+          .on( 'change', async ( path, stats ) => {
+            await Compiler.____compile( sourceFile, await parseFile( fileParserParams ) );
+
+          } );
 
         return resolve();
 

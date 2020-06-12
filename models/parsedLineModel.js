@@ -50,6 +50,11 @@ class ParsedLine {
      * @type { boolean | null }
      **/
     this.isGithubNewSyntax = null;
+
+    /**
+     * @type { string | null }
+     */
+    this.headerFilePath = null;
   }
 
 }
