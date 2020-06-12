@@ -41,9 +41,10 @@
 - [x] **Auto builds on file changes** (optional)
 - [x] **Native OS build notifications** (optional)
 - [x] **Import an entire directory** (use ```@import<<DIR 'directoryName/'```)
-- [x] **Import a file or directory from the node_modules folder** (use ```$import file-name'```)
+- [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
 - [x] **Import a file from an URL** (use ```%import 'url'```)
 - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github::{branch-name} '{userName}/{repositoryName}/{pathToFile}.js'```)
+- [ ] **Create UMD modules**
 
 &nbsp;
 
