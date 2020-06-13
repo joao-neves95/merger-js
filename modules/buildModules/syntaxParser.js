@@ -12,19 +12,19 @@ const ImportType = require( '../../enums/importType' );
 const ParsedLine = require( '../../models/parsedLineModel' );
 const StaticClass = require( '../../models/staticClassBase' );
 
-class ImportLineParser extends StaticClass {
+class SyntaxParser extends StaticClass {
 
   constructor() {
-    super( ImportLineParser.name );
+    super( SyntaxParser.name );
   }
 
   /**
-   * 
+   *
    * @param { string } line
-   * 
+   *
    * @return { ParsedLine }
    */
-  static parse( line ) {
+  static parseLine( line ) {
     const parsedLine = new ParsedLine();
     parsedLine.isComment = line.trimStart().startsWith( '//' );
 
@@ -113,7 +113,7 @@ class ImportLineParser extends StaticClass {
       parsedLine.importType = ImportType.Unknown;
     }
 
-    parsedLine.isDir = ImportLineParser.__pathIsDir( line );
+    parsedLine.isDir = SyntaxParser.__pathIsDir( line );
 
     if ( parsedLine.isDir ) {
       line = Utils.removeDirTokenFromImport( line );
@@ -132,4 +132,4 @@ class ImportLineParser extends StaticClass {
 
 }
 
-module.exports = ImportLineParser;
+module.exports = SyntaxParser;
