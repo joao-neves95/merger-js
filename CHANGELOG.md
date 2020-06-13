@@ -2,7 +2,14 @@
 
 &nbsp;
 
-#### *v3.10.2 - 11/06/2020
+#### *v3.10.3 - 13/06/2020
+
+  - Performance improvements.
+  - Big internal refactorings in preparation for the upcoming UMD module creation.
+
+&nbsp;
+
+#### v3.10.2 - 11/06/2020
 
   - Fixed the `merger set` command, which was due to a bug added with the help command.
 

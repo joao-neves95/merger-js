@@ -152,6 +152,7 @@ npm install merger-js -g
 
 &nbsp;
 
+<!--
 ## UMD Module Syntax
 
 ### Namespace
@@ -174,6 +175,7 @@ npm install merger-js -g
   - You'll need to use the file name, or custom module name, of the module you require.
 
 &nbsp;
+-->
 
 ## Commands
 
