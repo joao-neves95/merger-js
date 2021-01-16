@@ -23,11 +23,21 @@
  ├── [chalk](https://github.com/chalk/chalk)\
  ├── [line-by-line](https://github.com/Osterjour/line-by-line)\
  ├── [is-text-path](https://github.com/sindresorhus/is-text-path)\
- ├── [js.system.collections](https://github.com/joao-neves95/js.system.collections)\
+ ├── [js.system.collections](https://github.com/joao-neves95/js.system.collections)
 
-&nbsp;
+---
 
- ---
+I do not have more free time to work on this project.\
+Consider supporting, to advance development.\
+
+├─ USDT (ERC20): 0x789ae7e83a7329910bd947ca70ec254437c10860\
+├─ USDC (ERC20): 0x789ae7e83a7329910bd947ca70ec254437c10860\
+├─ BTC: 18mDxW4W9YNkf1oYUBpRg6bJDrAmMTrckH\
+├─ BTC(SegWit): bc1qdmzpvnvr8defhkx0qx0v9lr95ltywps6e93dt4\
+├─ ETH (ERC20): 0x789ae7e83a7329910bd947ca70ec254437c10860\
+├─ XMR: 836RoXgkfaXNezcEBUFkUXbdQccHuVCnYc35dyPAYLdxBcgaEnUVyNG7wAR7stTLCfexn2iNFDD1G1wpniNdGZME8TbR6wC
+
+---
 
 &nbsp;
 
