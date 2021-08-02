@@ -33,7 +33,7 @@
   },
   "deprecated": false,
   "dependencies": {
-    "chalk": "^2.4.2",
+    "chalk": "^4.1.2",
     "chokidar": "^3.4.0",
     "commander": "^5.1.0",
     "inquirer": "^7.1.0",
