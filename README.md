@@ -4,11 +4,13 @@
 [![LICENSE](https://img.shields.io/npm/l/merger-js.svg)](https://github.com/joao-neves95/merger-js/blob/master/LICENSE.md)\
 [![GitHub stars](https://img.shields.io/github/stars/joao-neves95/merger-js.svg?label=star&style=social)](https://github.com/joao-neves95/merger-js)
 
- Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES8+ minification, auto build capabilities, and native OS notifications.
+#### --------------- [NOT MAINTAINED ANYMORE] ---------------
+  
+Yet another simple cross-platform CLI build tool to bundle JavaScript files, with a custom file import syntax, ES8+ minification, auto build capabilities, and native OS notifications.
 
- Because merger uses a modified version of uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES8+.
+Because merger uses a modified version of uglify-es for minification, you don't need to use any kind of transpilers in order to use this tool. You can use ES8+.
 
- **MergerJS *is not* a module bundler, is a file bundler.**
+**MergerJS *is not* a module bundler, it's a file bundler.**
 
  **NPM:** [LINK](https://www.npmjs.com/package/merger-js)\
  **GitHub:** [LINK](https://github.com/joao-neves95/merger-js)\
@@ -27,18 +29,6 @@
 
 ---
 
-I do not have more free time to work on this project.\
-Consider supporting, to advance development.\
-
-├─ USDT (ERC20): 0x789ae7e83a7329910bd947ca70ec254437c10860\
-├─ USDC (ERC20): 0x789ae7e83a7329910bd947ca70ec254437c10860\
-├─ BTC: 18mDxW4W9YNkf1oYUBpRg6bJDrAmMTrckH\
-├─ BTC(SegWit): bc1qdmzpvnvr8defhkx0qx0v9lr95ltywps6e93dt4\
-├─ ETH (ERC20): 0x789ae7e83a7329910bd947ca70ec254437c10860\
-├─ XMR: 836RoXgkfaXNezcEBUFkUXbdQccHuVCnYc35dyPAYLdxBcgaEnUVyNG7wAR7stTLCfexn2iNFDD1G1wpniNdGZME8TbR6wC
-
----
-
 &nbsp;
 
 ## Features
@@ -54,7 +44,6 @@ Consider supporting, to advance development.\
 - [x] **Import a file or directory from the node_modules folder** (use ```$import 'file-name'```)
 - [x] **Import a file from an URL** (use ```%import 'url'```)
 - [x] **Import a file or directory from a GitHub repository** (use ```%import<<github::{branch-name} '{userName}/{repositoryName}/{pathToFile}.js'```)
-- [ ] **Create UMD modules**
 
 &nbsp;
 
@@ -249,7 +238,7 @@ configuration.</br>
 This is useful, for example, if you have multiple source files and want that only some file be
 minified or not.
 
-In the moment, there is no CLI command to edit custom source file configurations, so you will have
+At the moment, there is no CLI command to edit custom source file configurations, so you will have
 to do it by hand. Just add a config object to your source file object.</br>
 In the moment there is only the minification (`uglify`) option.
 
@@ -305,4 +294,3 @@ My schoolmates couldn't get around with other
 projects like WebPack and similar tools,
 so I decided to build MergerJS in order to use
 a file bundler in a very simple and fast way.
-This is and it always will be a work in progress.
